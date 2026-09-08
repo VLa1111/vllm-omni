@@ -46,6 +46,7 @@ from vllm_omni.diffusion.models.boogu_image.boogu_image_transformer import (
     BooguImageTransformer2DModel,
 )
 from vllm_omni.diffusion.models.boogu_image.image_processor import BooguImageProcessor
+from vllm_omni.diffusion.models.boogu_image.plain_fp8 import repack_torchao_float8_linears
 from vllm_omni.diffusion.models.boogu_image.scheduling_flow_match_euler_discrete_time_shifting import (
     FlowMatchEulerDiscreteScheduler,
 )
@@ -352,7 +353,15 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
 
     def load_weights(self, weights: Iterable[tuple[str, torch.Tensor]]) -> set[str]:
         loader = AutoWeightsLoader(self)
-        return loader.load_weights(weights)
+        loaded = loader.load_weights(weights)
+        # FP8 checkpoints load DiT weights as torchao Float8Tensor subclasses,
+        # whose dispatch table lacks the plain-storage primitives the offload
+        # framework relies on (flatten / clear / re-attach / device moves).
+        # Unpack into ordinary (qdata, scale) parameters right after loading,
+        # before any offload backend stages parameters.  Idempotent; no-op for
+        # bf16 checkpoints (nothing is a Float8Tensor).
+        repack_torchao_float8_linears(self.transformer)
+        return loaded
 
     # ------------------------------------------------------------------
     # Prompt encoding (upstream ``encode_instruction``, t2i path)
@@ -913,6 +922,10 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
         # resident for the whole denoise loop; they are loaded once before the
         # first step and released before VAE decode to bound peak HBM.
         with self._resident_dit_layers_on_device(enabled=True):
+            # 5. Denoise loop with shared sequential/parallel CFG execution.
+            # Reproduces the branch priority of upstream ``processing`` (double >
+            # text-only > image-only > t2i text). Reference latents stay attached
+            # to the same branches as in the original sequential implementation.
             with self.progress_bar(total=num_timesteps) as progress_bar:
                 for i, t in enumerate(timesteps):
                     in_cfg_range = cfg_range[0] <= i / num_timesteps <= cfg_range[1]
