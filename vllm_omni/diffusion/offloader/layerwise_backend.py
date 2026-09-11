@@ -71,6 +71,8 @@ class LayerwiseOffloadHook(ModelHook):
         self._copy_end: current_omni_platform.Event | None = None
         self._compute_start: current_omni_platform.Event | None = None
         self._compute_end: current_omni_platform.Event | None = None
+        self._stall_start: current_omni_platform.Event | None = None
+        self._stall_end: current_omni_platform.Event | None = None
         self._h2d_bytes = 0
 
     @staticmethod
@@ -282,8 +284,16 @@ class LayerwiseOffloadHook(ModelHook):
         This function does not actually offload weights from GPU back to CPU.
         """
         evt = self._prefetch_done
+        self._stall_start = None
+        self._stall_end = None
         if evt is not None:
+            if self._timing_sink is not None:
+                self._stall_start = torch.cuda.Event(enable_timing=True)
+                self._stall_start.record(current_omni_platform.current_stream())
             current_omni_platform.current_stream().wait_event(evt)
+            if self._timing_sink is not None:
+                self._stall_end = torch.cuda.Event(enable_timing=True)
+                self._stall_end.record(current_omni_platform.current_stream())
 
         self._prefetch_done = None
 
@@ -309,6 +319,14 @@ class LayerwiseOffloadHook(ModelHook):
         return args, kwargs
 
     def post_forward(self, module: nn.Module, output: Any) -> Any:
+        if self._timing_sink is not None:
+            # Record compute-end *before* ``offload_layer()`` inserts the
+            # compute-stream wait for the next block's prefetch.  Recording
+            # after the wait would fold an exposed transfer stall into the
+            # reported compute duration and overstate the derived overlap.
+            self._compute_end = torch.cuda.Event(enable_timing=True)
+            self._compute_end.record(current_omni_platform.current_stream())
+
         self.offload_layer()
 
         if self._timing_sink is not None:
@@ -319,19 +337,17 @@ class LayerwiseOffloadHook(ModelHook):
     def _report_timing(self) -> None:
         """Aggregate one block's H2D/compute events into the round sink.
 
-        Called from ``post_forward``.  Durations are NOT read here: the CUDA
-        events may still be in flight (reading ``elapsed_time`` too early
-        raises "Both events must be completed").  The events are stashed per
-        layer and the round is closed by the ``num_blocks``-th block, which
-        synchronizes once (one sync per denoise step, so the pipelined
-        overlap measurement is not perturbed per layer) and then computes all
-        durations.
+        Called from ``post_forward``, after the compute-end event has already
+        been recorded (before the next block's H2D wait).  Durations are NOT
+        read here: the CUDA events may still be in flight (reading
+        ``elapsed_time`` too early raises "Both events must be completed").
+        The events are stashed per layer and the round is closed by the
+        ``num_blocks``-th block, which synchronizes once (one sync per denoise
+        step, so the pipelined overlap measurement is not perturbed per layer)
+        and then computes all durations.
         """
         sink = self._timing_sink
         assert sink is not None
-        if self._compute_start is not None:
-            self._compute_end = torch.cuda.Event(enable_timing=True)
-            self._compute_end.record(current_omni_platform.current_stream())
 
         if (
             self._copy_start is not None
@@ -346,6 +362,8 @@ class LayerwiseOffloadHook(ModelHook):
                     self._compute_start,
                     self._compute_end,
                     self._h2d_bytes,
+                    self._stall_start,
+                    self._stall_end,
                 )
             )
         sink["count"] += 1
@@ -358,12 +376,23 @@ class LayerwiseOffloadHook(ModelHook):
 
             h2d_ms = 0.0
             compute_ms = 0.0
+            stall_ms = 0.0
             h2d_bytes = 0
             first_copy_start: torch.cuda.Event | None = None
             last_compute_end: torch.cuda.Event | None = None
-            for copy_start, copy_end, compute_start, compute_end, bytes_ in sink["layers"]:
+            for (
+                copy_start,
+                copy_end,
+                compute_start,
+                compute_end,
+                bytes_,
+                stall_start,
+                stall_end,
+            ) in sink["layers"]:
                 h2d_ms += copy_start.elapsed_time(copy_end)
                 compute_ms += compute_start.elapsed_time(compute_end)
+                if stall_start is not None and stall_end is not None:
+                    stall_ms += stall_start.elapsed_time(stall_end)
                 h2d_bytes += bytes_
                 if first_copy_start is None:
                     first_copy_start = copy_start
@@ -372,19 +401,23 @@ class LayerwiseOffloadHook(ModelHook):
             wall_ms = 0.0
             if first_copy_start is not None and last_compute_end is not None:
                 wall_ms = first_copy_start.elapsed_time(last_compute_end)
-            total_ms = h2d_ms + compute_ms
-            overlap_ms = max(0.0, total_ms - wall_ms)
+            # ``compute_ms`` is pure block execution (compute-end is recorded
+            # before the next block's H2D wait); ``stall_ms`` is the transfer
+            # time actually exposed on the compute stream.  H2D is hidden only
+            # to the extent it did *not* stall the compute stream.
+            hidden_ms = max(0.0, h2d_ms - stall_ms)
             logger.info(
                 "layerwise offload timing (round of %d blocks): h2d=%.1f ms "
-                "(%.2f MiB), compute=%.1f ms, wall=%.1f ms, overlap=%.1f ms "
-                "(%.0f%% of h2d hidden behind compute)",
+                "(%.2f MiB), compute=%.1f ms, exposed_stall=%.1f ms, "
+                "wall=%.1f ms, hidden_h2d=%.1f ms (%.0f%% of h2d hidden)",
                 num_blocks,
                 h2d_ms,
                 h2d_bytes / (1024 * 1024),
                 compute_ms,
+                stall_ms,
                 wall_ms,
-                overlap_ms,
-                100.0 * overlap_ms / h2d_ms if h2d_ms > 0 else 0.0,
+                hidden_ms,
+                100.0 * hidden_ms / h2d_ms if h2d_ms > 0 else 0.0,
             )
             sink["layers"].clear()
             sink["count"] = 0
