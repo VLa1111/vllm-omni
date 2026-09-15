@@ -235,14 +235,6 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
     _encoder_modules: ClassVar[list[str]] = ["mllm"]
     _vae_modules: ClassVar[list[str]] = ["vae"]
 
-    # Declarative offload metadata consumed by the generic offload backends.
-    # The DiT is the 34.6 GiB resident-heavy component and is swapped against
-    # the mllm encoder (mutual exclusion, model-level) or streamed layer-by-
-    # layer (layerwise).  mllm/vae are NOT declared on-demand: pipeline-managed
-    # staged offload requires the load_to_device()/offload_to_cpu() protocol
-    # which the stock Qwen3VL/AutoencoderKL modules do not implement; they stay
-    # resident under both offload modes, which bounds their footprint to one
-    # copy and keeps the mllm encode stage off the DiT critical path.
     _offload_plan: ClassVar[OffloadPlan] = OffloadPlan(
         resident_dit_paths=frozenset({"transformer"}),
         block_attrs={"transformer": ("single_stream_layers", "double_stream_layers")},
@@ -271,11 +263,6 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
         self._execution_device = get_local_device()
         model = od_config.model
         local_files_only = os.path.exists(model)
-
-        # With CPU/layerwise offload the offload backend owns component
-        # placement (encoders and VAEs are pulled in on demand); eagerly
-        # moving every component to the device here would balloon peak VRAM
-        # past the offload point (the DiT alone is ~34.6 GiB).
         managed_component_placement = bool(
             getattr(od_config, "enable_cpu_offload", False) or getattr(od_config, "enable_layerwise_offload", False)
         )
