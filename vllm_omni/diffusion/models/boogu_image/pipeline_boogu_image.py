@@ -49,6 +49,7 @@ from vllm_omni.diffusion.models.boogu_image.boogu_image_transformer import (
     RotaryFrequencyTables,
 )
 from vllm_omni.diffusion.models.boogu_image.image_processor import BooguImageProcessor
+from vllm_omni.diffusion.models.boogu_image.plain_fp8 import repack_torchao_float8_linears
 from vllm_omni.diffusion.models.boogu_image.scheduling_flow_match_euler_discrete_time_shifting import (
     FlowMatchEulerDiscreteScheduler,
 )
@@ -366,7 +367,15 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
 
     def load_weights(self, weights: Iterable[tuple[str, torch.Tensor]]) -> set[str]:
         loader = AutoWeightsLoader(self)
-        return loader.load_weights(weights)
+        loaded = loader.load_weights(weights)
+        # FP8 checkpoints load DiT weights as torchao Float8Tensor subclasses,
+        # whose dispatch table lacks the plain-storage primitives the offload
+        # framework relies on (flatten / clear / re-attach / device moves).
+        # Unpack into ordinary (qdata, scale) parameters right after loading,
+        # before any offload backend stages parameters.  Idempotent; no-op for
+        # bf16 checkpoints (nothing is a Float8Tensor).
+        repack_torchao_float8_linears(self.transformer)
+        return loaded
 
     # ------------------------------------------------------------------
     # Prompt encoding (upstream ``encode_instruction``, t2i path)
