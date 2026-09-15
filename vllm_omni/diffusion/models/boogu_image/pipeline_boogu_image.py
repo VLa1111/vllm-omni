@@ -54,6 +54,7 @@ from vllm_omni.diffusion.models.boogu_image.scheduling_flow_match_euler_discrete
 )
 from vllm_omni.diffusion.models.interface import SupportImageInput, SupportsComponentDiscovery
 from vllm_omni.diffusion.models.progress_bar import ProgressBarMixin
+from vllm_omni.diffusion.offloader.offload_plan import OffloadPlan
 from vllm_omni.diffusion.request import OmniDiffusionRequest
 from vllm_omni.diffusion.worker.request_batch import DiffusionRequestBatch, split_diffusion_output_by_request
 from vllm_omni.model_executor.model_loader.weight_utils import download_weights_from_hf_specific
@@ -232,6 +233,18 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
     _dit_modules: ClassVar[list[str]] = ["transformer"]
     _encoder_modules: ClassVar[list[str]] = ["mllm"]
     _vae_modules: ClassVar[list[str]] = ["vae"]
+    # Declarative offload metadata consumed by the generic offload backends.
+    # The DiT is the 34.6 GiB resident-heavy component and is swapped against
+    # the mllm encoder (mutual exclusion, model-level) or streamed layer-by-
+    # layer (layerwise).  mllm/vae are NOT declared on-demand: pipeline-managed
+    # staged offload requires the load_to_device()/offload_to_cpu() protocol
+    # which the stock Qwen3VL/AutoencoderKL modules do not implement; they stay
+    # resident under both offload modes, which bounds their footprint to one
+    # copy and keeps the mllm encode stage off the DiT critical path.
+    _offload_plan: ClassVar[OffloadPlan] = OffloadPlan(
+        resident_dit_paths=frozenset({"transformer"}),
+        block_attrs={"transformer": ("single_stream_layers", "double_stream_layers")},
+    )
 
     def __init__(
         self,
@@ -256,6 +269,13 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
         self._execution_device = get_local_device()
         model = od_config.model
         local_files_only = os.path.exists(model)
+        # With CPU/layerwise offload the offload backend owns component
+        # placement (encoders and VAEs are pulled in on demand); eagerly
+        # moving every component to the device here would balloon peak VRAM
+        # past the offload point (the DiT alone is ~34.6 GiB).
+        managed_component_placement = bool(
+            getattr(od_config, "enable_cpu_offload", False) or getattr(od_config, "enable_layerwise_offload", False)
+        )
 
         # See ``hub_prefetch.py`` for the transformers v5 multi-worker subfolder
         # race; prefetch the whole component set before any from_pretrained.
@@ -288,7 +308,9 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
         # ported, so keep only the inner ``Qwen3VLModel`` as the encoder.
         if hasattr(mllm, "lm_head"):
             mllm = mllm.model
-        self.mllm = mllm.to(self._execution_device)
+        if not managed_component_placement:
+            mllm = mllm.to(self._execution_device)
+        self.mllm = mllm
 
         self.processor = Qwen3VLProcessor.from_pretrained(
             model,
@@ -297,14 +319,17 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
             revision=od_config.revision,
         )
 
-        self.vae = from_pretrained_with_prefetch(
+        vae = from_pretrained_with_prefetch(
             AutoencoderKL.from_pretrained,
             model,
             subfolder="vae",
             prefetch_list=boogu_subfolders,
             local_files_only=local_files_only,
             revision=od_config.revision,
-        ).to(self._execution_device)
+        )
+        if not managed_component_placement:
+            vae = vae.to(self._execution_device)
+        self.vae = vae
 
         self.transformer = BooguImageTransformer2DModel(
             od_config=od_config,
