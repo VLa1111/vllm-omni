@@ -251,6 +251,25 @@ both revisions produced valid, prompt-aligned 1024x1024 RGB images. The small
 latency differences are regression evidence, not a statistically significant
 speedup claim.
 
+### VAE decode memory options (slicing / tiling)
+
+The DiT stage decodes latents with its own `gen_vae` (`AutoencoderKL`), which supports the diffusers slicing and tiling memory modes. Both are off by default and are enabled per deployment through the DiT stage's `additional_config`:
+
+```yaml
+stages:
+  - stage_id: 1
+    additional_config:
+      vae_use_slicing: true   # decode the latent in slices instead of at once
+      vae_use_tiling: true    # decode the latent tile by tile
+```
+
+Notes:
+
+- These are capacity options: they bound VAE-decode peak memory for memory-constrained or high-resolution workloads and may increase decode latency. Measure both before enabling them in production.
+- Tiling geometry comes from the checkpoint's VAE config (`sample_size`, `tile_sample_min_size`). A resolution below the tiling threshold decodes in a single tile: the mode is enabled but not exercised.
+- A requested mode that the loaded VAE cannot honour fails at stage startup with an explicit error instead of silently decoding without it.
+- VAE slicing is a batch-level option; batch-size-one serving may see little or no benefit.
+
 ### 1x AMD MI300X, MammothModa2 Preview (pre-migration baseline)
 
 #### Environment
