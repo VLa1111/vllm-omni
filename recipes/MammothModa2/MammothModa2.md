@@ -198,7 +198,7 @@ Notes:
 
 #### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB)
 
-#### Environment
+##### Environment
 
 - OS: Ubuntu 24.04.3 LTS, Linux 7.0.0-30-generic, x86_64
 - Container: `docker.m.daocloud.io/vllm/vllm-omni:nightly`
@@ -214,7 +214,7 @@ Notes:
   does not contain this change — without the override the run exercises the
   released pipeline and the flags never reach `gen_vae`.
 
-#### Measurement protocol
+##### Measurement protocol
 
 Fixed prompt, `seed=42`, `text_guidance_scale=9.0`, `num_inference_steps=50`,
 batch size 1, both stages on one device with the deploy config's
