@@ -2,9 +2,9 @@
 # SPDX-FileCopyrightText: Copyright contributors to the vLLM-Omni project
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import ClassVar
 
 import torch
 from diffusers.image_processor import VaeImageProcessor
@@ -37,75 +37,6 @@ logger = init_logger(__name__)
 
 # Identifies the pipeline-owned Cache-DiT installation across requests.
 _MAMMOTHMODA2_CACHE_DIT_KEY = "mammothmoda2:cache_dit"
-
-# Stage-scoped ``additional_config`` keys that configure VAE decode memory
-# behaviour, mapped to the diffusers ``AutoencoderKL`` attribute they drive.
-#
-# The DiT stage runs as an ``LLM_GENERATION`` stage, so the diffusion VAE flags
-# (``OmniDiffusionConfig.vae_use_slicing`` / ``vae_use_tiling``) are not part of
-# its engine arguments and never reach this model.  Stage ``additional_config``
-# is the channel that does, and MammothModa2 owns ``gen_vae`` rather than the
-# ``vae`` attribute the generic diffusion registry configures -- without this
-# wiring a requested mode would be silently ignored.
-_VAE_MEMORY_CONFIG_KEYS: dict[str, str] = {
-    "vae_use_slicing": "use_slicing",
-    "vae_use_tiling": "use_tiling",
-}
-
-
-def apply_vae_memory_flags(
-    vae: nn.Module,
-    additional_config: Mapping[str, Any] | None,
-) -> dict[str, bool]:
-    """Apply requested VAE memory flags to ``vae``; fail loudly if unsupported.
-
-    Returns the effective ``{attribute: value}`` state of the flags that were
-    requested.  A flag that is requested but cannot be honoured (the VAE has no
-    such attribute, or the attribute did not retain the requested value) raises
-    instead of falling back silently, as does an unknown ``vae_*`` memory key.
-    Flags that are absent from ``additional_config`` are left untouched.
-    """
-    config = additional_config or {}
-    unknown = sorted(key for key in config if key.startswith("vae_use_") and key not in _VAE_MEMORY_CONFIG_KEYS)
-    if unknown:
-        raise ValueError(
-            "Unsupported MammothModa2 VAE memory flag(s): "
-            f"{', '.join(unknown)}. Supported: {', '.join(sorted(_VAE_MEMORY_CONFIG_KEYS))}"
-        )
-
-    effective: dict[str, bool] = {}
-    unsupported: list[str] = []
-    for key, attr in _VAE_MEMORY_CONFIG_KEYS.items():
-        if key not in config:
-            continue
-        requested = bool(config[key])
-        if not hasattr(vae, attr):
-            if requested:
-                unsupported.append(f"{key} (the VAE exposes no {attr!r})")
-            continue
-        try:
-            setattr(vae, attr, requested)
-        except (AttributeError, TypeError) as exc:
-            unsupported.append(f"{key} (the VAE rejected {attr}={requested}: {exc})")
-            continue
-        if bool(getattr(vae, attr)) != requested:
-            unsupported.append(f"{key} (the VAE kept {attr}={getattr(vae, attr)!r})")
-            continue
-        effective[attr] = requested
-
-    if unsupported:
-        raise ValueError(
-            "Requested MammothModa2 VAE memory mode(s) cannot be honoured: "
-            + "; ".join(unsupported)
-            + ". Remove the flag or run without it instead of assuming it took effect."
-        )
-
-    if effective:
-        logger.info(
-            "MammothModa2 gen_vae memory flags applied from stage additional_config: %s",
-            ", ".join(f"{attr}={value}" for attr, value in sorted(effective.items())),
-        )
-    return effective
 
 
 def _first_request_value(value: object) -> object:
@@ -434,7 +365,19 @@ class MammothModa2DiTPipeline(nn.Module, SupportsComponentDiscovery):
             raise ValueError("Mammothmoda2Config.gen_vae_config / gen_dit_config must not be None")
 
         self.gen_vae = AutoencoderKL.from_config(self.config.gen_vae_config)
-        self._vae_memory_flags = apply_vae_memory_flags(self.gen_vae, getattr(od_config, "additional_config", None))
+        # The registry applies the stage's VAE memory modes to ``model.vae``
+        # (vllm_omni/diffusion/registry.py), but this pipeline owns ``gen_vae``,
+        # so read the standard fields here -- as hunyuan_image3, ltx2 and
+        # sana_wm do for their own VAE attributes.  Tiling only engages above
+        # the checkpoint's tile threshold.
+        self.gen_vae.use_slicing = bool(od_config.vae_use_slicing)
+        self.gen_vae.use_tiling = bool(od_config.vae_use_tiling)
+        if self.gen_vae.use_slicing or self.gen_vae.use_tiling:
+            logger.info(
+                "MammothModa2 gen_vae memory modes: slicing=%s, tiling=%s",
+                self.gen_vae.use_slicing,
+                self.gen_vae.use_tiling,
+            )
         self.gen_transformer = Transformer2DModel.from_config(self.config.gen_dit_config)
 
         # llm_config is a Mammothmoda2Qwen2_5_VLConfig which has nested text_config
