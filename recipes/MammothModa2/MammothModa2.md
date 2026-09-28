@@ -253,22 +253,20 @@ speedup claim.
 
 ### VAE decode memory options (slicing / tiling)
 
-The DiT stage decodes latents with its own `gen_vae` (`AutoencoderKL`), which supports the diffusers slicing and tiling memory modes. Both are off by default and are enabled per deployment through the DiT stage's `additional_config`:
+The DiT stage decodes latents with its own `gen_vae` (`AutoencoderKL`), which supports the diffusers slicing and tiling memory modes. Both are off by default and are enabled per deployment through the DiT stage's standard `vae_use_slicing` / `vae_use_tiling` fields:
 
 ```yaml
 stages:
   - stage_id: 1
-    additional_config:
-      vae_use_slicing: true   # decode the latent in slices instead of at once
-      vae_use_tiling: true    # decode the latent tile by tile
+    vae_use_slicing: true   # decode the latent in slices instead of at once
+    vae_use_tiling: true    # decode the latent tile by tile
 ```
 
 Notes:
 
 - These are capacity options: they bound VAE-decode peak memory for memory-constrained or high-resolution workloads and may increase decode latency. Measure both before enabling them in production.
 - Tiling geometry comes from the checkpoint's VAE config (`sample_size`, `tile_sample_min_size`). A resolution below the tiling threshold decodes in a single tile: the mode is enabled but not exercised.
-- A requested mode that the loaded VAE cannot honour fails at stage startup with an explicit error instead of silently decoding without it.
-- VAE slicing is a batch-level option; batch-size-one serving may see little or no benefit.
+- VAE slicing splits the decode along the batch dimension, so it bounds peak memory only when a request carries more than one image; the default deploy config batches (see `max_num_seqs` above).
 
 #### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB)
 
@@ -312,11 +310,12 @@ images and peak at 61,004 MiB.
 What these measurements show:
 
 - **Tiling bounds the device peak by 5.4 GiB at 1536x1536** (67,354 -> 61,814 MiB)
-  once it engages, and is a no-op below the threshold. The saving is larger at
-  higher resolution; the VAE-level decode peak falls steeply because untiled
-  attention runs over the whole latent.
+  once it engages, and is a no-op below the threshold. Tiled decode holds roughly
+  one tile at a time while untiled decode holds the whole latent, so the saving
+  grows with resolution.
 - **Slicing alone changes nothing at batch size 1** — same peak, byte-identical
-  output. Enable it for batch workloads, not for these.
+  output. It splits the decode along the batch dimension, so it is a batched-
+  serving option; this table measures single requests.
 - **End-to-end latency is a poor instrument for this option.** The AR stage is
   ~89% of the wall time and never touches the VAE; it drifts by more between runs
   (baseline 202.3 s vs slicing 196.9 s) than stage 1 varies across all four
