@@ -61,12 +61,15 @@ DTYPES = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}
 OOM_MARKERS = ("out of memory", "CUDA error: out of memory")
 # Calibrated on an RTX 4090 at 1024x1024 batch 1 in bf16: a single untiled decode
 # peaks at 2,614 MiB, of which ~350 MiB is the decoder itself; the activation
-# part then scales with the output area (5,665 MiB at 1536, 9,931 at 2048,
-# 22,096 at 3072).  Used only to skip rows the device cannot fit before any
+# part then scales with the output area (4,798 MiB measured at 1536, 9,931 at
+# 2048, 22,096 at 3072).  Used only to skip rows the device cannot fit before any
 # allocation is attempted, so a shared card does not spend minutes in allocator
-# retries; OOM is still handled if the estimate is wrong.
+# retries; OOM is still handled if the estimate is wrong.  The area scaling
+# under-predicts at the top end (it reads 20,726 for the 22,096 MiB row), so the
+# decision adds ESTIMATE_SAFETY headroom.
 WEIGHTS_MIB = 350.0
 ACTIVATION_MIB_1024 = 2264.0
+ESTIMATE_SAFETY = 1.1
 
 
 def parse_args() -> argparse.Namespace:
@@ -219,7 +222,7 @@ def is_oom(exc: BaseException) -> bool:
 
 
 def free_mib(device: torch.device) -> int:
-    free, _ = torch.cuda.mem_get_info(device)
+    free, _ = torch.accelerator.get_memory_info(device)
     return int(free // 2**20)
 
 
@@ -231,13 +234,15 @@ def estimate_peak_mib(vae: AutoencoderKL, size: int, batch: int, use_slicing: bo
     # and the whole batch is decoded at once unless slicing is on.
     tiled = use_tiling and size // downscale(vae) > vae.tile_latent_min_size
     per_image = ACTIVATION_MIB_1024 if tiled else ACTIVATION_MIB_1024 * (size / 1024) ** 2
-    return WEIGHTS_MIB + per_image * (1 if use_slicing else batch)
+    return (WEIGHTS_MIB + per_image * (1 if use_slicing else batch)) * ESTIMATE_SAFETY
 
 
 def describe_device(device: torch.device) -> str:
+    # get_device_name has no portable equivalent and is display-only; the memory
+    # numbers below come from the accelerator API.
     name = torch.cuda.get_device_name(device)
-    total = torch.cuda.get_device_properties(device).total_memory // 2**20
-    return f"{name} ({total} MiB total, {free_mib(device)} MiB free before the sweep)"
+    _, total = torch.accelerator.get_memory_info(device)
+    return f"{name} ({total // 2**20} MiB total, {free_mib(device)} MiB free before the sweep)"
 
 
 def header(args: argparse.Namespace, vae: AutoencoderKL, dtype: torch.dtype, device: torch.device) -> list[str]:
