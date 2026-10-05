@@ -6,8 +6,9 @@ The MammothModa2 DiT stage decodes latents with its own ``gen_vae`` (a
 Flux-shaped ``AutoencoderKL``), so ``vae_use_slicing`` / ``vae_use_tiling`` act
 on the VAE decode alone.  This script loads the real ``gen_vae`` weights out of
 a MammothModa2 checkpoint, decodes seeded latents at every requested output size
-and batch size under each mode combination, and reports decode latency, peak
-torch memory and the deviation from the untiled, unsliced baseline.
+and batch size under each mode combination, and reports decode latency (mean
+with min-max over the measured iterations), peak torch memory and the deviation
+from the untiled, unsliced baseline.
 
 It isolates the option from the AR stage, which dominates end-to-end latency
 (~89% of the wall time in the recipe's end-to-end table) and never touches the
@@ -205,8 +206,11 @@ def run_row(
         timings.append(time.perf_counter() - start)
     peak_mib = torch.accelerator.max_memory_allocated() / 2**20
     assert output is not None
+    samples_ms = [1e3 * timing for timing in timings]
     stats = {
-        "ms": 1e3 * sum(timings) / len(timings),
+        "ms": sum(samples_ms) / len(samples_ms),
+        "ms_min": min(samples_ms),
+        "ms_max": max(samples_ms),
         "peak_mib": peak_mib,
         "tiling_active": tiling_active,
         "slicing_active": bool(use_slicing and batch > 1),
@@ -274,7 +278,17 @@ def main() -> None:
         print(line)
     print()
 
-    columns = ["Size", "Batch", "Mode", "Slicing", "Tiling", "Decode ms", "Peak MiB", "PSNR dB", "Max abs diff"]
+    columns = [
+        "Size",
+        "Batch",
+        "Mode",
+        "Slicing",
+        "Tiling",
+        "Decode ms mean (min-max)",
+        "Peak MiB",
+        "PSNR dB",
+        "Max abs diff",
+    ]
     rows: list[str] = []
     references: dict[tuple[int, int], torch.Tensor] = {}
     for batch in batches:
@@ -315,10 +329,12 @@ def main() -> None:
                     f"| {size}x{size} | {batch} | {mode} | "
                     f"{'yes' if stats['slicing_active'] else 'no'} | "
                     f"{'yes' if stats['tiling_active'] else 'no'} | "
-                    f"{stats['ms']:.1f} | {stats['peak_mib']:.0f} | {psnr_text} | {diff_text} |"
+                    f"{stats['ms']:.1f} ({stats['ms_min']:.1f}-{stats['ms_max']:.1f}) | "
+                    f"{stats['peak_mib']:.0f} | {psnr_text} | {diff_text} |"
                 )
                 print(
-                    f"[{label:28s}] {stats['ms']:9.1f} ms  peak {stats['peak_mib']:7.0f} MiB  "
+                    f"[{label:28s}] {stats['ms']:9.1f} ms (min {stats['ms_min']:.1f}, max {stats['ms_max']:.1f})  "
+                    f"peak {stats['peak_mib']:7.0f} MiB  "
                     f"tiling={stats['tiling_active']} slicing={stats['slicing_active']}  "
                     f"psnr={psnr_text} max_abs_diff={diff_text}"
                 )
