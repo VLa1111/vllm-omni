@@ -266,31 +266,33 @@ Notes:
 
 - These are capacity options: they bound VAE-decode peak memory for memory-constrained or high-resolution workloads and may increase decode latency. Measure both before enabling them in production.
 - Tiling geometry comes from the checkpoint's VAE config (`sample_size`, `tile_sample_min_size`). A resolution below the tiling threshold decodes in a single tile: the mode is enabled but not exercised.
-- VAE slicing splits the decode along the batch dimension, so it bounds peak memory only when a request carries more than one image; the default deploy config batches (see `max_num_seqs` above). Measured below: 2,651 MiB at 1024x1024 batch 4 against 8,392 MiB untiled.
+- VAE slicing splits the decode along the batch dimension, so it bounds peak memory only when a request carries more than one image; the default deploy config batches (see `max_num_seqs` above). The decode sweep below covers batch 1-4.
 
 To measure the modes on a target card without the AR stage, use `benchmarks/diffusion/bench_mammoth_moda2_vae_decode.py`: it decodes with the checkpoint's real `gen_vae` weights and reports decode latency (mean with the min-max of the measured decodes), peak memory and output deviation per resolution, batch size and mode.
 
-#### Measured VAE decode, decode batch 1-4 (RTX 4090 24 GiB)
+#### Measured VAE decode, batch 1-4 (RTX PRO 6000 Blackwell 96 GB)
 
-This is the current-source measurement of the modes, and the one that covers
-decode batch > 1 — the axis slicing acts on (a serving batch of single-image
-requests decodes together; the DiT stage's `max_num_seqs` is 8).
+The current-source measurement of the modes, on the axis slicing acts on: a
+serving batch of single-image requests decodes together (the DiT stage's
+`max_num_seqs` is 8).
 
 ```bash
 python benchmarks/diffusion/bench_mammoth_moda2_vae_decode.py \
-  --model ./MammothModa2-Preview --sizes 1024,1536,2048 --batches 1,2,4 \
+  --model ./MammothModa2-Preview --sizes 1024,1536,2048,3072 --batches 1,2,4 \
   --modes baseline,slicing,tiling,slicing+tiling
 ```
 
 ##### Environment
 
-- Source: branch head `f8ba55318`, extracted from git and loaded with
+- Source: branch head `dc4f490e6`, extracted from git and loaded with
   `PYTHONPATH` (the container's installed `vllm_omni` predates this change)
-- Container image `vllm/vllm-omni:v0.26.0`; Python 3.12.3; PyTorch 2.13.0+cu130;
-  vLLM 0.29.0; transformers 5.14.1; diffusers 0.38.0
-- GPU: one NVIDIA GeForce RTX 4090, 24,058 MiB (22,840 MiB free before the sweep)
+- Container image `vllm/vllm-omni:nightly`; Python 3.12; PyTorch 2.13.0+cu130;
+  vLLM 0.30.0; transformers 5.14.1; diffusers 0.40.0
+- GPU: one NVIDIA RTX PRO 6000 Blackwell Server Edition, 97,251 MiB
+  (96,329 MiB free before the sweep)
 - VAE weights read from the checkpoint shards (`gen_vae.*`), bf16
-- 2 warmup + 5 measured decodes per row, `seed=42`
+- 2 warmup + 5 measured decodes per row, `seed=42`; the latency figures are the
+  mean with the min-max of the five decodes
 - Tiling geometry: `tile_sample_min_size=1024`, `tile_latent_min_size=128`,
   `tile_overlap_factor=0.25`, scale 8 — 1024x1024 is below the threshold, so
   tiling only engages at 1536 and above
@@ -299,48 +301,60 @@ Peak decode memory (MiB), the reason to enable the modes:
 
 | Size | Batch | baseline | slicing | tiling | slicing + tiling |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| 1024x1024 | 1 | 2,614 | 2,614 | 2,614 | 2,614 |
-| 1024x1024 | 2 | 4,283 | 2,626 | 4,283 | 2,626 |
-| 1024x1024 | 4 | 8,392 | 2,651 | 8,392 | 2,651 |
-| 1536x1536 | 1 | 5,663 | 5,663 | 2,623 | 2,623 |
-| 1536x1536 | 2 | 9,419 | 5,690 | 4,299 | 2,650 |
-| 1536x1536 | 4 | 16,936 | 5,746 | 8,424 | 2,706 |
-| 2048x2048 | 1 | 9,929 | 9,929 | 2,654 | 2,654 |
-| 2048x2048 | 2 | 16,610 | 9,979 | 4,364 | 2,705 |
-| 2048x2048 | 4 | skipped (~40 GiB) | 10,079 | 8,554 | 2,804 |
+| 1024x1024 | 1 | 2,638 | 2,638 | 2,638 | 2,638 |
+| 1024x1024 | 2 | 4,307 | 2,650 | 4,307 | 2,650 |
+| 1024x1024 | 4 | 8,416 | 2,675 | 8,416 | 2,675 |
+| 1536x1536 | 1 | 5,687 | 5,687 | 2,647 | 2,647 |
+| 1536x1536 | 2 | 9,443 | 5,714 | 4,323 | 2,674 |
+| 1536x1536 | 4 | 16,960 | 5,770 | 8,448 | 2,730 |
+| 2048x2048 | 1 | 9,953 | 9,953 | 2,678 | 2,678 |
+| 2048x2048 | 2 | 16,634 | 10,003 | 4,388 | 2,729 |
+| 2048x2048 | 4 | 28,973 | 10,103 | 8,578 | 2,828 |
+| 3072x3072 | 1 | 22,146 | 22,146 | 2,748 | 2,748 |
+| 3072x3072 | 2 | 44,092 | 22,258 | 4,525 | 2,860 |
+| 3072x3072 | 4 | 73,944 | 22,483 | 8,852 | 3,085 |
 
-Decode latency (ms) for the same rows:
+Decode latency (ms), mean with the min-max of the five decodes:
 
 | Size | Batch | baseline | slicing | tiling | slicing + tiling |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| 1024x1024 | 1 | 149.1 | 149.1 | 149.1 | 149.1 |
-| 1024x1024 | 2 | 395.2 | 298.5 | 395.2 | 298.7 |
-| 1024x1024 | 4 | 766.0 | 598.2 | 765.6 | 597.4 |
-| 1536x1536 | 1 | 362.0 | 363.2 | 465.4 | 465.5 |
-| 1536x1536 | 2 | 979.0 | 725.3 | 1,166.2 | 931.5 |
-| 1536x1536 | 4 | 1,889.2 | 1,451.2 | 2,236.9 | 1,864.6 |
-| 2048x2048 | 1 | 688.8 | 688.9 | 949.5 | 949.6 |
-| 2048x2048 | 2 | 1,955.0 | 1,380.5 | 2,314.8 | 1,903.1 |
-| 2048x2048 | 4 | skipped | 2,759.5 | 4,437.8 | 3,803.3 |
+| 1024x1024 | 1 | 101.6 (101.6-101.6) | 101.7 (101.6-101.9) | 101.7 (101.6-101.7) | 101.6 (101.6-101.7) |
+| 1024x1024 | 2 | 200.5 (200.4-200.6) | 204.1 (204.0-204.4) | 200.5 (200.4-200.5) | 203.8 (203.8-203.9) |
+| 1024x1024 | 4 | 359.3 (359.1-359.4) | 407.3 (407.2-407.4) | 359.4 (359.3-359.5) | 407.5 (407.4-407.9) |
+| 1536x1536 | 1 | 256.9 (256.8-257.2) | 256.8 (256.8-256.9) | 345.1 (343.9-346.0) | 345.3 (344.7-345.6) |
+| 1536x1536 | 2 | 570.4 (569.7-571.0) | 515.3 (515.2-515.4) | 631.3 (630.6-631.7) | 689.9 (689.6-690.5) |
+| 1536x1536 | 4 | 1,049.0 (1,048.2-1,049.5) | 1,029.9 (1,029.8-1,030.2) | 1,099.8 (1,099.4-1,100.3) | 1,379.6 (1,378.6-1,380.3) |
+| 2048x2048 | 1 | 488.1 (487.9-488.3) | 488.3 (488.2-488.5) | 745.7 (744.9-747.2) | 745.2 (744.7-746.0) |
+| 2048x2048 | 2 | 1,134.7 (1,134.1-1,134.9) | 978.1 (977.9-978.2) | 1,346.6 (1,346.0-1,347.1) | 1,488.8 (1,486.3-1,490.8) |
+| 2048x2048 | 4 | 2,107.6 (2,107.3-2,108.1) | 1,955.9 (1,955.8-1,956.1) | 2,317.9 (2,316.4-2,319.6) | 2,988.5 (2,981.2-2,991.7) |
+| 3072x3072 | 1 | 1,366.0 (1,365.8-1,366.2) | 1,366.6 (1,366.3-1,367.2) | 1,713.4 (1,711.1-1,716.5) | 1,714.3 (1,710.3-1,719.6) |
+| 3072x3072 | 2 | 2,697.1 (2,696.6-2,697.8) | 2,731.4 (2,731.1-2,731.7) | 3,054.0 (3,051.8-3,055.8) | 3,420.7 (3,417.5-3,424.4) |
+| 3072x3072 | 4 | 40,652.0 (30,302.4-43,240.7) | 5,467.1 (5,466.4-5,468.2) | 5,256.3 (5,253.5-5,260.9) | 6,837.0 (6,828.9-6,848.3) |
 
-Deviation from the untiled baseline at the same size and batch: slicing
-76.5 - 78.0 dB PSNR (max abs diff 0.0117), tiling 54.4 - 55.8 dB
-(0.082 - 0.111); below the tiling threshold tiling is byte-identical.
+Deviation from the untiled baseline at the same size and batch: slicing is
+byte-identical in every row except 3072x3072 batch 4 (68.29 dB PSNR, max abs
+diff 0.0156); tiling is byte-identical below the threshold and 53.5 - 55.8 dB
+above it (0.074 - 0.112).
 
-What the current-source sweep shows:
+What the sweep shows:
 
-- **Slicing is flat in batch.** Untiled peak grows with the batch (8,392 MiB at
-  1024x1024 batch 4 against 2,614 MiB at batch 1) while sliced decode stays at
-  2,626 - 2,651 MiB, and at batch > 1 it is also the faster of the two
-  (598 ms against 766 ms at 1024x1024 batch 4). At batch 1 there is no
-  difference at all, which is why the end-to-end table below cannot see it.
-- **Tiling is flat in resolution.** It caps the spatial extent at one tile, so
-  the 2048x2048 batch 1 peak is 2,654 MiB against 9,929 MiB untiled; where
-  untiled attention still fits, tiling trades latency for memory
-  (949 ms against 689 ms at 2048x2048 batch 1).
-- **The two compose.** Slicing + tiling holds 2.6 - 2.8 GiB across every size
-  and batch in the sweep, including 2048x2048 batch 4, where untiled decode
-  needs more than the card has.
+- **Slicing is flat in batch, at a small latency cost.** The untiled peak grows
+  2,638 -> 8,416 MiB from batch 1 to 4 at 1024x1024 while sliced decode stays at
+  2,650 - 2,675 MiB; from batch 2 up it is also the faster of the two at some
+  sizes (1,029.9 against 1,049.0 ms at 1536 batch 4, 1,955.9 against 2,107.6 at
+  2048 batch 4). At batch 1 it changes nothing, which is why the end-to-end
+  table below cannot see it.
+- **Tiling is flat in resolution, and it is a memory-for-time trade.** It caps
+  the spatial extent at one tile, so peak stays at 2,647 - 8,852 MiB across the
+  sweep where untiled reaches 73,944 MiB; where untiled still fits comfortably
+  it costs latency (745.7 against 488.1 ms at 2048 batch 1, 345.1 against 256.9
+  at 1536 batch 1) and on a card with headroom it is not a speed-up.
+- **The two compose.** Slicing + tiling holds 2,638 - 3,085 MiB in all 48 rows,
+  including 3072x3072 batch 4, where untiled decode needs 73,944 MiB.
+- **The one row with a wide spread is the one under memory pressure.**
+  3072x3072 batch 4 untiled reads 40,652.0 ms with a 30,302.4 - 43,240.7 ms
+  range — its ~38.6 GB allocations are retried until they fit — while tiling the
+  same row is 5,256.3 (5,253.5 - 5,260.9) ms. Every other row is tight.
 
 #### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB)
 
