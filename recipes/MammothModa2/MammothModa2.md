@@ -452,7 +452,11 @@ At 1536x1536, batch 4:
 
 Under a wave the two stage figures are per-request durations that overlap across
 the four concurrent requests, so they do not add up to the per-image end-to-end
-time (at batch 1 each row is one request and they do).
+time (at batch 1 each row is one request and they do). PSNR is not reported for
+these rows: the wave protocol saves an image only for the single-request configs,
+so there is no baseline image to compare against. The batch axis is covered by
+the decode sweep above, where slicing is byte-identical at every batch and the
+tiling deviation at a given resolution does not depend on the batch.
 
 At 1024x1024 (below the tiling threshold): all four batch-1 configs peak at
 60,844 MiB with byte-identical output; at batch 4 the baseline and tiling
