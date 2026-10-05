@@ -266,11 +266,88 @@ Notes:
 
 - These are capacity options: they bound VAE-decode peak memory for memory-constrained or high-resolution workloads and may increase decode latency. Measure both before enabling them in production.
 - Tiling geometry comes from the checkpoint's VAE config (`sample_size`, `tile_sample_min_size`). A resolution below the tiling threshold decodes in a single tile: the mode is enabled but not exercised.
-- VAE slicing splits the decode along the batch dimension, so it bounds peak memory only when a request carries more than one image; the default deploy config batches (see `max_num_seqs` above).
+- VAE slicing splits the decode along the batch dimension, so it bounds peak memory only when a request carries more than one image; the default deploy config batches (see `max_num_seqs` above). Measured below: 2,651 MiB at 1024x1024 batch 4 against 8,392 MiB untiled.
 
 To measure the modes on a target card without the AR stage, use `benchmarks/diffusion/bench_mammoth_moda2_vae_decode.py`: it decodes with the checkpoint's real `gen_vae` weights and reports peak memory and output deviation per resolution, batch size and mode.
 
-#### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB)
+#### Measured VAE decode, decode batch 1-4 (RTX 4090 24 GiB)
+
+This is the current-source measurement of the modes, and the one that covers
+decode batch > 1 — the axis slicing acts on (a serving batch of single-image
+requests decodes together; the DiT stage's `max_num_seqs` is 8).
+
+```bash
+python benchmarks/diffusion/bench_mammoth_moda2_vae_decode.py \
+  --model ./MammothModa2-Preview --sizes 1024,1536,2048 --batches 1,2,4 \
+  --modes baseline,slicing,tiling,slicing+tiling
+```
+
+##### Environment
+
+- Source: branch head `f8ba55318`, extracted from git and loaded with
+  `PYTHONPATH` (the container's installed `vllm_omni` predates this change)
+- Container image `vllm/vllm-omni:v0.26.0`; Python 3.12.3; PyTorch 2.13.0+cu130;
+  vLLM 0.29.0; transformers 5.14.1; diffusers 0.38.0
+- GPU: one NVIDIA GeForce RTX 4090, 24,058 MiB (22,840 MiB free before the sweep)
+- VAE weights read from the checkpoint shards (`gen_vae.*`), bf16
+- 2 warmup + 5 measured decodes per row, `seed=42`
+- Tiling geometry: `tile_sample_min_size=1024`, `tile_latent_min_size=128`,
+  `tile_overlap_factor=0.25`, scale 8 — 1024x1024 is below the threshold, so
+  tiling only engages at 1536 and above
+
+Peak decode memory (MiB), the reason to enable the modes:
+
+| Size | Batch | baseline | slicing | tiling | slicing + tiling |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1024x1024 | 1 | 2,614 | 2,614 | 2,614 | 2,614 |
+| 1024x1024 | 2 | 4,283 | 2,626 | 4,283 | 2,626 |
+| 1024x1024 | 4 | 8,392 | 2,651 | 8,392 | 2,651 |
+| 1536x1536 | 1 | 5,663 | 5,663 | 2,623 | 2,623 |
+| 1536x1536 | 2 | 9,419 | 5,690 | 4,299 | 2,650 |
+| 1536x1536 | 4 | 16,936 | 5,746 | 8,424 | 2,706 |
+| 2048x2048 | 1 | 9,929 | 9,929 | 2,654 | 2,654 |
+| 2048x2048 | 2 | 16,610 | 9,979 | 4,364 | 2,705 |
+| 2048x2048 | 4 | skipped (~40 GiB) | 10,079 | 8,554 | 2,804 |
+
+Decode latency (ms) for the same rows:
+
+| Size | Batch | baseline | slicing | tiling | slicing + tiling |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1024x1024 | 1 | 149.1 | 149.1 | 149.1 | 149.1 |
+| 1024x1024 | 2 | 395.2 | 298.5 | 395.2 | 298.7 |
+| 1024x1024 | 4 | 766.0 | 598.2 | 765.6 | 597.4 |
+| 1536x1536 | 1 | 362.0 | 363.2 | 465.4 | 465.5 |
+| 1536x1536 | 2 | 979.0 | 725.3 | 1,166.2 | 931.5 |
+| 1536x1536 | 4 | 1,889.2 | 1,451.2 | 2,236.9 | 1,864.6 |
+| 2048x2048 | 1 | 688.8 | 688.9 | 949.5 | 949.6 |
+| 2048x2048 | 2 | 1,955.0 | 1,380.5 | 2,314.8 | 1,903.1 |
+| 2048x2048 | 4 | skipped | 2,759.5 | 4,437.8 | 3,803.3 |
+
+Deviation from the untiled baseline at the same size and batch: slicing
+76.5 - 78.0 dB PSNR (max abs diff 0.0117), tiling 54.4 - 55.8 dB
+(0.082 - 0.111); below the tiling threshold tiling is byte-identical.
+
+What the current-source sweep shows:
+
+- **Slicing is flat in batch.** Untiled peak grows with the batch (8,392 MiB at
+  1024x1024 batch 4 against 2,614 MiB at batch 1) while sliced decode stays at
+  2,626 - 2,651 MiB, and at batch > 1 it is also the faster of the two
+  (598 ms against 766 ms at 1024x1024 batch 4). At batch 1 there is no
+  difference at all, which is why the end-to-end table below cannot see it.
+- **Tiling is flat in resolution.** It caps the spatial extent at one tile, so
+  the 2048x2048 batch 1 peak is 2,654 MiB against 9,929 MiB untiled; where
+  untiled attention still fits, tiling trades latency for memory
+  (949 ms against 689 ms at 2048x2048 batch 1).
+- **The two compose.** Slicing + tiling holds 2.6 - 2.8 GiB across every size
+  and batch in the sweep, including 2048x2048 batch 4, where untiled decode
+  needs more than the card has.
+
+#### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB, historical)
+
+These numbers were measured on single requests at commit
+`624ebea19ec298d4f5332d9fb15cc7c5095df610`, before the source moved; they are
+kept as the original end-to-end evidence, and the decode sweep above is the
+current-source measurement for memory questions.
 
 ##### Environment
 
