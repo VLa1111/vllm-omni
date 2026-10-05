@@ -55,6 +55,11 @@ CONFIGS = {  # name -> (slicing, tiling, concurrency)
     "both": (True, True, 1),
     "slicing-b4": (True, False, 4),
     "both-b4": (True, True, 4),
+    # Batch-4 controls for the slicing A/B (see FOLLOWUP_RUN.md): the same
+    # concurrency with the flags off, so a batch>1 row can be compared against
+    # its own batch rather than against the single-request baseline.
+    "baseline-b4": (False, False, 4),
+    "tiling-b4": (False, True, 4),
 }
 DEFAULT_CONFIGS = "baseline,slicing,tiling,both,slicing-b4"
 PROMPT = "A stylish woman riding a motorcycle in NYC, movie poster style"
