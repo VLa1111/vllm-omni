@@ -22,8 +22,14 @@ from vllm_omni.diffusion.models.mammoth_moda2.pipeline_mammothmoda2_dit import M
 pytestmark = [pytest.mark.core_model, pytest.mark.cpu]
 
 
-def _stub_vae():
-    return SimpleNamespace(use_slicing=False, use_tiling=False)
+def _gen_vae_class():
+    """The class ``__init__`` builds ``gen_vae`` with.
+
+    #7834 replaces the plain diffusers VAE with the distributed subclass.  The
+    wiring under test is the same either way, so follow whichever one the
+    pipeline module exposes.
+    """
+    return getattr(pipeline_mod, "DistributedAutoencoderKL", None) or pipeline_mod.AutoencoderKL
 
 
 def _raw_config() -> dict:
@@ -33,7 +39,9 @@ def _raw_config() -> dict:
             "model_type": "mammothmoda2_qwen2_5_vl",
             "text_config": {"model_type": "mammothmoda2_qwen2_5_vl_text", "hidden_size": 8},
         },
-        "gen_vae_config": {"in_channels": 4, "out_channels": 4, "latent_channels": 4},
+        # Small enough to build for real on CPU, so the cases below assert on
+        # the class the pipeline actually decodes with.
+        "gen_vae_config": {"block_out_channels": [8, 8], "norm_num_groups": 8},
         "gen_dit_config": {"hidden_size": 8},
     }
 
@@ -53,25 +61,28 @@ class TestPipelineWiring:
 
     @staticmethod
     def _build(monkeypatch, *, vae_use_slicing=False, vae_use_tiling=False):
-        fake_vae = _stub_vae()
         fake_transformer = SimpleNamespace(hidden_size=8, config=SimpleNamespace(hidden_size=8))
 
-        monkeypatch.setattr(pipeline_mod.AutoencoderKL, "from_config", staticmethod(lambda cfg: fake_vae))
+        # Intercept the factory the pipeline calls, but let it run the real
+        # constructor on the typed config: the flags have to land on the class
+        # that decodes.  Only the process group the distributed subclass wants
+        # in ``from_config`` is out of scope for these cases.
+        vae_cls = _gen_vae_class()
+        monkeypatch.setattr(vae_cls, "from_config", classmethod(lambda cls, config: cls(**config)))
         monkeypatch.setattr(pipeline_mod.Transformer2DModel, "from_config", staticmethod(lambda cfg: fake_transformer))
         monkeypatch.setattr(MammothModa2DiTPipeline, "_reinit_caption_embedder", lambda self, in_features: None)
         monkeypatch.setattr(
             pipeline_mod.RotaryPosEmbedReal, "get_freqs_real", staticmethod(lambda *args, **kwargs: None)
         )
 
-        pipeline = MammothModa2DiTPipeline(
+        return MammothModa2DiTPipeline(
             od_config=_od_config(vae_use_slicing=vae_use_slicing, vae_use_tiling=vae_use_tiling)
         )
-        return pipeline, fake_vae
 
     def test_defaults_are_left_off(self, monkeypatch):
-        _, fake_vae = self._build(monkeypatch)
-        assert fake_vae.use_slicing is False
-        assert fake_vae.use_tiling is False
+        pipeline = self._build(monkeypatch)
+        assert pipeline.gen_vae.use_slicing is False
+        assert pipeline.gen_vae.use_tiling is False
 
     @pytest.mark.parametrize(
         ("slicing", "tiling"),
@@ -82,7 +93,8 @@ class TestPipelineWiring:
         ],
     )
     def test_stage_fields_reach_gen_vae(self, monkeypatch, slicing, tiling):
-        pipeline, fake_vae = self._build(monkeypatch, vae_use_slicing=slicing, vae_use_tiling=tiling)
-        assert pipeline.gen_vae is fake_vae
-        assert fake_vae.use_slicing is slicing
-        assert fake_vae.use_tiling is tiling
+        pipeline = self._build(monkeypatch, vae_use_slicing=slicing, vae_use_tiling=tiling)
+        assert isinstance(pipeline.gen_vae, _gen_vae_class())
+        assert list(pipeline.gen_vae.config.block_out_channels) == [8, 8]
+        assert pipeline.gen_vae.use_slicing is slicing
+        assert pipeline.gen_vae.use_tiling is tiling
