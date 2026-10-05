@@ -1,0 +1,342 @@
+{
+  "1024_baseline": {
+    "concurrency": 1,
+    "config": "baseline",
+    "e2e_mean_ms": 105404.06,
+    "global_metrics": {
+      "mean e2e latency": 105404.06,
+      "median e2e latency": 105457.44,
+      "p50 e2e latency": 105079.05,
+      "p95 e2e latency": 105874.46
+    },
+    "peak_mib": 60844,
+    "psnr_db": null,
+    "size": 1024,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 96260.37,
+      "1": 9089.41
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 96260.37,
+        "median stage_gen_time": 96288.17
+      },
+      "1": {
+        "mean stage_gen_time": 9089.41,
+        "median stage_gen_time": 9086.87
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1024_both": {
+    "concurrency": 1,
+    "config": "both",
+    "e2e_mean_ms": 106480.79,
+    "global_metrics": {
+      "mean e2e latency": 106480.79,
+      "median e2e latency": 106279.96,
+      "p50 e2e latency": 106172.88,
+      "p95 e2e latency": 107238.54
+    },
+    "peak_mib": 60844,
+    "psnr_db": Infinity,
+    "size": 1024,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 97216.19,
+      "1": 9191.67
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 97216.19,
+        "median stage_gen_time": 96938.03
+      },
+      "1": {
+        "mean stage_gen_time": 9191.67,
+        "median stage_gen_time": 9209.39
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  },
+  "1024_slicing": {
+    "concurrency": 1,
+    "config": "slicing",
+    "e2e_mean_ms": 105724.22,
+    "global_metrics": {
+      "mean e2e latency": 105724.22,
+      "median e2e latency": 105221.77,
+      "p50 e2e latency": 105065.38,
+      "p95 e2e latency": 107888.98
+    },
+    "peak_mib": 60844,
+    "psnr_db": Infinity,
+    "size": 1024,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 96550.76,
+      "1": 9120.15
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 96550.76,
+        "median stage_gen_time": 96053.78
+      },
+      "1": {
+        "mean stage_gen_time": 9120.15,
+        "median stage_gen_time": 9119.09
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1024_slicing-b4": {
+    "concurrency": 4,
+    "config": "slicing-b4",
+    "e2e_mean_ms": 49951.76,
+    "global_metrics": {
+      "mean e2e latency": 49951.76,
+      "median e2e latency": 35954.72,
+      "p50 e2e latency": 35954.72,
+      "p95 e2e latency": 105939.93
+    },
+    "peak_mib": 60848,
+    "psnr_db": null,
+    "size": 1024,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 103210.48,
+      "1": 25219.15
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 103210.48,
+        "median stage_gen_time": 104773.01
+      },
+      "1": {
+        "mean stage_gen_time": 25219.15,
+        "median stage_gen_time": 19714.0
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1024_tiling": {
+    "concurrency": 1,
+    "config": "tiling",
+    "e2e_mean_ms": 106027.96,
+    "global_metrics": {
+      "mean e2e latency": 106027.96,
+      "median e2e latency": 106213.68,
+      "p50 e2e latency": 105685.3,
+      "p95 e2e latency": 107676.5
+    },
+    "peak_mib": 60844,
+    "psnr_db": Infinity,
+    "size": 1024,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 96858.74,
+      "1": 9115.83
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 96858.74,
+        "median stage_gen_time": 96949.2
+      },
+      "1": {
+        "mean stage_gen_time": 9115.83,
+        "median stage_gen_time": 9117.22
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  },
+  "1536_baseline": {
+    "concurrency": 1,
+    "config": "baseline",
+    "e2e_mean_ms": 217780.47,
+    "global_metrics": {
+      "mean e2e latency": 217780.47,
+      "median e2e latency": 217963.0,
+      "p50 e2e latency": 217165.51,
+      "p95 e2e latency": 218650.97
+    },
+    "peak_mib": 67766,
+    "psnr_db": null,
+    "size": 1536,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 193029.6,
+      "1": 24642.73
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 193029.6,
+        "median stage_gen_time": 193204.97
+      },
+      "1": {
+        "mean stage_gen_time": 24642.73,
+        "median stage_gen_time": 24652.12
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1536_both": {
+    "concurrency": 1,
+    "config": "both",
+    "e2e_mean_ms": 215329.47,
+    "global_metrics": {
+      "mean e2e latency": 215329.47,
+      "median e2e latency": 214909.11,
+      "p50 e2e latency": 214424.03,
+      "p95 e2e latency": 216714.04
+    },
+    "peak_mib": 61654,
+    "psnr_db": 47.03632030453606,
+    "size": 1536,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 190429.51,
+      "1": 24783.32
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 190429.51,
+        "median stage_gen_time": 190007.8
+      },
+      "1": {
+        "mean stage_gen_time": 24783.32,
+        "median stage_gen_time": 24786.33
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  },
+  "1536_slicing": {
+    "concurrency": 1,
+    "config": "slicing",
+    "e2e_mean_ms": 214378.12,
+    "global_metrics": {
+      "mean e2e latency": 214378.12,
+      "median e2e latency": 214625.88,
+      "p50 e2e latency": 214114.42,
+      "p95 e2e latency": 215336.6
+    },
+    "peak_mib": 67766,
+    "psnr_db": Infinity,
+    "size": 1536,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 189610.42,
+      "1": 24664.03
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 189610.42,
+        "median stage_gen_time": 189894.02
+      },
+      "1": {
+        "mean stage_gen_time": 24664.03,
+        "median stage_gen_time": 24655.44
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1536_slicing-b4": {
+    "concurrency": 4,
+    "config": "slicing-b4",
+    "e2e_mean_ms": 106243.84,
+    "global_metrics": {
+      "mean e2e latency": 106243.84,
+      "median e2e latency": 78622.61,
+      "p50 e2e latency": 78622.61,
+      "p95 e2e latency": 216728.77
+    },
+    "peak_mib": 67200,
+    "psnr_db": null,
+    "size": 1536,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 203686.4,
+      "1": 74396.53
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 203686.4,
+        "median stage_gen_time": 206579.41
+      },
+      "1": {
+        "mean stage_gen_time": 74396.53,
+        "median stage_gen_time": 107301.26
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1536_tiling": {
+    "concurrency": 1,
+    "config": "tiling",
+    "e2e_mean_ms": 218680.61,
+    "global_metrics": {
+      "mean e2e latency": 218680.61,
+      "median e2e latency": 218291.13,
+      "p50 e2e latency": 218106.78,
+      "p95 e2e latency": 219824.45
+    },
+    "peak_mib": 61656,
+    "psnr_db": 47.03632030453606,
+    "size": 1536,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 193796.59,
+      "1": 24780.72
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 193796.59,
+        "median stage_gen_time": 193385.5
+      },
+      "1": {
+        "mean stage_gen_time": 24780.72,
+        "median stage_gen_time": 24796.35
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  }
+}
