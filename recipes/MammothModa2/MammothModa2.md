@@ -443,12 +443,16 @@ At 1536x1536, batch 1:
 
 At 1536x1536, batch 4:
 
-| Config | Slicing | Tiling | End-to-end s / image | Device peak MiB |
-| --- | --- | --- | ---: | ---: |
-| baseline | off | off | 78.1 | 87,078 |
-| tiling | off | on | 77.7 | 74,090 |
-| slicing | on | off | 78.0 | 67,200 |
-| slicing + tiling | on | on | 77.6 | **66,020** |
+| Config | Slicing | Tiling | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s / image | Device peak MiB |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| baseline | off | off | 204,984 | 86,563 | 78.1 | 87,078 |
+| tiling | off | on | 203,406 | 86,560 | 77.7 | 74,090 |
+| slicing | on | off | 204,345 | 86,685 | 78.0 | 67,200 |
+| slicing + tiling | on | on | 202,544 | 86,919 | 77.6 | **66,020** |
+
+Under a wave the two stage figures are per-request durations that overlap across
+the four concurrent requests, so they do not add up to the per-image end-to-end
+time (at batch 1 each row is one request and they do).
 
 At 1024x1024 (below the tiling threshold): all four batch-1 configs peak at
 60,844 MiB with byte-identical output; at batch 4 the baseline and tiling
