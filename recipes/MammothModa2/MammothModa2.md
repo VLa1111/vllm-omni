@@ -272,6 +272,10 @@ To measure the modes on a target card without the AR stage, use `benchmarks/diff
 
 #### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB)
 
+*Historical: the environment, protocol and tables directly below were measured
+at `624ebea` with vLLM 0.29.0 and batch size 1. The re-measured current-source
+data, including the batch > 1 rows, is at the end of this subsection.*
+
 ##### Environment
 
 - OS: Ubuntu 24.04.3 LTS, Linux 7.0.0-30-generic, x86_64
@@ -329,6 +333,41 @@ What these measurements show:
   tile grid, and an autocorrelation test on the detrended row/column difference
   profiles finds no consistent periodic peak on both axes. Treat the difference
   as tiled-decode numerical noise.
+
+##### Re-measured on the current source (with batch > 1)
+
+Re-measurement on the same box for the merge head, with the same fixed prompt,
+`seed=42`, 50 steps, `text_guidance_scale=9.0` and `cfg_range=[0, 1]`. Source:
+`pro6000/mammothmoda2-vae-e2e` — batch-1 rows at `6873f69b8`, batch-4 rows at
+`1c87b798d` (only benchmark files differ between the two; the model code is the
+same) — loaded with `PYTHONPATH`, vLLM 0.30.0 (required by the merge head;
+upgraded from 0.29.0), PyTorch 2.13.0+cu130. Full protocol and analysis:
+`benchmarks/diffusion/mammoth_moda2_vae_e2e/BENCHMARK_REPORT.md`.
+
+At 1536x1536, batch 1:
+
+| Config | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s | Device peak MiB | PSNR vs baseline |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| baseline | 193,030 | 24,643 | 217.8 | 67,766 | — |
+| slicing | 189,610 | 24,664 | 214.4 | 67,766 | identical |
+| tiling | 193,797 | 24,781 | 218.7 | **61,656** | 47.04 dB |
+| slicing + tiling | 190,430 | 24,783 | 215.3 | **61,654** | 47.04 dB |
+
+At 1536x1536, batch 4 (waves of four concurrent requests; end-to-end is the wave
+wall time per image; 4 warmups + 4 measured per cell):
+
+| Config | Slicing | Tiling | End-to-end s / image | Device peak MiB |
+| --- | --- | --- | ---: | ---: |
+| baseline | off | off | 78.1 | 87,078 |
+| tiling | off | on | 77.7 | 74,090 |
+| slicing | on | off | 78.0 | 67,200 |
+| slicing + tiling | on | on | 77.6 | **66,020** |
+
+At 1024x1024 (below the tiling threshold): all four batch-1 configs peak at
+60,844 MiB with byte-identical output; at batch 4 the baseline and tiling
+controls both peak at 69,688 MiB, and the two slicing rows at 60,846 MiB —
+slicing bounds the decode peak flat at batch > 1, tiling bounds it above the
+threshold only, and neither changes latency.
 
 ### 1x AMD MI300X, MammothModa2 Preview (pre-migration baseline)
 

@@ -9,7 +9,9 @@ merged for PR #7774, including the batch > 1 row requested in review.
 - Driver: `run_e2e_offline.py` in this directory (see `CHANGES.md` for why the
   server-based `run_e2e.sh` cannot drive this model).
 - Raw output: `results.json`, `results.md` (copied here) and the per-cell
-  logs/images under `/root/pro6000-vae-e2e-offline/` on the measurement box.
+  logs/images under `/root/pro6000-vae-e2e-offline/` on the measurement box;
+  the batch-4 follow-up run below is copied here as `results_b4.json` /
+  `results_b4.md` (box directory `/root/pro6000-vae-e2e-b4/`).
 
 ## Environment
 
@@ -107,24 +109,77 @@ was designed for, and it shows two things the batch-1 rows could not:
   the VAE decode along the batch dimension, so the peak does not grow with the
   batch, which is exactly the property the batch>1 request was probing.
 
-Limitation: this sweep does not include a batch-4 *without*-slicing control row
-(the runner supports `both-b4`; `baseline-b4` is not defined), so the b4 numbers
-above are compared against the single-request baseline rather than against the
-same batch without the flag. Adding a batch-4 control is the obvious follow-up
-if the reviewer wants the in-batch A/B.
+Limitation (closed by the follow-up run below): this sweep does not include a
+batch-4 *without*-slicing control row, so the b4 numbers above are compared
+against the single-request baseline rather than against the same batch without
+the flag. The five-prompt protocol also blended a wave of four with a solo
+request (`slicing-b4` reads mean 106,244 ms against a median of 78,622 ms at
+1536), so only the median described the wave.
+
+### Follow-up: batch-4 controls at equal concurrency
+
+The follow-up specified in `FOLLOWUP_RUN.md` (commit `1c87b798d`) closes the
+limitation above: it adds `baseline-b4` and `tiling-b4` and re-runs the whole
+batch-4 matrix with four warmups + four measured requests, i.e. whole waves
+only — every measured request is a wave member and the wave wall time is
+divided by four, so mean == median == p50 == p95 == the amortized per-image
+latency. Measured at HEAD `1c87b798d` (same model code as `6873f69b8`, only
+benchmark files differ), vLLM 0.30.0, one fresh process per cell, memory
+sampled from before the model load as in the main sweep. 8/8 cells, 0 failures.
+
+| Size | Config | Slice | Tile | Conc | Peak MiB | E2E s | Stage 0 (AR) s | Stage 1 (DiT+VAE) s |
+| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: |
+| 1536 | baseline-b4 | no | no | 4 | 87,078 | 78.1 | 205.0 | 86.6 |
+| 1536 | tiling-b4 | no | yes | 4 | 74,090 | 77.7 | 203.4 | 86.6 |
+| 1536 | slicing-b4 | yes | no | 4 | 67,200 | 78.0 | 204.3 | 86.7 |
+| 1536 | both-b4 | yes | yes | 4 | 66,020 | 77.6 | 202.5 | 86.9 |
+| 1024 | baseline-b4 | no | no | 4 | 69,688 | 36.3 | 104.6 | 32.7 |
+| 1024 | tiling-b4 | no | yes | 4 | 69,688 | 36.0 | 103.9 | 32.2 |
+| 1024 | slicing-b4 | yes | no | 4 | 60,846 | 36.4 | 105.4 | 32.4 |
+| 1024 | both-b4 | yes | yes | 4 | 60,846 | 36.5 | 105.7 | 32.4 |
+
+All values from `results_b4.json`; E2E is per image (wave wall time / 4). The
+per-request stage-1 timers in a wave do not each span the batch: their means
+(86.6 s at 1536, ~32.4 s at 1024) sit below the wave's stage-1 wall span, which
+is the ~107 s / ~40 s median.
+
+What the controls show:
+
+- **Slicing is what keeps the batch-4 peak flat.** At 1536 the untiled control
+  grows the peak by 19,312 MiB over the single-image baseline (67,766 -> 87,078
+  MiB, still inside the 97,887 MiB card — the predicted OOM did not happen);
+  tiling alone caps the spatial extent but not the batch (+6,324 MiB -> 74,090);
+  slicing alone holds it flat at 67,200 MiB, 566 MiB *below* the single-image
+  baseline and identical to the earlier `slicing-b4` measurement; slicing +
+  tiling lands lowest at 66,020 MiB. Isolated at equal concurrency, tiling saves
+  12,988 MiB, slicing 19,878 MiB and both 21,058 MiB against `baseline-b4`.
+- **Below the threshold the controls agree.** At 1024 `baseline-b4` and
+  `tiling-b4` both peak at 69,688 MiB (tiling decodes in a single tile, a
+  no-op), and both slicing rows sit at 60,846 MiB, 2 MiB above the single-image
+  baseline.
+- **Latency does not discriminate.** 77.6-78.1 s per image at 1536 and
+  36.0-36.5 s at 1024 across all four configs; AR dominates and never touches
+  the VAE. The wave-only protocol also replaces the published `slicing-b4`
+  latency: the earlier 106,244 ms mean blended wave members with a solo request;
+  the wave value is 78,003 ms, which matches the earlier median.
 
 ## Failures
 
 None. All 10 cells completed with 5/5 measured requests and 4/4 warmups; no cell
-was skipped by the driver.
+was skipped by the driver. The follow-up batch-4 run above also completed all
+eight cells with 4/4 measured requests and 4/4 warmups each.
 
 ## Artifacts
 
 `results.json` keeps every metric per run (global latency mean/median/p50/p95,
 per-stage gen-time means, device peaks, PSNR); `results.md` is the table above.
-The measurement box retains the per-cell `bench_*.log` (bench-style stage
-sections), `mem_*.txt` (0.5 s device samples), `deploy_*.yaml` (the config
-actually served) and `img_*.png` under `/root/pro6000-vae-e2e-offline/`.
+`results_b4.json` / `results_b4.md` keep the batch-4 follow-up run in the same
+shape (those rows resolve `slicing`/`tiling`/`concurrency` too). The measurement
+box retains the per-cell `bench_*.log` (bench-style stage sections), `mem_*.txt`
+(0.5 s device samples), `deploy_*.yaml` (the config actually served) and
+`img_*.png` under `/root/pro6000-vae-e2e-offline/`, plus the follow-up's files
+and `run_env.txt` (HEAD `1c87b798d`, vLLM 0.30.0) under
+`/root/pro6000-vae-e2e-b4/`.
 
 ## How to reproduce
 

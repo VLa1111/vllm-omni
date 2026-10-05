@@ -27,6 +27,8 @@ CONFIGS = {  # name -> (slicing, tiling, concurrency)
     "both": (True, True, 1),
     "slicing-b4": (True, False, 4),
     "both-b4": (True, True, 4),
+    "baseline-b4": (False, False, 4),
+    "tiling-b4": (False, True, 4),
 }
 
 

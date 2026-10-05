@@ -1,0 +1,274 @@
+{
+  "1024_baseline-b4": {
+    "concurrency": 4,
+    "config": "baseline-b4",
+    "e2e_mean_ms": 36306.34,
+    "global_metrics": {
+      "mean e2e latency": 36306.34,
+      "median e2e latency": 36306.34,
+      "p50 e2e latency": 36306.34,
+      "p95 e2e latency": 36306.34
+    },
+    "peak_mib": 69688,
+    "psnr_db": null,
+    "size": 1024,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 104579.14,
+      "1": 32681.19
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 104579.14,
+        "median stage_gen_time": 104589.45
+      },
+      "1": {
+        "mean stage_gen_time": 32681.19,
+        "median stage_gen_time": 40445.88
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1024_both-b4": {
+    "concurrency": 4,
+    "config": "both-b4",
+    "e2e_mean_ms": 36497.09,
+    "global_metrics": {
+      "mean e2e latency": 36497.09,
+      "median e2e latency": 36497.09,
+      "p50 e2e latency": 36497.09,
+      "p95 e2e latency": 36497.09
+    },
+    "peak_mib": 60846,
+    "psnr_db": null,
+    "size": 1024,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 105741.84,
+      "1": 32396.65
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 105741.84,
+        "median stage_gen_time": 105766.03
+      },
+      "1": {
+        "mean stage_gen_time": 32396.65,
+        "median stage_gen_time": 40095.89
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  },
+  "1024_slicing-b4": {
+    "concurrency": 4,
+    "config": "slicing-b4",
+    "e2e_mean_ms": 36446.15,
+    "global_metrics": {
+      "mean e2e latency": 36446.15,
+      "median e2e latency": 36446.15,
+      "p50 e2e latency": 36446.15,
+      "p95 e2e latency": 36446.15
+    },
+    "peak_mib": 60846,
+    "psnr_db": null,
+    "size": 1024,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 105410.85,
+      "1": 32443.82
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 105410.85,
+        "median stage_gen_time": 105417.77
+      },
+      "1": {
+        "mean stage_gen_time": 32443.82,
+        "median stage_gen_time": 40167.37
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1024_tiling-b4": {
+    "concurrency": 4,
+    "config": "tiling-b4",
+    "e2e_mean_ms": 35992.63,
+    "global_metrics": {
+      "mean e2e latency": 35992.63,
+      "median e2e latency": 35992.63,
+      "p50 e2e latency": 35992.63,
+      "p95 e2e latency": 35992.63
+    },
+    "peak_mib": 69688,
+    "psnr_db": null,
+    "size": 1024,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 103871.73,
+      "1": 32248.85
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 103871.73,
+        "median stage_gen_time": 103886.41
+      },
+      "1": {
+        "mean stage_gen_time": 32248.85,
+        "median stage_gen_time": 39922.7
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  },
+  "1536_baseline-b4": {
+    "concurrency": 4,
+    "config": "baseline-b4",
+    "e2e_mean_ms": 78120.63,
+    "global_metrics": {
+      "mean e2e latency": 78120.63,
+      "median e2e latency": 78120.63,
+      "p50 e2e latency": 78120.63,
+      "p95 e2e latency": 78120.63
+    },
+    "peak_mib": 87078,
+    "psnr_db": null,
+    "size": 1536,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 204983.62,
+      "1": 86563.43
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 204983.62,
+        "median stage_gen_time": 204999.16
+      },
+      "1": {
+        "mean stage_gen_time": 86563.43,
+        "median stage_gen_time": 106986.04
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1536_both-b4": {
+    "concurrency": 4,
+    "config": "both-b4",
+    "e2e_mean_ms": 77624.75,
+    "global_metrics": {
+      "mean e2e latency": 77624.75,
+      "median e2e latency": 77624.75,
+      "p50 e2e latency": 77624.75,
+      "p95 e2e latency": 77624.75
+    },
+    "peak_mib": 66020,
+    "psnr_db": null,
+    "size": 1536,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 202544.38,
+      "1": 86919.39
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 202544.38,
+        "median stage_gen_time": 202554.91
+      },
+      "1": {
+        "mean stage_gen_time": 86919.39,
+        "median stage_gen_time": 107469.23
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  },
+  "1536_slicing-b4": {
+    "concurrency": 4,
+    "config": "slicing-b4",
+    "e2e_mean_ms": 78003.34,
+    "global_metrics": {
+      "mean e2e latency": 78003.34,
+      "median e2e latency": 78003.34,
+      "p50 e2e latency": 78003.34,
+      "p95 e2e latency": 78003.34
+    },
+    "peak_mib": 67200,
+    "psnr_db": null,
+    "size": 1536,
+    "slicing": true,
+    "stage_gen_mean_ms": {
+      "0": 204345.01,
+      "1": 86684.75
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 204345.01,
+        "median stage_gen_time": 204352.23
+      },
+      "1": {
+        "mean stage_gen_time": 86684.75,
+        "median stage_gen_time": 107199.9
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": false
+  },
+  "1536_tiling-b4": {
+    "concurrency": 4,
+    "config": "tiling-b4",
+    "e2e_mean_ms": 77710.71,
+    "global_metrics": {
+      "mean e2e latency": 77710.71,
+      "median e2e latency": 77710.71,
+      "p50 e2e latency": 77710.71,
+      "p95 e2e latency": 77710.71
+    },
+    "peak_mib": 74090,
+    "psnr_db": null,
+    "size": 1536,
+    "slicing": false,
+    "stage_gen_mean_ms": {
+      "0": 203405.54,
+      "1": 86559.9
+    },
+    "stage_metrics": {
+      "0": {
+        "mean stage_gen_time": 203405.54,
+        "median stage_gen_time": 203416.36
+      },
+      "1": {
+        "mean stage_gen_time": 86559.9,
+        "median stage_gen_time": 106862.0
+      }
+    },
+    "stage_names": {
+      "0": "llm",
+      "1": "diffusion"
+    },
+    "tiling": true
+  }
+}
