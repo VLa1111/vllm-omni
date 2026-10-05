@@ -268,7 +268,7 @@ Notes:
 - Tiling geometry comes from the checkpoint's VAE config (`sample_size`, `tile_sample_min_size`). A resolution below the tiling threshold decodes in a single tile: the mode is enabled but not exercised.
 - VAE slicing splits the decode along the batch dimension, so it bounds peak memory only when a request carries more than one image; the default deploy config batches (see `max_num_seqs` above). Measured below: 2,651 MiB at 1024x1024 batch 4 against 8,392 MiB untiled.
 
-To measure the modes on a target card without the AR stage, use `benchmarks/diffusion/bench_mammoth_moda2_vae_decode.py`: it decodes with the checkpoint's real `gen_vae` weights and reports peak memory and output deviation per resolution, batch size and mode.
+To measure the modes on a target card without the AR stage, use `benchmarks/diffusion/bench_mammoth_moda2_vae_decode.py`: it decodes with the checkpoint's real `gen_vae` weights and reports decode latency (mean with the min-max of the measured decodes), peak memory and output deviation per resolution, batch size and mode.
 
 #### Measured VAE decode, decode batch 1-4 (RTX 4090 24 GiB)
 
