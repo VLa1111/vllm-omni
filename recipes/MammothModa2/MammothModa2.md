@@ -342,12 +342,11 @@ What the current-source sweep shows:
   and batch in the sweep, including 2048x2048 batch 4, where untiled decode
   needs more than the card has.
 
-#### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB, historical)
+#### Measured end-to-end (RTX PRO 6000 Blackwell 96 GB)
 
-These numbers were measured on single requests at commit
-`624ebea19ec298d4f5332d9fb15cc7c5095df610`, before the source moved; they are
-kept as the original end-to-end evidence, and the decode sweep above is the
-current-source measurement for memory questions.
+*Historical: the environment, protocol and tables directly below were measured
+at `624ebea` with vLLM 0.29.0 and batch size 1. The re-measured current-source
+data, including the batch > 1 rows, is at the end of this subsection.*
 
 ##### Environment
 
@@ -406,6 +405,49 @@ What these measurements show:
   tile grid, and an autocorrelation test on the detrended row/column difference
   profiles finds no consistent periodic peak on both axes. Treat the difference
   as tiled-decode numerical noise.
+
+##### Re-measured on the current source (with batch > 1)
+
+Re-measurement on the same box for the merge head, with the same fixed prompt,
+`seed=42`, 50 steps, `text_guidance_scale=9.0` and `cfg_range=[0, 1]`. Source:
+batch-1 rows at `6873f69b8`, batch-4 rows at `1c87b798d` (only benchmark files
+differ between the two; the model code is the same), loaded with `PYTHONPATH`;
+vLLM 0.30.0 (required by the merge head; upgraded from 0.29.0), PyTorch
+2.13.0+cu130. Batch-4 cells issue whole waves of four concurrent requests —
+4 warmups + 4 measured per cell, wave wall time divided by four — so every
+measured request is a wave member and the reported latency is the amortized
+per-image value.
+
+At 1536x1536, batch 1:
+
+| Config | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s | Device peak MiB | PSNR vs baseline |
+| --- | ---: | ---: | ---: | ---: | --- |
+| baseline | 193,030 | 24,643 | 217.8 | 67,766 | — |
+| slicing | 189,610 | 24,664 | 214.4 | 67,766 | identical |
+| tiling | 193,797 | 24,781 | 218.7 | **61,656** | 47.04 dB |
+| slicing + tiling | 190,430 | 24,783 | 215.3 | **61,654** | 47.04 dB |
+
+At 1536x1536, batch 4:
+
+| Config | Slicing | Tiling | End-to-end s / image | Device peak MiB |
+| --- | --- | --- | ---: | ---: |
+| baseline | off | off | 78.1 | 87,078 |
+| tiling | off | on | 77.7 | 74,090 |
+| slicing | on | off | 78.0 | 67,200 |
+| slicing + tiling | on | on | 77.6 | **66,020** |
+
+At 1024x1024 (below the tiling threshold): all four batch-1 configs peak at
+60,844 MiB with byte-identical output; at batch 4 the baseline and tiling
+controls both peak at 69,688 MiB, and the two slicing rows at 60,846 MiB —
+slicing bounds the decode peak flat at batch > 1, tiling bounds it above the
+threshold only, and neither changes latency.
+
+Isolated at equal concurrency and size (1536x1536 batch 4, against `baseline`),
+tiling saves 12,988 MiB, slicing 19,878 MiB and the two together 21,058 MiB; the
+untiled batch-4 peak grows by 19,312 MiB over the single-image baseline, which
+is the growth slicing removes. Latency does not discriminate between the four
+configs (77.6 - 78.1 s per image at 1536, 36.0 - 36.5 s at 1024) because the AR
+stage dominates and never touches the VAE.
 
 ### 1x AMD MI300X, MammothModa2 Preview (pre-migration baseline)
 
