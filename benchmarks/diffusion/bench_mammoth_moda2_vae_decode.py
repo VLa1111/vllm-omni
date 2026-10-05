@@ -60,17 +60,16 @@ MODES: dict[str, tuple[bool, bool]] = {
 }
 DTYPES = {"bf16": torch.bfloat16, "fp16": torch.float16, "fp32": torch.float32}
 OOM_MARKERS = ("out of memory", "CUDA error: out of memory")
-# Calibrated on an RTX 4090 at 1024x1024 batch 1 in bf16: a single untiled decode
-# peaks at 2,614 MiB, of which ~350 MiB is the decoder itself; the activation
-# part then scales with the output area (5,663 MiB at 1536, 9,929 at 2048,
-# 22,096 at 3072; a shared card has read as low as 4,798 MiB at 1536).  Used only
-# to skip rows the device cannot fit before any allocation is attempted, so a
-# shared card does not spend minutes in allocator retries; OOM is still handled
-# if the estimate is wrong.  The area scaling
-# under-predicts at the top end (it reads 20,726 for the 22,096 MiB row), so the
-# decision adds ESTIMATE_SAFETY headroom.
+# Calibrated from the recorded sweep at 1024x1024 batch 1 in bf16: a single
+# untiled decode peaks at 2,638 MiB, of which ~350 MiB is the decoder itself;
+# the activation part then scales with the output area (5,687 MiB at 1536, 9,953
+# at 2048, 22,146 at 3072).  Used only to skip rows the device cannot fit before
+# any allocation is attempted, so a shared card does not spend minutes in
+# allocator retries; OOM is still handled if the estimate is wrong.  The area
+# scaling under-predicts at the top end (it reads 20,942 for the 22,146 MiB row),
+# so the decision adds ESTIMATE_SAFETY headroom.
 WEIGHTS_MIB = 350.0
-ACTIVATION_MIB_1024 = 2264.0
+ACTIVATION_MIB_1024 = 2288.0
 ESTIMATE_SAFETY = 1.1
 
 
