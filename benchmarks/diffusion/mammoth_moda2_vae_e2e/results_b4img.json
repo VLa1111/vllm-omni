@@ -1,0 +1,145 @@
+{
+ "size": 1536,
+ "branch": "pro6000/mammothmoda2-vae-e2e @ 381b1c1d4",
+ "box": "one NVIDIA RTX PRO 6000 Blackwell (97,887 MiB), GPU index 2",
+ "runner": "benchmarks/diffusion/mammoth_moda2_vae_e2e/run_e2e_offline.py --sizes 1536 --gpu 2 --configs baseline-b4,tiling-b4,slicing-b4,both-b4 --num-prompts 4 --num-warmups 4",
+ "protocol": "one fresh engine per cell; the saved image is the first output of the last measured wave; every wave member carries the same prompt and seed",
+ "runs": {
+  "run1": {
+   "outdir": "/root/pro6000-vae-e2e-b4img",
+   "date": "2026-10-05",
+   "cells": {
+    "baseline-b4": {
+     "slicing": false,
+     "tiling": false,
+     "concurrency": 4,
+     "peak_mib": 87078,
+     "e2e_ms_per_image": 78532.0,
+     "image_md5": "a3bc2a7f546394f97f0e8fe46598258e",
+     "psnr_vs_baseline_db": "identical"
+    },
+    "tiling-b4": {
+     "slicing": false,
+     "tiling": true,
+     "concurrency": 4,
+     "peak_mib": 74090,
+     "e2e_ms_per_image": 78507.5,
+     "image_md5": "e02b3a8fe05dff8e63c1caad2f29715b",
+     "psnr_vs_baseline_db": 47.1
+    },
+    "slicing-b4": {
+     "slicing": true,
+     "tiling": false,
+     "concurrency": 4,
+     "peak_mib": 67200,
+     "e2e_ms_per_image": 78701.8,
+     "image_md5": "a3bc2a7f546394f97f0e8fe46598258e",
+     "psnr_vs_baseline_db": "identical"
+    },
+    "both-b4": {
+     "slicing": true,
+     "tiling": true,
+     "concurrency": 4,
+     "peak_mib": 66020,
+     "e2e_ms_per_image": 78455.3,
+     "image_md5": "9547eab62178b37467d6697f9fc52479",
+     "psnr_vs_baseline_db": 29.01
+    }
+   }
+  },
+  "recheck": {
+   "outdir": "/root/pro6000-vae-e2e-b4img-recheck",
+   "date": "2026-10-05",
+   "cells": {
+    "tiling-b4": {
+     "slicing": false,
+     "tiling": true,
+     "concurrency": 4,
+     "peak_mib": 74090,
+     "e2e_ms_per_image": 78212.1,
+     "image_md5": "e02b3a8fe05dff8e63c1caad2f29715b",
+     "psnr_vs_baseline_db": 47.1
+    },
+    "both-b4": {
+     "slicing": true,
+     "tiling": true,
+     "concurrency": 4,
+     "peak_mib": 66020,
+     "e2e_ms_per_image": 78759.5,
+     "image_md5": "e02b3a8fe05dff8e63c1caad2f29715b",
+     "psnr_vs_baseline_db": 47.1
+    }
+   }
+  },
+  "full2": {
+   "outdir": "/root/pro6000-vae-e2e-b4img-full2",
+   "date": "2026-10-05",
+   "cells": {
+    "baseline-b4": {
+     "slicing": false,
+     "tiling": false,
+     "concurrency": 4,
+     "peak_mib": 87078,
+     "e2e_ms_per_image": 78431.4,
+     "image_md5": "a3bc2a7f546394f97f0e8fe46598258e",
+     "psnr_vs_baseline_db": "identical"
+    },
+    "tiling-b4": {
+     "slicing": false,
+     "tiling": true,
+     "concurrency": 4,
+     "peak_mib": 74090,
+     "e2e_ms_per_image": 78923.9,
+     "image_md5": "9547eab62178b37467d6697f9fc52479",
+     "psnr_vs_baseline_db": 29.01
+    },
+    "slicing-b4": {
+     "slicing": true,
+     "tiling": false,
+     "concurrency": 4,
+     "peak_mib": 67200,
+     "e2e_ms_per_image": 78650.3,
+     "image_md5": "a3bc2a7f546394f97f0e8fe46598258e",
+     "psnr_vs_baseline_db": "identical"
+    },
+    "both-b4": {
+     "slicing": true,
+     "tiling": true,
+     "concurrency": 4,
+     "peak_mib": 66020,
+     "e2e_ms_per_image": 78212.2,
+     "image_md5": "e02b3a8fe05dff8e63c1caad2f29715b",
+     "psnr_vs_baseline_db": 47.1
+    }
+   }
+  }
+ },
+ "images": {
+  "9547eab62178b37467d6697f9fc52479": {
+   "desc": "tiled decode, mode X (29.01 dB vs untiled); committed as img_1536_both-b4.png (run1)",
+   "seen_in": [
+    "run1:both-b4",
+    "full2:tiling-b4"
+   ]
+  },
+  "a3bc2a7f546394f97f0e8fe46598258e": {
+   "desc": "untiled decode (baseline-b4 == slicing-b4, every run); committed as img_1536_baseline-b4.png",
+   "seen_in": [
+    "run1:baseline-b4",
+    "run1:slicing-b4",
+    "full2:baseline-b4",
+    "full2:slicing-b4"
+   ]
+  },
+  "e02b3a8fe05dff8e63c1caad2f29715b": {
+   "desc": "tiled decode, mode T (47.10 dB vs untiled); committed as img_1536_tiling-b4.png (run1)",
+   "seen_in": [
+    "run1:tiling-b4",
+    "recheck:tiling-b4",
+    "recheck:both-b4",
+    "full2:both-b4"
+   ]
+  }
+ },
+ "finding": "The tiled batch-4 decode is bimodal across engine processes: tiling-b4 and both-b4 each produced two byte-stable images (T = 47.10 dB and X = 29.01 dB vs the untiled baseline), independently of the flag combination (both T and X appear for tiling-only and for combined). baseline-b4 and slicing-b4 are byte-identical to each other in every run. Peaks (87,078 / 74,090 / 67,200 / 66,020 MiB) and e2e (78.2-78.9 s per image) reproduce exactly. The decode-only benchmark (run_e2e.../../bench_mammoth_moda2_vae_decode.py) stays bit-stable: 1536 batch 4 slicing+tiling = tiling = 55.35 dB vs the flags-off row."
+}
