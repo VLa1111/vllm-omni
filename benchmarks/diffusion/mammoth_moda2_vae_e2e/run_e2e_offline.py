@@ -21,7 +21,8 @@ This runner drives that same path in-process, per (size, config):
      in waves of the config's concurrency (4 for the ``-b4`` rows, so the
      DiT stage decodes a batch and slicing can act),
   4. samples device memory every 0.5 s for the whole run,
-  5. saves one image for the batch-1 configs (PSNR input for collect.py),
+  5. saves one image per config (PSNR input for collect.py) -- the last
+     measured wave's first output when the config runs waves,
   6. writes ``bench_<size>_<config>.log`` in the format ``collect.py`` parses,
      plus per-request timing details under ``raw/``.
 
@@ -301,7 +302,10 @@ def run_one(omni_module, cfgfile: Path, size: int, config: str, args: argparse.N
             remaining -= wave
             measured = [r for r in records if r["phase"] == "measured"]
             print(f"  measured {len(measured)}/{args.num_prompts} done")
-        if concurrency == 1 and last_outputs is not None:
+        # Wave configs save the first image of the last measured wave: every
+        # request in a wave carries the same prompt and seed, so any member
+        # stands in for the config's output.
+        if last_outputs is not None:
             image = extract_image(last_outputs)
             if image is not None:
                 image_path = out / f"img_{tag}.png"

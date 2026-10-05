@@ -4,8 +4,8 @@
 
 Parses each ``bench_<size>_<config>.log`` (the ``vllm-omni bench serve
 --print-stage`` output), the 0.5 s device samples in ``mem_*.txt`` and, when the
-images and Pillow/numpy are available, the PSNR of every batch-1 config against
-that size's baseline image.
+images and Pillow/numpy are available, the PSNR of every config against its own
+baseline image -- the flags-off row at the same concurrency.
 
     python collect.py --out ~/pro6000-vae-e2e
 """
@@ -94,6 +94,11 @@ def peak_mib(path: Path) -> int | None:
     return max(values) if values else None
 
 
+def baseline_config(concurrency: int) -> str:
+    """The row a config is compared against: same concurrency, both flags off."""
+    return "baseline" if concurrency == 1 else f"baseline-b{concurrency}"
+
+
 def psnr_db(a: Path, b: Path) -> float | None:
     try:
         import numpy as np
@@ -134,8 +139,9 @@ def main() -> None:
             "global_metrics": globals_,
             "psnr_db": None,
         }
-        if config != "baseline" and concurrency == 1:
-            baseline = out / f"img_{size}_baseline.png"
+        control = baseline_config(concurrency) if concurrency is not None else None
+        if control is not None and config != control:
+            baseline = out / f"img_{size}_{control}.png"
             image = out / f"img_{tag}.png"
             if baseline.is_file() and image.is_file():
                 runs[tag]["psnr_db"] = psnr_db(baseline, image)
