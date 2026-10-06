@@ -469,38 +469,25 @@ per-image value.
 
 At 1536x1536, batch 1:
 
-| Config | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s | Device peak MiB | PSNR vs baseline |
-| --- | ---: | ---: | ---: | ---: | --- |
-| baseline | 193,030 | 24,643 | 217.8 | 67,766 | — |
-| slicing | 189,610 | 24,664 | 214.4 | 67,766 | identical |
-| tiling | 193,797 | 24,781 | 218.7 | **61,656** | 47.04 dB |
-| slicing + tiling | 190,430 | 24,783 | 215.3 | **61,654** | 47.04 dB |
+| Config | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s | Device peak MiB |
+| --- | ---: | ---: | ---: | ---: |
+| baseline | 193,030 | 24,643 | 217.8 | 67,766 |
+| slicing | 189,610 | 24,664 | 214.4 | 67,766 |
+| tiling | 193,797 | 24,781 | 218.7 | **61,656** |
+| slicing + tiling | 190,430 | 24,783 | 215.3 | **61,654** |
 
 At 1536x1536, batch 4:
 
-| Config | Slicing | Tiling | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s / image | Device peak MiB | PSNR vs baseline |
-| --- | --- | --- | ---: | ---: | ---: | ---: | --- |
-| baseline | off | off | 204,984 | 86,563 | 78.1 | 87,078 | — |
-| tiling | off | on | 203,406 | 86,560 | 77.7 | 74,090 | 47.10 or 29.01 † |
-| slicing | on | off | 204,345 | 86,685 | 78.0 | 67,200 | identical |
-| slicing + tiling | on | on | 202,544 | 86,919 | 77.6 | **66,020** | 47.10 or 29.01 † |
+| Config | Slicing | Tiling | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s / image | Device peak MiB |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| baseline | off | off | 204,984 | 86,563 | 78.1 | 87,078 |
+| tiling | off | on | 203,406 | 86,560 | 77.7 | 74,090 |
+| slicing | on | off | 204,345 | 86,685 | 78.0 | 67,200 |
+| slicing + tiling | on | on | 202,544 | 86,919 | 77.6 | **66,020** |
 
 Under a wave the two stage figures are per-request durations that overlap across
 the four concurrent requests, so they do not add up to the per-image end-to-end
 time (at batch 1 each row is one request and they do).
-
-† PSNR from a re-run of these cells with a runner-only change that saves one wave
-image per config (`pro6000/mammothmoda2-vae-e2e` @ `381b1c1d4`, same model code);
-peaks and per-image latency reproduced within 0.9 %. `slicing` is byte-identical
-to the untiled control in every run. The tiled capture is not bit-reproducible
-across engine processes: `tiling` and `slicing + tiling` each produced one of two
-byte-stable images, 47.10 dB or 29.01 dB against the control (47.10 in 4 of 6
-tiled cell-runs), independently of the flag combination. The decode benchmark on
-fixed latents stays bit-stable at this size and batch (55.35 dB,
-`slicing + tiling` == `tiling`), so the two modes appear only in the concurrent
-engine path, not in the decode given fixed latents. The batch axis is otherwise
-covered by the decode sweep above, where slicing is byte-identical at every batch
-and the tiling deviation at a given resolution does not depend on the batch.
 
 At 1024x1024 (below the tiling threshold): all four batch-1 configs peak at
 60,844 MiB with byte-identical output; at batch 4 the baseline and tiling
