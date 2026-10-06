@@ -301,7 +301,7 @@ Notes:
 
 - These are capacity options: they bound VAE-decode peak memory for memory-constrained or high-resolution workloads and may increase decode latency. Measure both before enabling them in production.
 - Tiling geometry comes from the checkpoint's VAE config (`sample_size`, `tile_sample_min_size`). A resolution below the tiling threshold decodes in a single tile: the mode is enabled but not exercised.
-- VAE slicing splits the decode along the batch dimension, so it bounds peak memory only when a request carries more than one image; the default deploy config batches (see `max_num_seqs` above). The decode sweep below covers batch 1-4.
+- VAE slicing splits the decode along the batch dimension. A request always decodes one image — the pipeline rejects `num_outputs_per_prompt != 1` — so the batch slicing bounds is the one that forms when several single-image requests decode together (`max_num_seqs` above). Under step execution (`mammoth_moda2_step.yaml`) the DiT decodes each request's latents on its own in `post_decode`, so slicing has no effect there. The decode sweep below measures that batched axis, batch 1-4.
 
 To measure the modes on a target card without the AR stage, use `benchmarks/diffusion/bench_mammoth_moda2_vae_decode.py`: it decodes with the checkpoint's real `gen_vae` weights and reports decode latency (mean with the min-max of the measured decodes), peak memory and output deviation per resolution, batch size and mode.
 
@@ -384,8 +384,9 @@ What the sweep shows:
   sweep where untiled reaches 73,944 MiB; where untiled still fits comfortably
   it costs latency (745.7 against 488.1 ms at 2048 batch 1, 345.1 against 256.9
   at 1536 batch 1) and on a card with headroom it is not a speed-up.
-- **The two compose.** Slicing + tiling holds 2,638 - 3,085 MiB in all 48 rows,
-  including 3072x3072 batch 4, where untiled decode needs 73,944 MiB.
+- **The two compose.** Slicing + tiling holds 2,638 - 3,085 MiB in all 12 rows
+  (four sizes × three batch sizes), including 3072x3072 batch 4, where untiled
+  decode needs 73,944 MiB.
 - **The one row with a wide spread is the one under memory pressure.**
   3072x3072 batch 4 untiled reads 40,652.0 ms with a 30,302.4 - 43,240.7 ms
   range — its ~38.6 GB allocations are retried until they fit — while tiling the
@@ -462,10 +463,11 @@ Re-measurement on the same box for the merge head, with the same fixed prompt,
 batch-1 rows at `6873f69b8`, batch-4 rows at `1c87b798d` (only benchmark files
 differ between the two; the model code is the same), loaded with `PYTHONPATH`;
 vLLM 0.30.0 (required by the merge head; upgraded from 0.29.0), PyTorch
-2.13.0+cu130. Batch-4 cells issue whole waves of four concurrent requests —
-4 warmups + 4 measured per cell, wave wall time divided by four — so every
-measured request is a wave member and the reported latency is the amortized
-per-image value.
+2.13.0+cu130. Batch-1 cells are 4 warmups + 5 measured single requests;
+batch-4 cells issue whole waves of four concurrent requests — 4 warmups + 4
+measured waves per cell, wave wall time divided by four. Every measured
+request is a wave member, so a cell's latency is the mean of its n samples
+(n = 5 at batch 1, 4 at batch 4).
 
 At 1536x1536, batch 1:
 
@@ -489,11 +491,23 @@ Under a wave the two stage figures are per-request durations that overlap across
 the four concurrent requests, so they do not add up to the per-image end-to-end
 time (at batch 1 each row is one request and they do).
 
-At 1024x1024 (below the tiling threshold): all four batch-1 configs peak at
-60,844 MiB with byte-identical output; at batch 4 the baseline and tiling
-controls both peak at 69,688 MiB, and the two slicing rows at 60,846 MiB —
-slicing bounds the decode peak flat at batch > 1, tiling bounds it above the
-threshold only, and neither changes latency.
+At 1024x1024 (below the tiling threshold, so tiling is enabled but decodes in
+a single tile):
+
+| Batch | Config | End-to-end s/image | Device peak MiB |
+| ---: | --- | ---: | ---: |
+| 1 | baseline | 105.4 | 60,844 |
+| 1 | tiling | 106.0 | 60,844 |
+| 1 | slicing | 105.7 | 60,844 |
+| 1 | slicing + tiling | 106.5 | 60,844 |
+| 4 | baseline | 36.3 | 69,688 |
+| 4 | tiling | 36.0 | 69,688 |
+| 4 | slicing | 36.4 | 60,846 |
+| 4 | slicing + tiling | 36.5 | 60,846 |
+
+All four batch-1 configs produce byte-identical output; slicing bounds the
+decode peak flat at batch > 1, tiling bounds it above the threshold only, and
+neither changes latency.
 
 Isolated at equal concurrency and size (1536x1536 batch 4, against `baseline`),
 tiling saves 12,988 MiB, slicing 19,878 MiB and the two together 21,058 MiB; the
