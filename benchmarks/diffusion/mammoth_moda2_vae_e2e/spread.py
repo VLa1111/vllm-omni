@@ -81,6 +81,9 @@ def main() -> None:
         rows = []
         for path in sorted(raw_dir.glob("*.json")):
             data = json.loads(path.read_text())
+            if "records" not in data:
+                print(f"note: {path.name} has no 'records' key -- not a run_e2e_offline.py tree, skipped")
+                continue
             records = measured_records(data["records"])
             if not records:
                 continue
