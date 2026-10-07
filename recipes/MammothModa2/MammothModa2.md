@@ -459,62 +459,74 @@ What these measurements show:
 ##### Re-measured on the current source (with batch > 1)
 
 Re-measurement on the same box for the merge head, with the same fixed prompt,
-`seed=42`, 50 steps, `text_guidance_scale=9.0` and `cfg_range=[0, 1]`. Source:
-batch-1 rows at `6873f69b8`, batch-4 rows at `1c87b798d` (only benchmark files
-differ between the two; the model code is the same), loaded with `PYTHONPATH`;
-vLLM 0.30.0 (required by the merge head; upgraded from 0.29.0), PyTorch
-2.13.0+cu130. Batch-1 cells are 4 warmups + 5 measured single requests;
-batch-4 cells issue whole waves of four concurrent requests — 4 warmups + 4
-measured waves per cell, wave wall time divided by four. Every measured
-request is a wave member, so a cell's latency is the mean of its n samples
-(n = 5 at batch 1, 4 at batch 4).
+`seed=42`, 50 steps, `text_guidance_scale=9.0` and `cfg_range=[0, 1]`, loaded
+with `PYTHONPATH`; vLLM 0.30.0 (required by the merge head; upgraded from
+0.29.0), PyTorch 2.13.0+cu130. The batch-1 rows and every device peak come from
+the 2026-10-05 sweeps, `6873f69b8` (batch 1) and `1c87b798d` (batch 4; only
+benchmark files differ between the two), the batch-4 latency and stage rows are
+the 2026-10-07 re-run at the scratch branch's `86a9d74dc`, whose model code is
+identical to those revisions'.
+
+Protocol: batch-1 cells are 4 warmups + 5 measured single requests, so n = 5 and
+the tables carry the min-max of the five. Batch-4 cells measure whole waves of
+four concurrent requests, wave wall time divided by four: the 2026-10-05 sweep
+gave each cell a single measured wave (n = 1, so no spread), and the re-run
+gives each cell one warmup wave plus four measured waves (`--num-prompts 16`),
+n = 4, reproducing the 2026-10-05 peaks in seven of eight cells (the exception,
+1024 batch-4 baseline, read 570 MiB higher in one 0.5 s sampling window). The
+re-run ran on a shared node and its AR stage read 1-3% slower than in the
+October sweep (stage 1 flat within ±0.8%), so compare batch-1 and batch-4
+latencies within their own run.
 
 At 1536x1536, batch 1:
 
-| Config | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s | Device peak MiB |
+| Config | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s (min-max) | Device peak MiB |
 | --- | ---: | ---: | ---: | ---: |
-| baseline | 193,030 | 24,643 | 217.8 | 67,766 |
-| slicing | 189,610 | 24,664 | 214.4 | 67,766 |
-| tiling | 193,797 | 24,781 | 218.7 | **61,656** |
-| slicing + tiling | 190,430 | 24,783 | 215.3 | **61,654** |
+| baseline | 193,030 | 24,643 | 217.8 (216.8-218.7) | 67,766 |
+| slicing | 189,610 | 24,664 | 214.4 (212.9-215.3) | 67,766 |
+| tiling | 193,797 | 24,781 | 218.7 (217.8-219.8) | **61,656** |
+| slicing + tiling | 190,430 | 24,783 | 215.3 (214.0-216.7) | **61,654** |
 
 At 1536x1536, batch 4:
 
-| Config | Slicing | Tiling | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s / image | Device peak MiB |
+| Config | Slicing | Tiling | Stage 0 (AR) ms | Stage 1 (DiT + VAE) ms | End-to-end s / image (min-max) | Device peak MiB |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
-| baseline | off | off | 204,984 | 86,563 | 78.1 | 87,078 |
-| tiling | off | on | 203,406 | 86,560 | 77.7 | 74,090 |
-| slicing | on | off | 204,345 | 86,685 | 78.0 | 67,200 |
-| slicing + tiling | on | on | 202,544 | 86,919 | 77.6 | **66,020** |
+| baseline | off | off | 209,407 | 87,188 | 79.4 (79.3-79.5) | 87,078 |
+| slicing | on | off | 207,806 | 87,032 | 79.0 (78.8-79.1) | 67,200 |
+| tiling | off | on | 213,104 | 87,200 | 80.3 (79.9-81.0) | 74,090 |
+| slicing + tiling | on | on | 209,291 | 87,372 | 79.5 (78.9-80.2) | **66,020** |
 
 Under a wave the two stage figures are per-request durations that overlap across
-the four concurrent requests, so they do not add up to the per-image end-to-end
-time (at batch 1 each row is one request and they do).
+the four concurrent requests (in the batch-4 table they are the mean over the
+sixteen measured requests of the four waves), so they do not add up to the
+per-image end-to-end time (at batch 1 each row is one request and they do).
 
 At 1024x1024 (below the tiling threshold, so tiling is enabled but decodes in
 a single tile):
 
-| Batch | Config | End-to-end s/image | Device peak MiB |
+| Batch | Config | End-to-end s/image (min-max) | Device peak MiB |
 | ---: | --- | ---: | ---: |
-| 1 | baseline | 105.4 | 60,844 |
-| 1 | tiling | 106.0 | 60,844 |
-| 1 | slicing | 105.7 | 60,844 |
-| 1 | slicing + tiling | 106.5 | 60,844 |
-| 4 | baseline | 36.3 | 69,688 |
-| 4 | tiling | 36.0 | 69,688 |
-| 4 | slicing | 36.4 | 60,846 |
-| 4 | slicing + tiling | 36.5 | 60,846 |
+| 1 | baseline | 105.4 (104.8-105.9) | 60,844 |
+| 1 | slicing | 105.7 (104.5-107.9) | 60,844 |
+| 1 | tiling | 106.0 (104.3-107.7) | 60,844 |
+| 1 | slicing + tiling | 106.5 (106.1-107.2) | 60,844 |
+| 4 | baseline | 37.0 (36.8-37.1) | 69,688 |
+| 4 | slicing | 36.8 (36.8-36.9) | 60,846 |
+| 4 | tiling | 36.8 (36.6-37.1) | 69,688 |
+| 4 | slicing + tiling | 36.6 (36.3-36.8) | 60,846 |
 
 All four batch-1 configs produce byte-identical output; slicing bounds the
-decode peak flat at batch > 1, tiling bounds it above the threshold only, and
-neither changes latency.
+decode peak flat at batch > 1, tiling bounds it above the threshold only (at
+1024x1024 it sits below the threshold and is a no-op), and the batch-4
+latencies, 36.6 - 37.0 s per image, all overlap within their min-max ranges.
 
 Isolated at equal concurrency and size (1536x1536 batch 4, against `baseline`),
 tiling saves 12,988 MiB, slicing 19,878 MiB and the two together 21,058 MiB; the
 untiled batch-4 peak grows by 19,312 MiB over the single-image baseline, which
-is the growth slicing removes. Latency does not discriminate between the four
-configs (77.6 - 78.1 s per image at 1536, 36.0 - 36.5 s at 1024) because the AR
-stage dominates and never touches the VAE.
+is the growth slicing removes. Latency barely discriminates between the four
+configs (79.0 - 80.3 s per image at 1536, 36.6 - 37.0 s at 1024 — a couple of
+percent, tiling at the slow end at 1536) because the AR stage dominates and
+never touches the VAE.
 
 ### 1x AMD MI300X, MammothModa2 Preview (pre-migration baseline)
 
