@@ -1,0 +1,20 @@
+fp8 DLO sweep start 2026-10-09T15:08:18Z
+[15:08:18] === arm fp8_dlo_n0 extra: --enable-distributed-layerwise-offload --dlo-no-use-allgather ===
+[15:08:53] arm fp8_dlo_n0: ready (load peak 21284 MiB)
+[15:08:59] arm fp8_dlo_n0 req0: http 200, 6016 ms, png 7752d736ca3b4567
+[15:09:04] arm fp8_dlo_n0 req1: http 200, 4784 ms, png 7752d736ca3b4567
+[15:09:09] arm fp8_dlo_n0 req2: http 200, 4762 ms, png 7752d736ca3b4567
+[15:09:14] arm fp8_dlo_n0 req3: http 200, 4765 ms, png 7752d736ca3b4567
+[15:09:14] arm fp8_dlo_n0 steady peak 13020 MiB
+[15:09:19] arm fp8_dlo_n0 done
+
+[15:09:19] === arm fp8_dlo_n4 extra: --enable-distributed-layerwise-offload --dlo-no-use-allgather --dlo-resident-layers 4 ===
+[15:09:49] arm fp8_dlo_n4: ready (load peak 21284 MiB)
+[15:09:55] arm fp8_dlo_n4 req0: http 200, 5776 ms, png 7752d736ca3b4567
+[15:09:59] arm fp8_dlo_n4 req1: http 200, 4571 ms, png 7752d736ca3b4567
+[15:10:04] arm fp8_dlo_n4 req2: http 200, 4572 ms, png 7752d736ca3b4567
+[15:10:09] arm fp8_dlo_n4 req3: http 200, 4587 ms, png 7752d736ca3b4567
+[15:10:09] arm fp8_dlo_n4 steady peak 13708 MiB
+[15:10:14] arm fp8_dlo_n4 done
+
+fp8 DLO sweep end 2026-10-09T15:10:14Z

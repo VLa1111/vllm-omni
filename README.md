@@ -46,19 +46,23 @@ A = CPU offload, B = DiT FP8. Raw artifacts per arm in `logs/`, `timings/`, `out
 | 7 | `fp8_model` | fp8 | module-level | validated (A+B) | 11,786 | 21,100 | 3.96–3.97 | `7752d736ca3b4567…` |
 | 8 | `fp8_layerwise` | fp8 | local layerwise | validated (A+B) | 13,194 | 21,100 | 4.78–4.83 | `7752d736ca3b4567…` |
 | 9 | `fp8_bothflags` | fp8 | module + layerwise flags together | validated — layerwise wins silently (mode boundary) | 13,194 | 21,100 | 4.76–4.77 | `7752d736ca3b4567…` |
+| 10 | `fp8_dlo_n0` | fp8 | distributed layerwise, 0 resident | validated (A+B) | 13,020 | 21,284 | 4.76–4.78 | `7752d736ca3b4567…` |
+| 11 | `fp8_dlo_n4` | fp8 | distributed layerwise, 4 resident | validated (A+B) | 13,708 | 21,284 | 4.57–4.59 | `7752d736ca3b4567…` |
 
 Reading: on the 24 GiB card bf16 needs offload (row 1 OOMs); module-level is the cheapest bf16
-mode (21.9 GiB, 5.7 s), layerwise and DLO trade ~3.5 s for the same footprint; on FP8,
-module-level halves the footprint to 11.8 GiB under 12 GiB, layerwise costs ~0.8 s and
-~1.4 GiB more. Four resident DLO layers on one GPU buy 0.5 s (9.15 → 8.64 s) for ~1 GiB of
-resident weights. **Full per-request timings, peak traces and logs: see `summary/tables.md`.**
+mode (21.9 GiB, 5.66 s), layerwise and DLO trade ~3.5 s for the same footprint (9.17 / 9.15 s),
+and four resident DLO layers win ~0.5 s back (8.64 s) for ~1 GiB of resident weights. On FP8,
+module-level halves the footprint to 11.8 GiB under 12 GiB (3.96 s); layerwise costs ~0.8 s and
+~1.4 GiB more (13,194 MiB, 4.80 s); DLO N=0 matches layerwise (13,020 MiB, 4.76 s) and DLO N=4
+takes ~0.2 s off that (13,708 MiB, 4.58 s). **Full per-request timings, peak traces and logs:
+see `summary/tables.md`.**
 
 ## 4. Output consistency (same prompt/seed, req1 of each arm)
 
 | Group | Arms | Result |
 | --- | --- | --- |
 | bf16 | module-level, layerwise, DLO N=0, DLO N=4 (both retries) | **byte-identical** to each other (md5 `9add03c40f7cfaa1eb1ec49fac91ead0`) |
-| fp8 | module-level, layerwise, both-flags | **byte-identical** to each other (md5 `3a47a511976e7a55eeb29b0613c3fc84`) |
+| fp8 | module-level, layerwise, both-flags, DLO N=0, DLO N=4 | **byte-identical** to each other (md5 `3a47a511976e7a55eeb29b0613c3fc84`) |
 | fp8 | offload arms vs `fp8_noffload` baseline (`a061cbb44929ee58ad650604b733d88f`) | **not byte-identical**: PSNR **49.72 dB**, max abs diff 0.1922 (0-1 scale). Numerical noise, not a visible change |
 
 Note: this *revises the accuracy claim published in PR #6897*, which stated FP8 offload output was
@@ -78,7 +82,8 @@ bf16 module-level : Enabling offloader backend: ModelLevelOffloadBackend
 bf16 layerwise    : Enabling offloader backend: LayerWiseOffloadBackend
                     layerwise offload timing instrumentation enabled (VLLM_OMNI_OFFLOAD_TIMING=1)
                     Layer-wise offloading enabled on 40 layers (blocks)
-dlo (N=0 and N=4) : Enabling offloader backend: DistributedLayerwiseOffloadBackend
+dlo (bf16 + fp8,   : Enabling offloader backend: DistributedLayerwiseOffloadBackend
+  N=0 and N=4)
                     DLO direct checkpoint mmap unavailable; using ordinary loader: 186 required DiT
                       tensors have no checkpoint binding (first 5: transformer.context_refiner.*)
                     Distributed layer-wise offloading enabled on 40 blocks across 1 group(s),
@@ -155,7 +160,8 @@ curl -X POST http://127.0.0.1:8097/v1/images/generations -H 'Content-Type: appli
 ```
 
 Drivers: `scripts/boogu_matrix_run.sh` (9-arm sweep), `scripts/boogu_retry_dlo.sh` (dlo_n4 retry,
-run twice), `scripts/boogu_matrix_collect.py` + `scripts/boogu_matrix_analyze.py` (tables).
+run twice), `scripts/boogu_dlo_fp8.sh` (the fp8 DLO arms 10–11), `scripts/boogu_matrix_collect.py`
++ `scripts/boogu_matrix_analyze.py` (tables).
 
 ## 11. Limits
 

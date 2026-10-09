@@ -1,0 +1,8 @@
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:25[0m [90m[diffusers_loader.py:711][0m Online quantization with CPU offload, using cuda for weight loading (will offload back to CPU)
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:31[0m [90m[diffusers_loader.py:510][0m Stream-offloaded 0 online-quantized layers to CPU during weight loading
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:36[0m [90m[diffusers_loader.py:887][0m Quantization complete, offloaded model back to CPU
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:36[0m [90m[base.py:189][0m Distributed layerwise offload: all selected components use rank-local transfer (no DLO shard or AllGather)
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:36[0m [90m[__init__.py:179][0m Enabling offloader backend: DistributedLayerwiseOffloadBackend
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:37[0m [90m[distributed_layerwise_backend.py:1700][0m Applying distributed layer-wise offloading on ['transformer']
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:40[0m [90m[distributed_layerwise_backend.py:1799][0m Distributed layer-wise offloading enabled on 40 blocks across 1 group(s), transfers={dit: rank-local}, unified shared_buffers=2
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:51[0m [90m[launcher.py:80][0m Route: /v1/audio/speech/stream, Endpoint: streaming_speech

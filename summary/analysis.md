@@ -6,10 +6,14 @@
 | fp8_model | fp8 | 3a47a511976e7a55eeb29b0613c3fc84 | fp8_noffload | 49.72 | 0.1922 | no |
 | fp8_layerwise | fp8 | 3a47a511976e7a55eeb29b0613c3fc84 | fp8_noffload | 49.72 | 0.1922 | no |
 | fp8_bothflags | fp8 | 3a47a511976e7a55eeb29b0613c3fc84 | fp8_noffload | 49.72 | 0.1922 | no |
+| fp8_dlo_n0 | fp8 | 3a47a511976e7a55eeb29b0613c3fc84 | fp8_noffload | 49.72 | 0.1922 | no |
+| fp8_dlo_n4 | fp8 | 3a47a511976e7a55eeb29b0613c3fc84 | fp8_noffload | 49.72 | 0.1922 | no |
 | bf16_model | bf16 | 9add03c40f7cfaa1eb1ec49fac91ead0 | (baseline) | - | - | - |
 | bf16_layerwise | bf16 | 9add03c40f7cfaa1eb1ec49fac91ead0 | bf16_model | inf (identical) | 0.0000 | yes |
 | dlo_n0 | bf16 | 9add03c40f7cfaa1eb1ec49fac91ead0 | bf16_model | inf (identical) | 0.0000 | yes |
 | dlo_n4 | bf16 | - | - | - | - | no output |
+| dlo_n4_retry1 | bf16 | 9add03c40f7cfaa1eb1ec49fac91ead0 | bf16_model | inf (identical) | 0.0000 | yes |
+| dlo_n4_retry2 | bf16 | 9add03c40f7cfaa1eb1ec49fac91ead0 | bf16_model | inf (identical) | 0.0000 | yes |
 
 ## Activation evidence (cleaned from serve logs)
 
@@ -98,6 +102,37 @@
 [0;36m(DiffusionWorker pid=11537)[0;0m [32mINFO[0m [90m10-09 15:02:47[0m [90m[layerwise_backend.py:655][0m Layer-wise offloading disabled
 ```
 
+### fp8_dlo_n0
+
+```text
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:25[0m [90m[diffusers_loader.py:711][0m Online quantization with CPU offload, using cuda for weight loading (will offload back to CPU)
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:27[0m [90m[diffusers_loader.py:857][0m DLO direct checkpoint mmap unavailable; using ordinary loader: no compatible safetensors entries were found in the loader's model sources
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:31[0m [90m[diffusers_loader.py:510][0m Stream-offloaded 0 online-quantized layers to CPU during weight loading
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:31[0m [90m[plain_fp8.py:191][0m Unpacked 318 torchao Float8Tensor linear(s) into plain (fp8 weight, fp32 row-scale) parameters
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:36[0m [90m[diffusers_loader.py:887][0m Quantization complete, offloaded model back to CPU
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:36[0m [90m[base.py:189][0m Distributed layerwise offload: all selected components use rank-local transfer (no DLO shard or AllGather)
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:36[0m [90m[__init__.py:179][0m Enabling offloader backend: DistributedLayerwiseOffloadBackend
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:36[0m [90m[distributed_layerwise_backend.py:1688][0m DLO is using host tensors materialized by the ordinary loader
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:08:40[0m [90m[distributed_layerwise_backend.py:1799][0m Distributed layer-wise offloading enabled on 40 blocks across 1 group(s), transfers={dit: rank-local}, unified shared_buffers=2
+[0;36m(DiffusionWorker pid=14732)[0;0m [32mINFO[0m [90m10-09 15:09:14[0m [90m[distributed_layerwise_backend.py:1978][0m Distributed layer-wise offloading disabled
+```
+
+### fp8_dlo_n4
+
+```text
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:26[0m [90m[diffusers_loader.py:711][0m Online quantization with CPU offload, using cuda for weight loading (will offload back to CPU)
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:28[0m [90m[diffusers_loader.py:857][0m DLO direct checkpoint mmap unavailable; using ordinary loader: no compatible safetensors entries were found in the loader's model sources
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:32[0m [90m[diffusers_loader.py:510][0m Stream-offloaded 0 online-quantized layers to CPU during weight loading
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:32[0m [90m[plain_fp8.py:191][0m Unpacked 318 torchao Float8Tensor linear(s) into plain (fp8 weight, fp32 row-scale) parameters
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:36[0m [90m[diffusers_loader.py:887][0m Quantization complete, offloaded model back to CPU
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:37[0m [90m[base.py:189][0m Distributed layerwise offload: all selected components use rank-local transfer (no DLO shard or AllGather)
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:37[0m [90m[__init__.py:179][0m Enabling offloader backend: DistributedLayerwiseOffloadBackend
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:37[0m [90m[distributed_layerwise_backend.py:1688][0m DLO is using host tensors materialized by the ordinary loader
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:38[0m [90m[distributed_layerwise_backend.py:1710][0m Keeping 4 leading blocks resident on transformer; streaming 36 tail blocks
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:09:41[0m [90m[distributed_layerwise_backend.py:1799][0m Distributed layer-wise offloading enabled on 36 blocks across 1 group(s), transfers={dit: rank-local}, unified shared_buffers=2
+[0;36m(DiffusionWorker pid=15737)[0;0m [32mINFO[0m [90m10-09 15:10:09[0m [90m[distributed_layerwise_backend.py:1978][0m Distributed layer-wise offloading disabled
+```
+
 ### bf16_model
 
 ```text
@@ -172,5 +207,29 @@
 
 ```text
 (no matching lines)
+```
+
+### dlo_n4_retry1
+
+```text
+[0;36m(DiffusionWorker pid=12596)[0;0m [32mINFO[0m [90m10-09 15:03:24[0m [90m[diffusers_loader.py:857][0m DLO direct checkpoint mmap unavailable; using ordinary loader: 186 required DiT tensors have no checkpoint binding (first 5: ['transformer.context_refiner.0.attn.to_out.weight', 'transformer.context_refiner.0.attn.to_qkv.weight', 'transformer.context_refiner.0.feed_forward.gate_up_proj.weight', 'transformer.context_refiner.1.attn.to_out.weight', 'transformer.context_refiner.1.attn.to_qkv.weight'])
+[0;36m(DiffusionWorker pid=12596)[0;0m [32mINFO[0m [90m10-09 15:03:26[0m [90m[base.py:189][0m Distributed layerwise offload: all selected components use rank-local transfer (no DLO shard or AllGather)
+[0;36m(DiffusionWorker pid=12596)[0;0m [32mINFO[0m [90m10-09 15:03:26[0m [90m[__init__.py:179][0m Enabling offloader backend: DistributedLayerwiseOffloadBackend
+[0;36m(DiffusionWorker pid=12596)[0;0m [32mINFO[0m [90m10-09 15:03:26[0m [90m[distributed_layerwise_backend.py:1688][0m DLO is using host tensors materialized by the ordinary loader
+[0;36m(DiffusionWorker pid=12596)[0;0m [32mINFO[0m [90m10-09 15:03:26[0m [90m[distributed_layerwise_backend.py:1710][0m Keeping 4 leading blocks resident on transformer; streaming 36 tail blocks
+[0;36m(DiffusionWorker pid=12596)[0;0m [32mINFO[0m [90m10-09 15:03:32[0m [90m[distributed_layerwise_backend.py:1799][0m Distributed layer-wise offloading enabled on 36 blocks across 1 group(s), transfers={dit: rank-local}, unified shared_buffers=2
+[0;36m(DiffusionWorker pid=12596)[0;0m [32mINFO[0m [90m10-09 15:04:17[0m [90m[distributed_layerwise_backend.py:1978][0m Distributed layer-wise offloading disabled
+```
+
+### dlo_n4_retry2
+
+```text
+[0;36m(DiffusionWorker pid=13641)[0;0m [32mINFO[0m [90m10-09 15:04:30[0m [90m[diffusers_loader.py:857][0m DLO direct checkpoint mmap unavailable; using ordinary loader: 186 required DiT tensors have no checkpoint binding (first 5: ['transformer.context_refiner.0.attn.to_out.weight', 'transformer.context_refiner.0.attn.to_qkv.weight', 'transformer.context_refiner.0.feed_forward.gate_up_proj.weight', 'transformer.context_refiner.1.attn.to_out.weight', 'transformer.context_refiner.1.attn.to_qkv.weight'])
+[0;36m(DiffusionWorker pid=13641)[0;0m [32mINFO[0m [90m10-09 15:04:32[0m [90m[base.py:189][0m Distributed layerwise offload: all selected components use rank-local transfer (no DLO shard or AllGather)
+[0;36m(DiffusionWorker pid=13641)[0;0m [32mINFO[0m [90m10-09 15:04:32[0m [90m[__init__.py:179][0m Enabling offloader backend: DistributedLayerwiseOffloadBackend
+[0;36m(DiffusionWorker pid=13641)[0;0m [32mINFO[0m [90m10-09 15:04:32[0m [90m[distributed_layerwise_backend.py:1688][0m DLO is using host tensors materialized by the ordinary loader
+[0;36m(DiffusionWorker pid=13641)[0;0m [32mINFO[0m [90m10-09 15:04:32[0m [90m[distributed_layerwise_backend.py:1710][0m Keeping 4 leading blocks resident on transformer; streaming 36 tail blocks
+[0;36m(DiffusionWorker pid=13641)[0;0m [32mINFO[0m [90m10-09 15:04:38[0m [90m[distributed_layerwise_backend.py:1799][0m Distributed layer-wise offloading enabled on 36 blocks across 1 group(s), transfers={dit: rank-local}, unified shared_buffers=2
+[0;36m(DiffusionWorker pid=13641)[0;0m [32mINFO[0m [90m10-09 15:05:23[0m [90m[distributed_layerwise_backend.py:1978][0m Distributed layer-wise offloading disabled
 ```
 
