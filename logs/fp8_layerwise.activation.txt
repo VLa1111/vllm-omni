@@ -1,0 +1,10 @@
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:36[0m [90m[diffusers_loader.py:711][0m Online quantization with CPU offload, using cuda for weight loading (will offload back to CPU)
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:42[0m [90m[diffusers_loader.py:510][0m Stream-offloaded 0 online-quantized layers to CPU during weight loading
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:46[0m [90m[diffusers_loader.py:887][0m Quantization complete, offloaded model back to CPU
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:47[0m [90m[__init__.py:179][0m Enabling offloader backend: LayerWiseOffloadBackend
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:48[0m [90m[layerwise_backend.py:578][0m Applying layer-wise offloading on ['transformer']
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:48[0m [90m[layerwise_backend.py:598][0m layerwise offload timing instrumentation enabled (VLLM_OMNI_OFFLOAD_TIMING=1)
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:50[0m [90m[layerwise_backend.py:614][0m Layer-wise offloading enabled on 40 layers (blocks)
+  0%|          | 0/2 [00:00<?, ?it/s][0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:56[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=452.4 ms (8813.56 MiB), compute=3136.3 ms, exposed_stall=182.7 ms, wall=3303.6 ms, hidden_h2d=269.7 ms (60% of h2d hidden)
+[0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:48[0m [90m[layerwise_backend.py:598][0m layerwise offload timing instrumentation enabled (VLLM_OMNI_OFFLOAD_TIMING=1)
+  0%|          | 0/2 [00:00<?, ?it/s][0;36m(DiffusionWorker pid=5205)[0;0m [32mINFO[0m [90m10-09 14:54:56[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=452.4 ms (8813.56 MiB), compute=3136.3 ms, exposed_stall=182.7 ms, wall=3303.6 ms, hidden_h2d=269.7 ms (60% of h2d hidden)

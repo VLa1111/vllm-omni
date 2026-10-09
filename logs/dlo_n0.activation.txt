@@ -1,0 +1,7 @@
+[0;36m(DiffusionWorker pid=9785)[0;0m [32mINFO[0m [90m10-09 14:59:54[0m [90m[base.py:189][0m Distributed layerwise offload: all selected components use rank-local transfer (no DLO shard or AllGather)
+[0;36m(DiffusionWorker pid=9785)[0;0m [32mINFO[0m [90m10-09 14:59:54[0m [90m[__init__.py:179][0m Enabling offloader backend: DistributedLayerwiseOffloadBackend
+[0;36m(DiffusionWorker pid=9785)[0;0m [32mINFO[0m [90m10-09 14:59:54[0m [90m[distributed_layerwise_backend.py:1700][0m Applying distributed layer-wise offloading on ['transformer']
+[0;36m(DiffusionWorker pid=9785)[0;0m [32mINFO[0m [90m10-09 15:00:00[0m [90m[distributed_layerwise_backend.py:1799][0m Distributed layer-wise offloading enabled on 40 blocks across 1 group(s), transfers={dit: rank-local}, unified shared_buffers=2
+[0;36m(DiffusionWorker pid=9785)[0;0m [32mINFO[0m [90m10-09 15:00:11[0m [90m[launcher.py:80][0m Route: /v1/audio/speech/stream, Endpoint: streaming_speech
+[0;36m(DiffusionWorker pid=9785)[0;0m [32mINFO[0m [90m10-09 15:00:11[0m [90m[launcher.py:80][0m Route: /v1/video/chat/stream, Endpoint: streaming_video_chat
+[0;36m(DiffusionWorker pid=9785)[0;0m [32mINFO[0m [90m10-09 15:00:11[0m [90m[launcher.py:80][0m Route: /v1/realtime/video, Endpoint: streaming_video_output

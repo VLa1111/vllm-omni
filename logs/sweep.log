@@ -1,0 +1,71 @@
+sweep start 2026-10-09T14:51:59Z
+code head: a054ccc19 (boogu-merge-20261006), vllm 0.31.0 (/workspace/venv31)
+
+[14:51:59] === arm fp8_noffload (timing=0) extra: --diffusion-quantization-config {"transformer":{"method":"torchao_float8_weight_only"}} ===
+[14:53:15] arm fp8_noffload: ready (load peak 21284 MiB)
+[14:53:24] arm fp8_noffload warmup: http 200, 9550 ms
+[14:53:26] arm fp8_noffload req1: http 200, 1597 ms, png 554b4412506613e5
+[14:53:28] arm fp8_noffload req2: http 200, 1614 ms, png 554b4412506613e5
+[14:53:29] arm fp8_noffload req3: http 200, 1596 ms, png 554b4412506613e5
+[14:53:29] arm fp8_noffload steady peak 21132 MiB
+[14:53:34] arm fp8_noffload done
+[14:53:34] === arm fp8_model (timing=0) extra: --diffusion-quantization-config {"transformer":{"method":"torchao_float8_weight_only"}} --enable-cpu-offload ===
+[14:54:04] arm fp8_model: ready (load peak 21100 MiB)
+[14:54:12] arm fp8_model warmup: http 200, 7307 ms
+[14:54:16] arm fp8_model req1: http 200, 3959 ms, png 7752d736ca3b4567
+[14:54:20] arm fp8_model req2: http 200, 3965 ms, png 7752d736ca3b4567
+[14:54:24] arm fp8_model req3: http 200, 3974 ms, png 7752d736ca3b4567
+[14:54:24] arm fp8_model steady peak 11786 MiB
+[14:54:29] arm fp8_model done
+[14:54:29] === arm fp8_layerwise (timing=1) extra: --diffusion-quantization-config {"transformer":{"method":"torchao_float8_weight_only"}} --enable-layerwise-offload ===
+[14:54:59] arm fp8_layerwise: ready (load peak 21100 MiB)
+[14:55:05] arm fp8_layerwise warmup: http 200, 6008 ms
+[14:55:10] arm fp8_layerwise req1: http 200, 4801 ms, png 7752d736ca3b4567
+[14:55:14] arm fp8_layerwise req2: http 200, 4780 ms, png 7752d736ca3b4567
+[14:55:19] arm fp8_layerwise req3: http 200, 4825 ms, png 7752d736ca3b4567
+[14:55:19] arm fp8_layerwise steady peak 13194 MiB
+[14:55:24] arm fp8_layerwise done
+[14:55:24] === arm bf16_noffload (timing=0) extra:  ===
+[14:56:15] arm bf16_noffload: OOM during load
+[14:56:20] === arm bf16_model (timing=0) extra: --enable-cpu-offload ===
+[14:57:35] arm bf16_model: ready (load peak 21850 MiB)
+[14:57:53] arm bf16_model warmup: http 200, 18069 ms
+[14:57:59] arm bf16_model req1: http 200, 5648 ms, png de4c4747064d5537
+[14:58:05] arm bf16_model req2: http 200, 5666 ms, png de4c4747064d5537
+[14:58:10] arm bf16_model req3: http 200, 5654 ms, png de4c4747064d5537
+[14:58:10] arm bf16_model steady peak 21924 MiB
+[14:58:20] arm bf16_model done
+[14:58:20] === arm bf16_layerwise (timing=1) extra: --enable-layerwise-offload ===
+[14:59:01] arm bf16_layerwise: ready (load peak 21368 MiB)
+[14:59:11] arm bf16_layerwise warmup: http 200, 10229 ms
+[14:59:20] arm bf16_layerwise req1: http 200, 9170 ms, png de4c4747064d5537
+[14:59:29] arm bf16_layerwise req2: http 200, 9175 ms, png de4c4747064d5537
+[14:59:38] arm bf16_layerwise req3: http 200, 9167 ms, png de4c4747064d5537
+[14:59:38] arm bf16_layerwise steady peak 21380 MiB
+[14:59:44] arm bf16_layerwise done
+[14:59:44] === arm dlo_n0 (timing=1) extra: --enable-distributed-layerwise-offload --dlo-no-use-allgather ===
+[15:00:14] arm dlo_n0: ready (load peak 21026 MiB)
+[15:00:24] arm dlo_n0 warmup: http 200, 10234 ms
+[15:00:33] arm dlo_n0 req1: http 200, 9148 ms, png de4c4747064d5537
+[15:00:42] arm dlo_n0 req2: http 200, 9161 ms, png de4c4747064d5537
+[15:00:51] arm dlo_n0 req3: http 200, 9162 ms, png de4c4747064d5537
+[15:00:52] arm dlo_n0 steady peak 21038 MiB
+[15:00:57] arm dlo_n0 done
+[15:00:57] === arm dlo_n4 (timing=1) extra: --enable-distributed-layerwise-offload --dlo-no-use-allgather --dlo-resident-layers 4 ===
+/workspace/boogu_matrix_run.sh: line 56: 10851 Segmentation fault      (core dumped) setsid env PYTHONPATH="$ROOT" HF_HUB_OFFLINE=1 VLLM_OMNI_OFFLOAD_TIMING="$timing" "$VLLM_BIN" serve "$model" --omni --port "$PORT" --trust-remote-code "$@" > "$log" 2>&1
+[15:01:52] arm dlo_n4: server process gone
+  File "<unknown>", line 0, in Py_RunMain
+  File "<unknown>", line 0, in Py_BytesMain
+  File "<unknown>", line 0, in _start
+  File "<unknown>", line 0, in 0xffffffffffffffff
+
+[15:01:57] === arm fp8_bothflags (timing=0) extra: --diffusion-quantization-config {"transformer":{"method":"torchao_float8_weight_only"}} --enable-cpu-offload --enable-layerwise-offload ===
+[15:02:27] arm fp8_bothflags: ready (load peak 21100 MiB)
+[15:02:33] arm fp8_bothflags warmup: http 200, 6068 ms
+[15:02:38] arm fp8_bothflags req1: http 200, 4758 ms, png 7752d736ca3b4567
+[15:02:42] arm fp8_bothflags req2: http 200, 4759 ms, png 7752d736ca3b4567
+[15:02:47] arm fp8_bothflags req3: http 200, 4773 ms, png 7752d736ca3b4567
+[15:02:47] arm fp8_bothflags steady peak 13194 MiB
+[15:02:52] arm fp8_bothflags done
+
+sweep end 2026-10-09T15:02:52Z

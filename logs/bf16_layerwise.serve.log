@@ -1,0 +1,197 @@
+/workspace/boogu-matrix/vllm_omni/__init__.py:22: RuntimeWarning: Failed to import version from _version.py: No module named 'vllm_omni._version'
+This typically happens in development mode before building.
+Using fallback version 'dev'.
+  from .version import __version__, __version_tuple__  # isort:skip # noqa: F401
+W1009 14:58:33.615000 8616 torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W1009 14:58:33.640000 8616 torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+Unable to import `torchao` Tensor objects. This may affect loading checkpoints serialized with `torchao`
+[0;36m(MainProcess pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[serve.py:314][0m Detected diffusion model: /models/Boogu-Image-0.1-Base
+[0;36m(MainProcess pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[logo.py:52][0m        [97m█     █     █▄   ▄█[0m    [34m   ▄▀▀[38;5;208m▀▀▄ [0m[97m█▄   ▄█ █▄    █ ▀█▀ [0m
+[0;36m(MainProcess pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[logo.py:52][0m  [38;5;208m▄▄[0m [34m▄█[0m [97m█     █     █ ▀▄▀ █[0m[97m  ▄▄▄ [0m[34m █    [38;5;208m█ [0m[97m█ ▀▄▀ █ █ ▀▄  █  █  [0m
+[0;36m(MainProcess pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[logo.py:52][0m   [38;5;208m█[0m[34m▄█▀[0m [97m█     █     █     █[0m[97m      [0m[34m █    [38;5;208m█ [0m[97m█     █ █   ▀▄█  █  [0m
+[0;36m(MainProcess pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[logo.py:52][0m    [34m▀▀[0m  [97m▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀[0m      [35m  ▀▀▀▀  [0m[97m▀     ▀ ▀     ▀ ▀▀▀ [0m
+[0;36m(MainProcess pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[logo.py:52][0m 
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[api_utils.py:347][0m vLLM server version 0.31.0, serving model /models/Boogu-Image-0.1-Base
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[api_utils.py:286][0m non-default args: {'model_tag': '/models/Boogu-Image-0.1-Base', 'port': 8097, 'model': '/models/Boogu-Image-0.1-Base', 'trust_remote_code': True}
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[omni_base.py:208][0m [AsyncOmni] Initializing with model /models/Boogu-Image-0.1-Base
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[omni_engine_base.py:163][0m [OmniEngine] Initializing with model /models/Boogu-Image-0.1-Base
+[0;36m(APIServer pid=8616)[0;0m [33mWARNING[0m [90m10-09 14:58:41[0m [90m[ring_globals.py:97][0m FlashInfer ring kernels are unavailable. Reason: flashinfer-cubin version (0.6.14) does not match flashinfer version (0.7.0.post1). Please install the same version of both packages. Set FLASHINFER_DISABLE_VERSION_CHECK=1 to bypass this check.
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[config_factory.py:697][0m Resolved generic diffusion final_output_type='image' for model_class_name='BooguImagePipeline'.
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[omni_engine_base.py:312][0m [OmniEngine] Launching Orchestrator thread with 1 stages
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[kernel.py:408][0m Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[diffusion_worker.py:349][0m Final IR op priority after setting vLLM-Omni overrides: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[diffusion_worker.py:366][0m Worker 0: Initialized device and distributed environment.
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[parallel_state.py:610][0m Building SP subgroups from explicit sp_group_ranks (sp_size=1, ulysses=1, ring=1, use_ulysses_low=True).
+[0;36m(APIServer pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:41[0m [90m[parallel_state.py:652][0m SP group details for rank 0: sp_group=[0], ulysses_group=[0], ring_group=[0]
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]Loading weights: 100%|██████████| 750/750 [00:00<00:00, 21771.40it/s]
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:42[0m [90m[selector.py:93][0m Resolved diffusion attention backend 'FLASH_ATTN' for role='self' via platform default
+Multi-thread loading shards:   0% Completed | 0/3 [00:00<?, ?it/s]
+Multi-thread loading shards:  67% Completed | 2/3 [00:00<00:00,  4.33it/s]
+Multi-thread loading shards: 100% Completed | 3/3 [00:00<00:00,  2.94it/s]
+Multi-thread loading shards: 100% Completed | 3/3 [00:00<00:00,  3.14it/s]
+
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:43[0m [90m[diffusers_loader.py:1138][0m Loading weights took 1.08 seconds
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:44[0m [90m[diffusion_model_runner.py:352][0m Model loading took 0.0000 GiB and 2.743270 seconds
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:44[0m [90m[diffusion_model_runner.py:358][0m Model runner: Model loaded successfully.
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:44[0m [90m[__init__.py:179][0m Enabling offloader backend: LayerWiseOffloadBackend
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:45[0m [90m[layerwise_backend.py:578][0m Applying layer-wise offloading on ['transformer']
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:45[0m [90m[component_utils.py:84][0m Applying hooks on transformer (BooguImageTransformer2DModel)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:46[0m [90m[layerwise_backend.py:598][0m layerwise offload timing instrumentation enabled (VLLM_OMNI_OFFLOAD_TIMING=1)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[layerwise_backend.py:614][0m Layer-wise offloading enabled on 40 layers (blocks)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[compile.py:103][0m Regional compilation applied to 42 module(s) for repeated blocks ['BooguImageTransformerBlock', 'BooguImageContextRefinerTransformerBlock', 'BooguImageSingleStreamTransformerBlock'].
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[diffusion_model_runner.py:273][0m Model runner: transformer configured for lazy regional torch.compile with dynamic=True; compilation errors may surface on the first request.
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[diffusion_model_runner.py:449][0m Model runner: Initialization complete.
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[diffusion_worker.py:447][0m Worker 0: Process-scoped GPU memory after model loading: 0.00 GiB.
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[manager.py:118][0m Initializing DiffusionLoRAManager: device=cuda:0, dtype=torch.bfloat16, max_cached_adapters=1, static_lora_path=None
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[diffusion_worker.py:318][0m Worker 0: Initialization complete.
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[uniproc_executor.py:74][0m Diffusion worker initialized in-process (uniproc executor)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[diffusion_engine.py:434][0m [RequestBatch] engine init max_num_seqs=1 max_wait_ms=0.0
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:51[0m [90m[diffusion_engine.py:1428][0m dummy run to warm up the model
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/2 [00:00<?, ?it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:57[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=911.4 ms (17601.47 MiB), compute=2811.6 ms, exposed_stall=635.2 ms, wall=3409.7 ms, hidden_h2d=276.2 ms (30% of h2d hidden)
+ 50%|█████     | 1/2 [00:04<00:04,  4.49s/it][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.3 ms (17601.47 MiB), compute=223.6 ms, exposed_stall=676.1 ms, wall=862.3 ms, hidden_h2d=223.2 ms (25% of h2d hidden)
+100%|██████████| 2/2 [00:05<00:00,  2.39s/it]100%|██████████| 2/2 [00:05<00:00,  2.70s/it]
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[inline_stage_diffusion_client.py:82][0m [InlineStageDiffusionClient] stage-0 [rep-0] initialized inline (max_num_seqs=1)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[stage_runtime.py:1271][0m [StageRuntime] Stage 0 replica 0 initialized (diffusion)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[orchestrator.py:444][0m [Orchestrator] Starting event loop
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[omni_engine_base.py:344][0m [OmniEngine] Orchestrator ready with 1 stages
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[omni_base.py:227][0m [AsyncOmni] AsyncOmniEngine initialized in 16.80 seconds
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[omni_base.py:246][0m [AsyncOmni] Initialized with 1 stages for model /models/Boogu-Image-0.1-Base
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[factories.py:76][0m Scale-out endpoints are disabled. Set --enable-scale-out to enable them.
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[api_server.py:821][0m Detected pure diffusion mode (single diffusion stage)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[serving_video.py:170][0m Video response frame conversion pool configured: workers=8
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[serving_speech.py:263][0m Speech cache configuration: SpeechCacheConfig(resolve_max_bytes=4294967296, resolve_max_entries=2048, speaker_max_bytes=536870912)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[speaker_cache.py:245][0m Speaker cache ready (max_bytes=536870912)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[serving_speech.py:273][0m Speaker storage: dir=/root/.cache/vllm-omni/speakers, max_speakers=1000, restored=0
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[serving.py:91][0m Robot OpenPI serving disabled for model /models/Boogu-Image-0.1-Base
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[api_server.py:910][0m Pure diffusion API server initialized for model: /models/Boogu-Image-0.1-Base
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[api_server.py:412][0m Starting vLLM API server (pure diffusion mode) on http://0.0.0.0:8097
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:60][0m Available routes are:
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /openapi.json, Methods: HEAD, GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /docs, Methods: HEAD, GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /docs/oauth2-redirect, Methods: HEAD, GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /redoc, Methods: HEAD, GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /load, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /version, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /kv_event_sources, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /metrics, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /tokenize, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /detokenize, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /ping, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /ping, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /invocations, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/responses, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/responses/{response_id}, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/responses/{response_id}/cancel, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/completions, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/messages, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/messages/count_tokens, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /generative_scoring, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /scale_elastic_ep, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /is_scaling_elastic_ep, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/chat/completions, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/chat/completions/batch, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/audio/speech, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/audio/speech/batch, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/audio/generate, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/audio/voices, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/audio/voices, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/audio/voices/{name}, Methods: DELETE
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/step, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/reset, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/close, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/status, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /health, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/models, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/images/generations, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/images/edits, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/videos, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/videos/sync, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/videos, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/videos/{video_id}, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/videos/{video_id}, Methods: DELETE
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/videos/{video_id}/content, Methods: GET
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/omni/sleep, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:69][0m Route: /v1/omni/wakeup, Methods: POST
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:80][0m Route: /v1/audio/speech/stream, Endpoint: streaming_speech
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:80][0m Route: /v1/video/chat/stream, Endpoint: streaming_video_chat
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:80][0m Route: /v1/realtime/video, Endpoint: streaming_video_output
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:80][0m Route: /v1/realtime, Endpoint: realtime_websocket
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:80][0m Route: /v1/duplex, Endpoint: duplex_websocket
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:58:58[0m [90m[launcher.py:80][0m Route: /v1/realtime/robot/openpi, Endpoint: realtime_robot_openpi
+INFO:     Started server process [8616]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:34756 - "GET /health HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:03[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=901.1 ms (17601.47 MiB), compute=1179.3 ms, exposed_stall=735.0 ms, wall=1874.5 ms, hidden_h2d=166.1 ms (18% of h2d hidden)
+ 10%|█         | 1/10 [00:01<00:17,  1.92s/it][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:04[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.1 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.3 ms, wall=860.8 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 20%|██        | 2/10 [00:02<00:10,  1.33s/it][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:04[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.7 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.7 ms, wall=861.1 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 30%|███       | 3/10 [00:03<00:07,  1.14s/it][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:05[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=901.0 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=790.1 ms, wall=861.3 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 40%|████      | 4/10 [00:04<00:06,  1.05s/it][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:06[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.5 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.7 ms, wall=860.1 ms, hidden_h2d=110.7 ms (12% of h2d hidden)
+ 50%|█████     | 5/10 [00:05<00:04,  1.00it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:07[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.3 ms (17601.47 MiB), compute=111.6 ms, exposed_stall=789.1 ms, wall=860.9 ms, hidden_h2d=111.2 ms (12% of h2d hidden)
+ 60%|██████    | 6/10 [00:06<00:03,  1.03it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:08[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.5 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.6 ms, wall=860.0 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 70%|███████   | 7/10 [00:07<00:02,  1.05it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:09[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.3 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.4 ms, wall=860.7 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 80%|████████  | 8/10 [00:08<00:01,  1.07it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:10[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.1 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.3 ms, wall=860.8 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 90%|█████████ | 9/10 [00:09<00:00,  1.08it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:11[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.8 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.0 ms, wall=860.4 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+100%|██████████| 10/10 [00:10<00:00,  1.08it/s]100%|██████████| 10/10 [00:10<00:00,  1.01s/it]
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:11[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-8cebccdce6b3a0ac-b9c7ee91 total=10.18s engine=10.18s stages=[0:10.18s]
+INFO:     127.0.0.1:34770 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:12[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.0 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.3 ms, wall=860.8 ms, hidden_h2d=110.7 ms (12% of h2d hidden)
+ 10%|█         | 1/10 [00:00<00:08,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:13[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.0 ms (17601.47 MiB), compute=111.2 ms, exposed_stall=789.2 ms, wall=860.6 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 20%|██        | 2/10 [00:01<00:07,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:14[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=901.6 ms (17601.47 MiB), compute=111.6 ms, exposed_stall=790.4 ms, wall=861.7 ms, hidden_h2d=111.2 ms (12% of h2d hidden)
+ 30%|███       | 3/10 [00:02<00:06,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:15[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.0 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.2 ms, wall=859.6 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 40%|████      | 4/10 [00:03<00:05,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:15[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.8 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.0 ms, wall=860.4 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 50%|█████     | 5/10 [00:04<00:04,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:16[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.5 ms (17601.47 MiB), compute=111.6 ms, exposed_stall=788.3 ms, wall=860.1 ms, hidden_h2d=111.2 ms (12% of h2d hidden)
+ 60%|██████    | 6/10 [00:05<00:03,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:17[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.8 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.0 ms, wall=860.1 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 70%|███████   | 7/10 [00:06<00:02,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:18[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.2 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.3 ms, wall=859.7 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 80%|████████  | 8/10 [00:07<00:01,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:19[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.1 ms (17601.47 MiB), compute=111.6 ms, exposed_stall=788.8 ms, wall=860.6 ms, hidden_h2d=111.3 ms (12% of h2d hidden)
+ 90%|█████████ | 9/10 [00:08<00:00,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:20[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=903.7 ms (17601.47 MiB), compute=111.8 ms, exposed_stall=792.7 ms, wall=864.7 ms, hidden_h2d=111.0 ms (12% of h2d hidden)
+100%|██████████| 10/10 [00:09<00:00,  1.10it/s]100%|██████████| 10/10 [00:09<00:00,  1.10it/s]
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:20[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-b53fb8174b187911-ac6dc3b6 total=9.16s engine=9.16s stages=[0:9.15s]
+INFO:     127.0.0.1:50446 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:21[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=901.2 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=790.3 ms, wall=861.7 ms, hidden_h2d=111.0 ms (12% of h2d hidden)
+ 10%|█         | 1/10 [00:00<00:08,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:22[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.6 ms (17601.47 MiB), compute=111.7 ms, exposed_stall=789.3 ms, wall=860.7 ms, hidden_h2d=111.3 ms (12% of h2d hidden)
+ 20%|██        | 2/10 [00:01<00:07,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:23[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.2 ms (17601.47 MiB), compute=111.7 ms, exposed_stall=787.9 ms, wall=859.8 ms, hidden_h2d=111.3 ms (12% of h2d hidden)
+ 30%|███       | 3/10 [00:02<00:06,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:24[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.0 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.1 ms, wall=860.6 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 40%|████      | 4/10 [00:03<00:05,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:25[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.1 ms (17601.47 MiB), compute=111.2 ms, exposed_stall=788.2 ms, wall=859.6 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 50%|█████     | 5/10 [00:04<00:04,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:26[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.8 ms (17601.47 MiB), compute=111.7 ms, exposed_stall=788.4 ms, wall=860.0 ms, hidden_h2d=111.4 ms (12% of h2d hidden)
+ 60%|██████    | 6/10 [00:05<00:03,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:26[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=898.7 ms (17601.47 MiB), compute=111.2 ms, exposed_stall=787.9 ms, wall=859.3 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 70%|███████   | 7/10 [00:06<00:02,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:27[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.6 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.7 ms, wall=860.2 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 80%|████████  | 8/10 [00:07<00:01,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:28[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.7 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.8 ms, wall=860.3 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 90%|█████████ | 9/10 [00:08<00:00,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:29[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.3 ms (17601.47 MiB), compute=111.7 ms, exposed_stall=789.1 ms, wall=861.2 ms, hidden_h2d=111.2 ms (12% of h2d hidden)
+100%|██████████| 10/10 [00:09<00:00,  1.10it/s]100%|██████████| 10/10 [00:09<00:00,  1.10it/s]
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:29[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-a247a2932e06358c-aff1b6a7 total=9.16s engine=9.16s stages=[0:9.15s]
+INFO:     127.0.0.1:50470 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:30[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.1 ms (17601.47 MiB), compute=111.7 ms, exposed_stall=787.8 ms, wall=859.3 ms, hidden_h2d=111.3 ms (12% of h2d hidden)
+ 10%|█         | 1/10 [00:00<00:08,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:31[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.7 ms (17601.47 MiB), compute=111.2 ms, exposed_stall=788.8 ms, wall=860.2 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 20%|██        | 2/10 [00:01<00:07,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:32[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.2 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.3 ms, wall=859.7 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 30%|███       | 3/10 [00:02<00:06,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:33[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.7 ms (17601.47 MiB), compute=111.7 ms, exposed_stall=788.4 ms, wall=859.6 ms, hidden_h2d=111.3 ms (12% of h2d hidden)
+ 40%|████      | 4/10 [00:03<00:05,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:34[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.2 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.4 ms, wall=859.6 ms, hidden_h2d=110.8 ms (12% of h2d hidden)
+ 50%|█████     | 5/10 [00:04<00:04,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:35[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=898.6 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=787.7 ms, wall=859.2 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 60%|██████    | 6/10 [00:05<00:03,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:36[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.6 ms (17601.47 MiB), compute=111.4 ms, exposed_stall=788.6 ms, wall=860.0 ms, hidden_h2d=111.0 ms (12% of h2d hidden)
+ 70%|███████   | 7/10 [00:06<00:02,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:37[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=899.1 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=788.1 ms, wall=859.5 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 80%|████████  | 8/10 [00:07<00:01,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:37[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=900.1 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=789.1 ms, wall=860.5 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+ 90%|█████████ | 9/10 [00:08<00:00,  1.10it/s][0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[layerwise_backend.py:347][0m layerwise offload timing (round of 40 blocks): h2d=898.6 ms (17601.47 MiB), compute=111.3 ms, exposed_stall=787.6 ms, wall=859.1 ms, hidden_h2d=110.9 ms (12% of h2d hidden)
+100%|██████████| 10/10 [00:09<00:00,  1.10it/s]100%|██████████| 10/10 [00:09<00:00,  1.10it/s]
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-975432948489a296-a4799550 total=9.15s engine=9.15s stages=[0:9.15s]
+INFO:     127.0.0.1:32896 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[launcher.py:128][0m [shutdown] API server: shutdown triggered
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[launcher.py:144][0m [shutdown] API server: stopping engine client mode=abort timeout=0.0s
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[omni_base.py:771][0m [AsyncOmni] Shutting down
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[omni_engine_base.py:1151][0m [OmniEngine] Shutting down Orchestrator
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[orchestrator.py:540][0m [Orchestrator] Received shutdown signal
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[orchestrator.py:2922][0m [Orchestrator] Shutting down all 1 client(s)
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:38[0m [90m[layerwise_backend.py:655][0m Layer-wise offloading disabled
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:39[0m [90m[stage_pool.py:1401][0m [StagePool] Stage 0 replica 0 shut down
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:39[0m [90m[launcher.py:153][0m [shutdown] API server: engine client stopped
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:39[0m [90m[launcher.py:156][0m [shutdown] API server: signalling HTTP server shutdown
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:39[0m [90m[launcher.py:178][0m [shutdown] API server: shutting down FastAPI HTTP server
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+[0;36m(DiffusionWorker pid=8616)[0;0m [32mINFO[0m [90m10-09 14:59:39[0m [90m[omni_base.py:771][0m [AsyncOmni] Shutting down

@@ -1,0 +1,155 @@
+/workspace/boogu-matrix/vllm_omni/__init__.py:22: RuntimeWarning: Failed to import version from _version.py: No module named 'vllm_omni._version'
+This typically happens in development mode before building.
+Using fallback version 'dev'.
+  from .version import __version__, __version_tuple__  # isort:skip # noqa: F401
+W1009 14:52:02.520000 2867 torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W1009 14:52:02.530000 2867 torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+Unable to import `torchao` Tensor objects. This may affect loading checkpoints serialized with `torchao`
+[0;36m(MainProcess pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[serve.py:314][0m Detected diffusion model: /models/Boogu-Image-0.1-Base-fp8
+[0;36m(MainProcess pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[logo.py:52][0m        [97m█     █     █▄   ▄█[0m    [34m   ▄▀▀[38;5;208m▀▀▄ [0m[97m█▄   ▄█ █▄    █ ▀█▀ [0m
+[0;36m(MainProcess pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[logo.py:52][0m  [38;5;208m▄▄[0m [34m▄█[0m [97m█     █     █ ▀▄▀ █[0m[97m  ▄▄▄ [0m[34m █    [38;5;208m█ [0m[97m█ ▀▄▀ █ █ ▀▄  █  █  [0m
+[0;36m(MainProcess pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[logo.py:52][0m   [38;5;208m█[0m[34m▄█▀[0m [97m█     █     █     █[0m[97m      [0m[34m █    [38;5;208m█ [0m[97m█     █ █   ▀▄█  █  [0m
+[0;36m(MainProcess pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[logo.py:52][0m    [34m▀▀[0m  [97m▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀[0m      [35m  ▀▀▀▀  [0m[97m▀     ▀ ▀     ▀ ▀▀▀ [0m
+[0;36m(MainProcess pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[logo.py:52][0m 
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[api_utils.py:347][0m vLLM server version 0.31.0, serving model /models/Boogu-Image-0.1-Base-fp8
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[api_utils.py:286][0m non-default args: {'model_tag': '/models/Boogu-Image-0.1-Base-fp8', 'port': 8097, 'model': '/models/Boogu-Image-0.1-Base-fp8', 'trust_remote_code': True}
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[omni_base.py:208][0m [AsyncOmni] Initializing with model /models/Boogu-Image-0.1-Base-fp8
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[omni_engine_base.py:163][0m [OmniEngine] Initializing with model /models/Boogu-Image-0.1-Base-fp8
+/workspace/boogu-matrix/vllm_omni/config/omni_config.py:1386: FutureWarning: Diffusion config field 'diffusion_quantization_config' is deprecated; use 'quantization_config'.
+  normalized = normalize_omni_diffusion_kwargs(mixed_kwargs, apply_defaults=False)
+[0;36m(APIServer pid=2867)[0;0m [33mWARNING[0m [90m10-09 14:52:06[0m [90m[ring_globals.py:97][0m FlashInfer ring kernels are unavailable. Reason: flashinfer-cubin version (0.6.14) does not match flashinfer version (0.7.0.post1). Please install the same version of both packages. Set FLASHINFER_DISABLE_VERSION_CHECK=1 to bypass this check.
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[config_factory.py:697][0m Resolved generic diffusion final_output_type='image' for model_class_name='BooguImagePipeline'.
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[omni_engine_base.py:312][0m [OmniEngine] Launching Orchestrator thread with 1 stages
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[factory.py:404][0m Per-component quantization: {'transformer': 'torchao'}
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[kernel.py:408][0m Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[diffusion_worker.py:349][0m Final IR op priority after setting vLLM-Omni overrides: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[diffusion_worker.py:366][0m Worker 0: Initialized device and distributed environment.
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[parallel_state.py:610][0m Building SP subgroups from explicit sp_group_ranks (sp_size=1, ulysses=1, ring=1, use_ulysses_low=True).
+[0;36m(APIServer pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:06[0m [90m[parallel_state.py:652][0m SP group details for rank 0: sp_group=[0], ulysses_group=[0], ring_group=[0]
+Loading weights:   0%|          | 0/1002 [00:00<?, ?it/s]Loading weights:   0%|          | 1/1002 [00:11<3:12:08, 11.52s/it]Loading weights:   1%|          | 6/1002 [00:11<23:51,  1.44s/it]  Loading weights:   1%|▏         | 14/1002 [00:11<08:00,  2.05it/s]Loading weights:   2%|▏         | 24/1002 [00:11<03:42,  4.39it/s]Loading weights:   4%|▍         | 39/1002 [00:11<01:45,  9.11it/s]Loading weights:   5%|▍         | 49/1002 [00:12<01:12, 13.14it/s]Loading weights:   6%|▌         | 59/1002 [00:12<00:51, 18.32it/s]Loading weights:   7%|▋         | 69/1002 [00:12<00:38, 23.97it/s]Loading weights:   8%|▊         | 78/1002 [00:12<00:30, 30.12it/s]Loading weights:   9%|▉         | 93/1002 [00:12<00:20, 43.41it/s]Loading weights:  10%|█         | 104/1002 [00:12<00:16, 52.95it/s]Loading weights:  11%|█▏        | 115/1002 [00:12<00:14, 61.39it/s]Loading weights:  13%|█▎        | 127/1002 [00:12<00:12, 71.94it/s]Loading weights:  14%|█▍        | 138/1002 [00:13<00:12, 67.82it/s]Loading weights:  15%|█▍        | 149/1002 [00:13<00:12, 69.53it/s]Loading weights:  16%|█▋        | 164/1002 [00:13<00:10, 81.14it/s]Loading weights:  18%|█▊        | 176/1002 [00:13<00:09, 88.76it/s]Loading weights:  19%|█▊        | 187/1002 [00:13<00:09, 84.36it/s]Loading weights:  20%|█▉        | 197/1002 [00:13<00:09, 86.99it/s]Loading weights:  21%|██        | 207/1002 [00:13<00:09, 82.76it/s]Loading weights:  22%|██▏       | 221/1002 [00:13<00:08, 90.78it/s]Loading weights:  23%|██▎       | 234/1002 [00:14<00:07, 99.35it/s]Loading weights:  24%|██▍       | 245/1002 [00:14<00:08, 87.33it/s]Loading weights:  26%|██▌       | 257/1002 [00:14<00:08, 88.57it/s]Loading weights:  27%|██▋       | 274/1002 [00:14<00:07, 101.44it/s]Loading weights:  28%|██▊       | 285/1002 [00:14<00:07, 96.39it/s] Loading weights:  29%|██▉       | 295/1002 [00:14<00:08, 87.63it/s]Loading weights:  31%|███       | 310/1002 [00:14<00:07, 94.72it/s]Loading weights:  32%|███▏      | 320/1002 [00:15<00:07, 89.92it/s]Loading weights:  33%|███▎      | 330/1002 [00:15<00:07, 90.05it/s]Loading weights:  34%|███▍      | 345/1002 [00:15<00:06, 96.83it/s]Loading weights:  35%|███▌      | 355/1002 [00:15<00:07, 92.24it/s]Loading weights:  37%|███▋      | 366/1002 [00:15<00:06, 96.26it/s]Loading weights:  38%|███▊      | 382/1002 [00:15<00:06, 101.29it/s]Loading weights:  39%|███▉      | 393/1002 [00:15<00:06, 101.43it/s]Loading weights:  40%|████      | 404/1002 [00:16<00:07, 75.00it/s] Loading weights:  42%|████▏     | 420/1002 [00:16<00:06, 87.53it/s]Loading weights:  43%|████▎     | 435/1002 [00:16<00:05, 101.38it/s]Loading weights:  45%|████▍     | 447/1002 [00:16<00:05, 96.59it/s] Loading weights:  46%|████▌     | 458/1002 [00:16<00:06, 90.07it/s]Loading weights:  47%|████▋     | 473/1002 [00:16<00:05, 96.52it/s]Loading weights:  49%|████▊     | 486/1002 [00:16<00:05, 103.02it/s]Loading weights:  50%|████▉     | 497/1002 [00:16<00:06, 78.12it/s] Loading weights:  51%|█████     | 510/1002 [00:17<00:05, 84.03it/s]Loading weights:  52%|█████▏    | 520/1002 [00:17<00:05, 86.29it/s]Loading weights:  53%|█████▎    | 530/1002 [00:17<00:06, 71.30it/s]Loading weights:  54%|█████▍    | 544/1002 [00:17<00:05, 84.06it/s]Loading weights:  55%|█████▌    | 555/1002 [00:17<00:04, 89.82it/s]Loading weights:  56%|█████▋    | 565/1002 [00:17<00:04, 90.85it/s]Loading weights:  57%|█████▋    | 575/1002 [00:17<00:04, 88.61it/s]Loading weights:  58%|█████▊    | 585/1002 [00:18<00:05, 79.34it/s]Loading weights:  60%|█████▉    | 600/1002 [00:18<00:04, 89.69it/s]Loading weights:  61%|██████▏   | 616/1002 [00:18<00:03, 99.42it/s]Loading weights:  63%|██████▎   | 627/1002 [00:18<00:03, 97.97it/s]Loading weights:  64%|██████▎   | 638/1002 [00:18<00:04, 85.06it/s]Loading weights:  66%|██████▌   | 657/1002 [00:18<00:03, 109.42it/s]Loading weights:  68%|██████▊   | 683/1002 [00:18<00:02, 146.39it/s]Loading weights:  71%|███████   | 707/1002 [00:18<00:01, 170.71it/s]Loading weights:  73%|███████▎  | 729/1002 [00:18<00:01, 179.39it/s]Loading weights:  75%|███████▌  | 753/1002 [00:19<00:01, 191.86it/s]Loading weights:  78%|███████▊  | 777/1002 [00:19<00:01, 202.31it/s]Loading weights:  80%|████████  | 803/1002 [00:19<00:00, 207.02it/s]Loading weights:  83%|████████▎ | 827/1002 [00:19<00:00, 213.94it/s]Loading weights:  86%|████████▌ | 858/1002 [00:19<00:00, 233.25it/s]Loading weights:  89%|████████▊ | 887/1002 [00:19<00:00, 235.40it/s]Loading weights:  92%|█████████▏| 919/1002 [00:19<00:00, 248.92it/s]Loading weights:  94%|█████████▍| 946/1002 [00:19<00:00, 203.20it/s]Loading weights:  97%|█████████▋| 975/1002 [00:20<00:00, 207.68it/s]Loading weights: 100%|█████████▉| 997/1002 [00:20<00:00, 147.01it/s]Loading weights: 100%|██████████| 1002/1002 [00:20<00:00, 49.13it/s]
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:32[0m [90m[selector.py:93][0m Resolved diffusion attention backend 'FLASH_ATTN' for role='self' via platform default
+Loading pt checkpoint shards:   0% Completed | 0/2 [00:00<?, ?it/s]
+Loading pt checkpoint shards:  50% Completed | 1/2 [00:21<00:21, 21.17s/it]
+Loading pt checkpoint shards: 100% Completed | 2/2 [00:26<00:00, 11.79s/it]
+Loading pt checkpoint shards: 100% Completed | 2/2 [00:26<00:00, 13.19s/it]
+
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[plain_fp8.py:191][0m Unpacked 318 torchao Float8Tensor linear(s) into plain (fp8 weight, fp32 row-scale) parameters
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusers_loader.py:1138][0m Loading weights took 26.39 seconds
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_model_runner.py:352][0m Model loading took 18.4778 GiB and 52.912017 seconds
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_model_runner.py:358][0m Model runner: Model loaded successfully.
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[compile.py:103][0m Regional compilation applied to 42 module(s) for repeated blocks ['BooguImageTransformerBlock', 'BooguImageContextRefinerTransformerBlock', 'BooguImageSingleStreamTransformerBlock'].
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_model_runner.py:273][0m Model runner: transformer configured for lazy regional torch.compile with dynamic=True; compilation errors may surface on the first request.
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_model_runner.py:449][0m Model runner: Initialization complete.
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_worker.py:447][0m Worker 0: Process-scoped GPU memory after model loading: 0.00 GiB.
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[manager.py:118][0m Initializing DiffusionLoRAManager: device=cuda:0, dtype=torch.bfloat16, max_cached_adapters=1, static_lora_path=None
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_worker.py:318][0m Worker 0: Initialization complete.
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[uniproc_executor.py:74][0m Diffusion worker initialized in-process (uniproc executor)
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_engine.py:434][0m [RequestBatch] engine init max_num_seqs=1 max_wait_ms=0.0
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:52:59[0m [90m[diffusion_engine.py:1428][0m dummy run to warm up the model
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+/usr/local/lib/python3.12/dist-packages/transformers/integrations/hub_kernels.py:643: UserWarning: Skipping publisher trust check for 'kernels-community/finegrained-fp8' because Hugging Face Hub is in offline mode.
+  return get_kernel_hub(
+  0%|          | 0/2 [00:00<?, ?it/s] 50%|█████     | 1/2 [00:11<00:11, 11.44s/it]100%|██████████| 2/2 [00:11<00:00,  5.74s/it]
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[inline_stage_diffusion_client.py:82][0m [InlineStageDiffusionClient] stage-0 [rep-0] initialized inline (max_num_seqs=1)
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[stage_runtime.py:1271][0m [StageRuntime] Stage 0 replica 0 initialized (diffusion)
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[orchestrator.py:444][0m [Orchestrator] Starting event loop
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[omni_engine_base.py:344][0m [OmniEngine] Orchestrator ready with 1 stages
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[omni_base.py:227][0m [AsyncOmni] AsyncOmniEngine initialized in 65.99 seconds
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[omni_base.py:246][0m [AsyncOmni] Initialized with 1 stages for model /models/Boogu-Image-0.1-Base-fp8
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[factories.py:76][0m Scale-out endpoints are disabled. Set --enable-scale-out to enable them.
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[api_server.py:821][0m Detected pure diffusion mode (single diffusion stage)
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[serving_video.py:170][0m Video response frame conversion pool configured: workers=8
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[serving_speech.py:263][0m Speech cache configuration: SpeechCacheConfig(resolve_max_bytes=4294967296, resolve_max_entries=2048, speaker_max_bytes=536870912)
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[speaker_cache.py:245][0m Speaker cache ready (max_bytes=536870912)
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[serving_speech.py:273][0m Speaker storage: dir=/root/.cache/vllm-omni/speakers, max_speakers=1000, restored=0
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[serving.py:91][0m Robot OpenPI serving disabled for model /models/Boogu-Image-0.1-Base-fp8
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[api_server.py:910][0m Pure diffusion API server initialized for model: /models/Boogu-Image-0.1-Base-fp8
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[api_server.py:412][0m Starting vLLM API server (pure diffusion mode) on http://0.0.0.0:8097
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:60][0m Available routes are:
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /openapi.json, Methods: GET, HEAD
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /docs, Methods: GET, HEAD
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /docs/oauth2-redirect, Methods: GET, HEAD
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /redoc, Methods: GET, HEAD
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /load, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /version, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /kv_event_sources, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /metrics, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /tokenize, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /detokenize, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /ping, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /ping, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /invocations, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/responses, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/responses/{response_id}, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/responses/{response_id}/cancel, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/completions, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/messages, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/messages/count_tokens, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /generative_scoring, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /scale_elastic_ep, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /is_scaling_elastic_ep, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/chat/completions, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/chat/completions/batch, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/audio/speech, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/audio/speech/batch, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/audio/generate, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/audio/voices, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/audio/voices, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/audio/voices/{name}, Methods: DELETE
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/step, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/reset, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/close, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/realtime/sessions/{session_id}/status, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /health, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/models, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/images/generations, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/images/edits, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/videos, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/videos/sync, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/videos, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/videos/{video_id}, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/videos/{video_id}, Methods: DELETE
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/videos/{video_id}/content, Methods: GET
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/omni/sleep, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:69][0m Route: /v1/omni/wakeup, Methods: POST
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/audio/speech/stream, Endpoint: streaming_speech
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/video/chat/stream, Endpoint: streaming_video_chat
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/realtime/video, Endpoint: streaming_video_output
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/realtime, Endpoint: realtime_websocket
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/duplex, Endpoint: duplex_websocket
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/realtime/robot/openpi, Endpoint: realtime_robot_openpi
+INFO:     Started server process [2867]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:47458 - "GET /health HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [00:08<01:12,  8.02s/it] 30%|███       | 3/10 [00:08<00:14,  2.14s/it] 40%|████      | 4/10 [00:08<00:08,  1.45s/it] 50%|█████     | 5/10 [00:08<00:05,  1.02s/it] 60%|██████    | 6/10 [00:08<00:02,  1.35it/s] 70%|███████   | 7/10 [00:08<00:01,  1.80it/s] 80%|████████  | 8/10 [00:08<00:00,  2.32it/s] 90%|█████████ | 9/10 [00:09<00:00,  2.90it/s]100%|██████████| 10/10 [00:09<00:00,  3.50it/s]100%|██████████| 10/10 [00:09<00:00,  1.08it/s]
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:24[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-93c7f790c6f90027-830f88aa total=9.52s engine=9.52s stages=[0:9.52s]
+INFO:     127.0.0.1:47470 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [00:00<00:01,  6.62it/s] 30%|███       | 3/10 [00:00<00:00,  9.72it/s] 40%|████      | 4/10 [00:00<00:00,  8.36it/s] 50%|█████     | 5/10 [00:00<00:00,  7.70it/s] 60%|██████    | 6/10 [00:00<00:00,  7.31it/s] 70%|███████   | 7/10 [00:00<00:00,  7.07it/s] 80%|████████  | 8/10 [00:01<00:00,  6.93it/s] 90%|█████████ | 9/10 [00:01<00:00,  6.84it/s]100%|██████████| 10/10 [00:01<00:00,  6.76it/s]100%|██████████| 10/10 [00:01<00:00,  7.24it/s]
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:26[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-a333cf6de3de31e9-9f160f02 total=1.58s engine=1.58s stages=[0:1.58s]
+INFO:     127.0.0.1:39500 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [00:00<00:01,  6.62it/s] 30%|███       | 3/10 [00:00<00:00,  9.69it/s] 40%|████      | 4/10 [00:00<00:00,  8.36it/s] 50%|█████     | 5/10 [00:00<00:00,  7.69it/s] 60%|██████    | 6/10 [00:00<00:00,  7.30it/s] 70%|███████   | 7/10 [00:00<00:00,  7.08it/s] 80%|████████  | 8/10 [00:01<00:00,  6.93it/s] 90%|█████████ | 9/10 [00:01<00:00,  6.82it/s]100%|██████████| 10/10 [00:01<00:00,  6.76it/s]100%|██████████| 10/10 [00:01<00:00,  7.24it/s]
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:28[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-968c7b1d30fcf9a9-a395e50d total=1.59s engine=1.59s stages=[0:1.59s]
+INFO:     127.0.0.1:39516 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[transformers] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+  0%|          | 0/10 [00:00<?, ?it/s] 10%|█         | 1/10 [00:00<00:01,  6.59it/s] 30%|███       | 3/10 [00:00<00:00,  9.71it/s] 40%|████      | 4/10 [00:00<00:00,  8.36it/s] 50%|█████     | 5/10 [00:00<00:00,  7.68it/s] 60%|██████    | 6/10 [00:00<00:00,  7.31it/s] 70%|███████   | 7/10 [00:00<00:00,  7.08it/s] 80%|████████  | 8/10 [00:01<00:00,  6.92it/s] 90%|█████████ | 9/10 [00:01<00:00,  6.82it/s]100%|██████████| 10/10 [00:01<00:00,  6.76it/s]100%|██████████| 10/10 [00:01<00:00,  7.23it/s]
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[stats.py:902][0m [OmniTiming] req=img_gen-84b79f88d420e788-be3c5985 total=1.58s engine=1.58s stages=[0:1.58s]
+INFO:     127.0.0.1:42642 - "POST /v1/images/generations HTTP/1.1" 200 OK
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[launcher.py:128][0m [shutdown] API server: shutdown triggered
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[launcher.py:144][0m [shutdown] API server: stopping engine client mode=abort timeout=0.0s
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[omni_base.py:771][0m [AsyncOmni] Shutting down
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[omni_engine_base.py:1151][0m [OmniEngine] Shutting down Orchestrator
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[orchestrator.py:540][0m [Orchestrator] Received shutdown signal
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[orchestrator.py:2922][0m [Orchestrator] Shutting down all 1 client(s)
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[stage_pool.py:1401][0m [StagePool] Stage 0 replica 0 shut down
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[launcher.py:153][0m [shutdown] API server: engine client stopped
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[launcher.py:156][0m [shutdown] API server: signalling HTTP server shutdown
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[launcher.py:178][0m [shutdown] API server: shutting down FastAPI HTTP server
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:29[0m [90m[omni_base.py:771][0m [AsyncOmni] Shutting down

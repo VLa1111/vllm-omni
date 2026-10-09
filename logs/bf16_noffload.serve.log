@@ -1,0 +1,456 @@
+/workspace/boogu-matrix/vllm_omni/__init__.py:22: RuntimeWarning: Failed to import version from _version.py: No module named 'vllm_omni._version'
+This typically happens in development mode before building.
+Using fallback version 'dev'.
+  from .version import __version__, __version_tuple__  # isort:skip # noqa: F401
+W1009 14:55:27.698000 6207 torch/utils/_pytree.py:630] <enum 'KernelPreference'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+W1009 14:55:27.708000 6207 torch/utils/_pytree.py:630] <enum 'ScaleCalculationMode'> is an Enum subclass and is now natively supported by torch.compile as an opaque value type. Calling register_constant() on Enum subclasses is deprecated and will be an error in a future release.
+Unable to import `torchao` Tensor objects. This may affect loading checkpoints serialized with `torchao`
+[0;36m(MainProcess pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[serve.py:314][0m Detected diffusion model: /models/Boogu-Image-0.1-Base
+[0;36m(MainProcess pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[logo.py:52][0m        [97m█     █     █▄   ▄█[0m    [34m   ▄▀▀[38;5;208m▀▀▄ [0m[97m█▄   ▄█ █▄    █ ▀█▀ [0m
+[0;36m(MainProcess pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[logo.py:52][0m  [38;5;208m▄▄[0m [34m▄█[0m [97m█     █     █ ▀▄▀ █[0m[97m  ▄▄▄ [0m[34m █    [38;5;208m█ [0m[97m█ ▀▄▀ █ █ ▀▄  █  █  [0m
+[0;36m(MainProcess pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[logo.py:52][0m   [38;5;208m█[0m[34m▄█▀[0m [97m█     █     █     █[0m[97m      [0m[34m █    [38;5;208m█ [0m[97m█     █ █   ▀▄█  █  [0m
+[0;36m(MainProcess pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[logo.py:52][0m    [34m▀▀[0m  [97m▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀[0m      [35m  ▀▀▀▀  [0m[97m▀     ▀ ▀     ▀ ▀▀▀ [0m
+[0;36m(MainProcess pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[logo.py:52][0m 
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[api_utils.py:347][0m vLLM server version 0.31.0, serving model /models/Boogu-Image-0.1-Base
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[api_utils.py:286][0m non-default args: {'model_tag': '/models/Boogu-Image-0.1-Base', 'port': 8097, 'model': '/models/Boogu-Image-0.1-Base', 'trust_remote_code': True}
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[omni_base.py:208][0m [AsyncOmni] Initializing with model /models/Boogu-Image-0.1-Base
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[omni_engine_base.py:163][0m [OmniEngine] Initializing with model /models/Boogu-Image-0.1-Base
+[0;36m(APIServer pid=6207)[0;0m [33mWARNING[0m [90m10-09 14:55:31[0m [90m[ring_globals.py:97][0m FlashInfer ring kernels are unavailable. Reason: flashinfer-cubin version (0.6.14) does not match flashinfer version (0.7.0.post1). Please install the same version of both packages. Set FLASHINFER_DISABLE_VERSION_CHECK=1 to bypass this check.
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[config_factory.py:697][0m Resolved generic diffusion final_output_type='image' for model_class_name='BooguImagePipeline'.
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[omni_engine_base.py:312][0m [OmniEngine] Launching Orchestrator thread with 1 stages
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[kernel.py:408][0m Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[diffusion_worker.py:349][0m Final IR op priority after setting vLLM-Omni overrides: IrOpPriorityConfig(rms_norm=['vllm_c', 'native'], fused_add_rms_norm=['vllm_c', 'native'], gelu_and_mul_sparse=['triton', 'native'])
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[diffusion_worker.py:366][0m Worker 0: Initialized device and distributed environment.
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[parallel_state.py:610][0m Building SP subgroups from explicit sp_group_ranks (sp_size=1, ulysses=1, ring=1, use_ulysses_low=True).
+[0;36m(APIServer pid=6207)[0;0m [32mINFO[0m [90m10-09 14:55:31[0m [90m[parallel_state.py:652][0m SP group details for rank 0: sp_group=[0], ulysses_group=[0], ring_group=[0]
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]Loading weights:   0%|          | 1/750 [00:11<2:18:09, 11.07s/it]Loading weights:   0%|          | 2/750 [00:12<1:06:45,  5.35s/it]Loading weights:   1%|          | 4/750 [00:12<25:38,  2.06s/it]  Loading weights:   1%|          | 5/750 [00:12<18:10,  1.46s/it]Loading weights:   1%|          | 6/750 [00:12<13:02,  1.05s/it]Loading weights:   2%|▏         | 13/750 [00:12<03:20,  3.68it/s]Loading weights:   2%|▏         | 16/750 [00:13<02:33,  4.77it/s]Loading weights:   3%|▎         | 20/750 [00:13<01:43,  7.08it/s]Loading weights:   3%|▎         | 26/750 [00:13<01:06, 10.89it/s]Loading weights:   4%|▍         | 29/750 [00:13<01:05, 11.03it/s]Loading weights:   5%|▍         | 37/750 [00:13<00:41, 17.26it/s]Loading weights:   5%|▌         | 40/750 [00:14<00:42, 16.84it/s]Loading weights:   6%|▌         | 46/750 [00:14<00:31, 22.65it/s]Loading weights:   7%|▋         | 50/750 [00:14<00:41, 16.88it/s]Loading weights:   8%|▊         | 59/750 [00:14<00:28, 24.41it/s]Loading weights:   8%|▊         | 63/750 [00:15<00:29, 23.11it/s]Loading weights:   9%|▉         | 70/750 [00:15<00:24, 28.11it/s]Loading weights:  10%|▉         | 74/750 [00:15<00:27, 24.38it/s]Loading weights:  11%|█         | 81/750 [00:15<00:23, 27.99it/s]Loading weights:  11%|█▏        | 85/750 [00:15<00:25, 25.63it/s]Loading weights:  12%|█▏        | 91/750 [00:15<00:23, 27.83it/s]Loading weights:  13%|█▎        | 94/750 [00:16<00:26, 24.34it/s]Loading weights:  13%|█▎        | 101/750 [00:16<00:20, 32.40it/s]Loading weights:  14%|█▍        | 105/750 [00:16<00:28, 22.32it/s]Loading weights:  15%|█▍        | 112/750 [00:16<00:21, 29.84it/s]Loading weights:  16%|█▌        | 117/750 [00:17<00:32, 19.21it/s]Loading weights:  17%|█▋        | 125/750 [00:17<00:27, 22.79it/s]Loading weights:  17%|█▋        | 129/750 [00:17<00:29, 21.34it/s]Loading weights:  18%|█▊        | 136/750 [00:17<00:23, 25.76it/s]Loading weights:  19%|█▊        | 140/750 [00:18<00:26, 23.31it/s]Loading weights:  19%|█▉        | 146/750 [00:18<00:24, 24.73it/s]Loading weights:  20%|█▉        | 149/750 [00:18<00:26, 22.87it/s]Loading weights:  21%|██        | 155/750 [00:18<00:23, 24.83it/s]Loading weights:  21%|██        | 159/750 [00:18<00:26, 22.16it/s]Loading weights:  22%|██▏       | 162/750 [00:19<00:26, 22.47it/s]Loading weights:  22%|██▏       | 167/750 [00:19<00:21, 26.98it/s]Loading weights:  23%|██▎       | 170/750 [00:19<00:25, 22.56it/s]Loading weights:  23%|██▎       | 175/750 [00:19<00:21, 26.88it/s]Loading weights:  24%|██▍       | 180/750 [00:19<00:18, 30.69it/s]Loading weights:  25%|██▍       | 184/750 [00:19<00:20, 27.41it/s]Loading weights:  25%|██▌       | 188/750 [00:19<00:21, 26.01it/s]Loading weights:  25%|██▌       | 191/750 [00:20<00:23, 23.92it/s]Loading weights:  26%|██▌       | 194/750 [00:20<00:27, 20.57it/s]Loading weights:  27%|██▋       | 199/750 [00:20<00:21, 26.17it/s]Loading weights:  27%|██▋       | 203/750 [00:20<00:23, 22.82it/s]Loading weights:  28%|██▊       | 208/750 [00:20<00:19, 27.31it/s]Loading weights:  28%|██▊       | 212/750 [00:20<00:20, 26.20it/s]Loading weights:  29%|██▊       | 215/750 [00:21<00:22, 23.31it/s]Loading weights:  30%|██▉       | 222/750 [00:21<00:16, 32.60it/s]Loading weights:  30%|███       | 226/750 [00:21<00:20, 25.14it/s]Loading weights:  31%|███▏      | 235/750 [00:21<00:16, 31.85it/s]Loading weights:  32%|███▏      | 239/750 [00:21<00:17, 29.60it/s]Loading weights:  32%|███▏      | 243/750 [00:21<00:16, 30.90it/s]Loading weights:  33%|███▎      | 247/750 [00:22<00:24, 20.32it/s]Loading weights:  33%|███▎      | 250/750 [00:22<00:25, 19.40it/s]Loading weights:  34%|███▍      | 257/750 [00:22<00:19, 25.03it/s]Loading weights:  35%|███▍      | 260/750 [00:22<00:21, 23.05it/s]Loading weights:  35%|███▌      | 264/750 [00:23<00:19, 25.31it/s]Loading weights:  36%|███▌      | 268/750 [00:23<00:20, 23.20it/s]Loading weights:  36%|███▌      | 271/750 [00:23<00:22, 21.02it/s]Loading weights:  37%|███▋      | 279/750 [00:23<00:19, 24.77it/s]Loading weights:  38%|███▊      | 282/750 [00:23<00:24, 19.31it/s]Loading weights:  38%|███▊      | 288/750 [00:24<00:18, 25.51it/s]Loading weights:  39%|███▉      | 292/750 [00:24<00:23, 19.62it/s]Loading weights:  40%|███▉      | 298/750 [00:24<00:17, 25.12it/s]Loading weights:  40%|████      | 302/750 [00:24<00:19, 23.30it/s]Loading weights:  41%|████      | 307/750 [00:24<00:16, 26.53it/s]Loading weights:  42%|████▏     | 312/750 [00:24<00:14, 29.68it/s]Loading weights:  42%|████▏     | 316/750 [00:25<00:15, 28.38it/s]Loading weights:  43%|████▎     | 323/750 [00:25<00:13, 32.77it/s]Loading weights:  44%|████▎     | 327/750 [00:25<00:13, 30.55it/s]Loading weights:  45%|████▍     | 334/750 [00:25<00:12, 33.87it/s]Loading weights:  45%|████▌     | 338/750 [00:25<00:14, 29.29it/s]Loading weights:  46%|████▌     | 343/750 [00:25<00:12, 33.23it/s]Loading weights:  46%|████▋     | 347/750 [00:26<00:16, 24.65it/s]Loading weights:  47%|████▋     | 356/750 [00:26<00:11, 33.25it/s]Loading weights:  48%|████▊     | 360/750 [00:26<00:12, 30.87it/s]Loading weights:  49%|████▊     | 365/750 [00:26<00:11, 33.74it/s]Loading weights:  49%|████▉     | 369/750 [00:26<00:14, 25.75it/s]Loading weights:  50%|█████     | 378/750 [00:27<00:10, 33.96it/s]Loading weights:  51%|█████     | 382/750 [00:27<00:12, 28.40it/s]Loading weights:  52%|█████▏    | 389/750 [00:27<00:13, 27.10it/s]Loading weights:  52%|█████▏    | 393/750 [00:27<00:14, 24.94it/s]Loading weights:  54%|█████▍    | 404/750 [00:27<00:09, 37.89it/s]Loading weights:  57%|█████▋    | 427/750 [00:28<00:04, 72.28it/s]Loading weights:  60%|██████    | 451/750 [00:28<00:02, 105.95it/s]Loading weights:  63%|██████▎   | 475/750 [00:28<00:02, 135.39it/s]Loading weights:  66%|██████▌   | 492/750 [00:28<00:01, 133.81it/s]Loading weights:  68%|██████▊   | 513/750 [00:28<00:01, 147.23it/s]Loading weights:  71%|███████▏  | 535/750 [00:28<00:01, 165.53it/s]Loading weights:  75%|███████▌  | 563/750 [00:28<00:01, 186.82it/s]Loading weights:  78%|███████▊  | 587/750 [00:28<00:00, 194.48it/s]Loading weights:  81%|████████▏ | 610/750 [00:28<00:00, 194.46it/s]Loading weights:  86%|████████▌ | 643/750 [00:29<00:00, 227.22it/s]Loading weights:  89%|████████▉ | 667/750 [00:29<00:00, 227.65it/s]Loading weights:  92%|█████████▏| 691/750 [00:29<00:00, 221.65it/s]Loading weights:  96%|█████████▌| 717/750 [00:29<00:00, 227.16it/s]Loading weights:  99%|█████████▊| 740/750 [00:29<00:00, 156.48it/s]Loading weights: 100%|██████████| 750/750 [00:29<00:00, 25.25it/s] 
+[0;36m(DiffusionWorker pid=6207)[0;0m [32mINFO[0m [90m10-09 14:56:10[0m [90m[selector.py:93][0m Resolved diffusion attention backend 'FLASH_ATTN' for role='self' via platform default
+[rank0]:[W1009 14:56:10.421255018 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 23068672 bytes (free: 39059456, total: 25227100160).
+[rank0]:[W1009 14:56:10.421309665 CUDACachingAllocator.cpp:3933] memory allocation failed with OOM on device 0 while trying to allocate 23068672 bytes (free: 39059456, total: 25227100160).
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m [StageRuntime] Stage initialization failed; shutting down 0 initialized client(s)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m Traceback (most recent call last):
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 297, in initialize
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 946, in _initialize_stage_replicas
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     raise primary_exc
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 907, in _init_group
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     client = self._initialize_replica(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1136, in _initialize_replica
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1257, in _initialize_local_diffusion_replica
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     client, resources = launch_diffusion_stage_replica(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_engine_startup.py", line 1602, in launch_diffusion_stage_replica
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     client = initialize_diffusion_stage(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_init_utils.py", line 2045, in initialize_diffusion_stage
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     return create_diffusion_client(model, od_config, metadata, stage_init_timeout, use_inline)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/stage_diffusion_client.py", line 58, in create_diffusion_client
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     return InlineStageDiffusionClient(model, od_config, metadata)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 70, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self._engine = DiffusionEngine.make_engine(self.od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 1085, in make_engine
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     engine = engine_class(config, scheduler=scheduler)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 276, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self._init_executor(od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 354, in _init_executor
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.executor = executor_class(od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/abstract.py", line 84, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self._init_executor()
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/uniproc_executor.py", line 67, in _init_executor
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.driver_worker = WorkerWrapperBase(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                          ^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 1731, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     worker = worker_class(**worker_init_kwargs)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 310, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.load_model(load_format=self.od_config.diffusion_load_format)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 438, in load_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.model_runner.load_model(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_model_runner.py", line 344, in load_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.pipeline = model_loader.load_model(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                     ^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 736, in load_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     model = self._init_from_load_format(load_format, target_device, custom_pipeline_name, is_hsdp=False)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 1258, in _init_from_load_format
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     model = initialize_model(self.od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/registry.py", line 472, in initialize_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     model = model_class(od_config=od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/pipeline_boogu_image.py", line 317, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.transformer = BooguImageTransformer2DModel(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 1377, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     BooguImageDoubleStreamTransformerBlock(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 928, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.img_self_attn = BooguImageSelfAttention(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                          ^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 627, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.to_out = RowParallelLinear(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m                   ^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 1700, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     self.quant_method.create_weights(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 193, in create_weights
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     data=torch.empty(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m          ^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m     return func(*args, **kwargs)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m            ^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[stage_runtime.py:310][0m torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 22.00 MiB. GPU 0 has a total capacity of 23.49 GiB of which 37.25 MiB is free. Process 4153696 has 22.93 GiB memory in use. Of the allocated memory 22.38 GiB is allocated by PyTorch, and 115.47 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m [OmniEngine] Orchestrator thread crashed
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m Traceback (most recent call last):
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 472, in _bootstrap_orchestrator
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     loop.run_until_complete(_run_orchestrator())
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/usr/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     return future.result()
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m            ^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 445, in _run_orchestrator
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self._initialize_stages(stage_init_timeout)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 392, in _initialize_stages
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self._runtime.initialize()
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 316, in initialize
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     raise exc
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 297, in initialize
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 946, in _initialize_stage_replicas
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     raise primary_exc
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 907, in _init_group
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     client = self._initialize_replica(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1136, in _initialize_replica
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1257, in _initialize_local_diffusion_replica
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     client, resources = launch_diffusion_stage_replica(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_engine_startup.py", line 1602, in launch_diffusion_stage_replica
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     client = initialize_diffusion_stage(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/engine/stage_init_utils.py", line 2045, in initialize_diffusion_stage
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     return create_diffusion_client(model, od_config, metadata, stage_init_timeout, use_inline)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/stage_diffusion_client.py", line 58, in create_diffusion_client
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     return InlineStageDiffusionClient(model, od_config, metadata)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 70, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self._engine = DiffusionEngine.make_engine(self.od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 1085, in make_engine
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     engine = engine_class(config, scheduler=scheduler)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 276, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self._init_executor(od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 354, in _init_executor
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.executor = executor_class(od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/abstract.py", line 84, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self._init_executor()
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/uniproc_executor.py", line 67, in _init_executor
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.driver_worker = WorkerWrapperBase(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                          ^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 1731, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     worker = worker_class(**worker_init_kwargs)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 310, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.load_model(load_format=self.od_config.diffusion_load_format)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 438, in load_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.model_runner.load_model(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_model_runner.py", line 344, in load_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.pipeline = model_loader.load_model(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                     ^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 736, in load_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     model = self._init_from_load_format(load_format, target_device, custom_pipeline_name, is_hsdp=False)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 1258, in _init_from_load_format
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     model = initialize_model(self.od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/registry.py", line 472, in initialize_model
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     model = model_class(od_config=od_config)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/pipeline_boogu_image.py", line 317, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.transformer = BooguImageTransformer2DModel(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 1377, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     BooguImageDoubleStreamTransformerBlock(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 928, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.img_self_attn = BooguImageSelfAttention(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                          ^^^^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 627, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.to_out = RowParallelLinear(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m                   ^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 1700, in __init__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     self.quant_method.create_weights(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 193, in create_weights
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     data=torch.empty(
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m          ^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m     return func(*args, **kwargs)
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m            ^^^^^^^^^^^^^^^^^^^^^
+[0;36m(DiffusionWorker pid=6207)[0;0m [31mERROR[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:478][0m torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 22.00 MiB. GPU 0 has a total capacity of 23.49 GiB of which 37.25 MiB is free. Process 4153696 has 22.93 GiB memory in use. Of the allocated memory 22.38 GiB is allocated by PyTorch, and 115.47 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+[0;36m(DiffusionWorker pid=6207)[0;0m [32mINFO[0m [90m10-09 14:56:11[0m [90m[omni_engine_base.py:1151][0m [OmniEngine] Shutting down Orchestrator
+Exception in thread orchestrator:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 472, in _bootstrap_orchestrator
+    loop.run_until_complete(_run_orchestrator())
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 445, in _run_orchestrator
+    self._initialize_stages(stage_init_timeout)
+  File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 392, in _initialize_stages
+    self._runtime.initialize()
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 316, in initialize
+    raise exc
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 297, in initialize
+    initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 946, in _initialize_stage_replicas
+    raise primary_exc
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 907, in _init_group
+    client = self._initialize_replica(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1136, in _initialize_replica
+    return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1257, in _initialize_local_diffusion_replica
+    client, resources = launch_diffusion_stage_replica(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_engine_startup.py", line 1602, in launch_diffusion_stage_replica
+    client = initialize_diffusion_stage(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/engine/stage_init_utils.py", line 2045, in initialize_diffusion_stage
+    return create_diffusion_client(model, od_config, metadata, stage_init_timeout, use_inline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/stage_diffusion_client.py", line 58, in create_diffusion_client
+    return InlineStageDiffusionClient(model, od_config, metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 70, in __init__
+    self._engine = DiffusionEngine.make_engine(self.od_config)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 1085, in make_engine
+    engine = engine_class(config, scheduler=scheduler)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 276, in __init__
+    self._init_executor(od_config)
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 354, in _init_executor
+    self.executor = executor_class(od_config)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/abstract.py", line 84, in __init__
+    self._init_executor()
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/uniproc_executor.py", line 67, in _init_executor
+    self.driver_worker = WorkerWrapperBase(
+                         ^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 1731, in __init__
+    worker = worker_class(**worker_init_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 310, in __init__
+    self.load_model(load_format=self.od_config.diffusion_load_format)
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 438, in load_model
+    self.model_runner.load_model(
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_model_runner.py", line 344, in load_model
+    self.pipeline = model_loader.load_model(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 736, in load_model
+    model = self._init_from_load_format(load_format, target_device, custom_pipeline_name, is_hsdp=False)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 1258, in _init_from_load_format
+    model = initialize_model(self.od_config)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/registry.py", line 472, in initialize_model
+    model = model_class(od_config=od_config)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/pipeline_boogu_image.py", line 317, in __init__
+    self.transformer = BooguImageTransformer2DModel(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 1377, in __init__
+    BooguImageDoubleStreamTransformerBlock(
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 928, in __init__
+    self.img_self_attn = BooguImageSelfAttention(
+                         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 627, in __init__
+    self.to_out = RowParallelLinear(
+                  ^^^^^^^^^^^^^^^^^^
+  File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 1700, in __init__
+    self.quant_method.create_weights(
+  File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 193, in create_weights
+    data=torch.empty(
+         ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 22.00 MiB. GPU 0 has a total capacity of 23.49 GiB of which 37.25 MiB is free. Process 4153696 has 22.93 GiB memory in use. Of the allocated memory 22.38 GiB is allocated by PyTorch, and 115.47 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/usr/lib/python3.12/threading.py", line 1075, in _bootstrap_inner
+[rank0]:     self.run()
+[rank0]:   File "/usr/lib/python3.12/threading.py", line 1012, in run
+[rank0]:     self._target(*self._args, **self._kwargs)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 472, in _bootstrap_orchestrator
+[rank0]:     loop.run_until_complete(_run_orchestrator())
+[rank0]:   File "/usr/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+[rank0]:     return future.result()
+[rank0]:            ^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 445, in _run_orchestrator
+[rank0]:     self._initialize_stages(stage_init_timeout)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 392, in _initialize_stages
+[rank0]:     self._runtime.initialize()
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 316, in initialize
+[rank0]:     raise exc
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 297, in initialize
+[rank0]:     initialized_clients = self._initialize_stage_replicas(stage_plans, self._stage_init_timeout)
+[rank0]:                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 946, in _initialize_stage_replicas
+[rank0]:     raise primary_exc
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 907, in _init_group
+[rank0]:     client = self._initialize_replica(
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1136, in _initialize_replica
+[rank0]:     return self._initialize_local_diffusion_replica(plan, stage_init_timeout)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_runtime.py", line 1257, in _initialize_local_diffusion_replica
+[rank0]:     client, resources = launch_diffusion_stage_replica(
+[rank0]:                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_engine_startup.py", line 1602, in launch_diffusion_stage_replica
+[rank0]:     client = initialize_diffusion_stage(
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/stage_init_utils.py", line 2045, in initialize_diffusion_stage
+[rank0]:     return create_diffusion_client(model, od_config, metadata, stage_init_timeout, use_inline)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/stage_diffusion_client.py", line 58, in create_diffusion_client
+[rank0]:     return InlineStageDiffusionClient(model, od_config, metadata)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/inline_stage_diffusion_client.py", line 70, in __init__
+[rank0]:     self._engine = DiffusionEngine.make_engine(self.od_config)
+[rank0]:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 1085, in make_engine
+[rank0]:     engine = engine_class(config, scheduler=scheduler)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 276, in __init__
+[rank0]:     self._init_executor(od_config)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/diffusion_engine.py", line 354, in _init_executor
+[rank0]:     self.executor = executor_class(od_config)
+[rank0]:                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/abstract.py", line 84, in __init__
+[rank0]:     self._init_executor()
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/executor/uniproc_executor.py", line 67, in _init_executor
+[rank0]:     self.driver_worker = WorkerWrapperBase(
+[rank0]:                          ^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 1731, in __init__
+[rank0]:     worker = worker_class(**worker_init_kwargs)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 310, in __init__
+[rank0]:     self.load_model(load_format=self.od_config.diffusion_load_format)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_worker.py", line 438, in load_model
+[rank0]:     self.model_runner.load_model(
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/worker/diffusion_model_runner.py", line 344, in load_model
+[rank0]:     self.pipeline = model_loader.load_model(
+[rank0]:                     ^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 736, in load_model
+[rank0]:     model = self._init_from_load_format(load_format, target_device, custom_pipeline_name, is_hsdp=False)
+[rank0]:             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/model_loader/diffusers_loader.py", line 1258, in _init_from_load_format
+[rank0]:     model = initialize_model(self.od_config)
+[rank0]:             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/registry.py", line 472, in initialize_model
+[rank0]:     model = model_class(od_config=od_config)
+[rank0]:             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/pipeline_boogu_image.py", line 317, in __init__
+[rank0]:     self.transformer = BooguImageTransformer2DModel(
+[rank0]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 1377, in __init__
+[rank0]:     BooguImageDoubleStreamTransformerBlock(
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 928, in __init__
+[rank0]:     self.img_self_attn = BooguImageSelfAttention(
+[rank0]:                          ^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/diffusion/models/boogu_image/boogu_image_transformer.py", line 627, in __init__
+[rank0]:     self.to_out = RowParallelLinear(
+[rank0]:                   ^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 1700, in __init__
+[rank0]:     self.quant_method.create_weights(
+[rank0]:   File "/workspace/venv31/lib/python3.12/site-packages/vllm/model_executor/layers/linear.py", line 193, in create_weights
+[rank0]:     data=torch.empty(
+[rank0]:          ^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_device.py", line 122, in __torch_function__
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 22.00 MiB. GPU 0 has a total capacity of 23.49 GiB of which 37.25 MiB is free. Process 4153696 has 22.93 GiB memory in use. Of the allocated memory 22.38 GiB is allocated by PyTorch, and 115.47 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+
+[rank0]: The above exception was the direct cause of the following exception:
+
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/workspace/venv31/bin/vllm", line 6, in <module>
+[rank0]:     sys.exit(main())
+[rank0]:              ^^^^^^
+[rank0]:   File "/workspace/venv31/lib/python3.12/site-packages/vllm/entrypoints/cli/main.py", line 40, in main
+[rank0]:     if maybe_run_omni():
+[rank0]:        ^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/venv31/lib/python3.12/site-packages/vllm/entrypoints/cli/main.py", line 34, in maybe_run_omni
+[rank0]:     omni_main()
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/cli/main.py", line 77, in main
+[rank0]:     args.dispatch_function(args)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/cli/serve.py", line 160, in cmd
+[rank0]:     uvloop.run(omni_run_server(args))
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 96, in run
+[rank0]:     return __asyncio.run(
+[rank0]:            ^^^^^^^^^^^^^^
+[rank0]:   File "/usr/lib/python3.12/asyncio/runners.py", line 195, in run
+[rank0]:     return runner.run(main)
+[rank0]:            ^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+[rank0]:     return self._loop.run_until_complete(task)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "uvloop/loop.pyx", line 1518, in uvloop.loop.Loop.run_until_complete
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/uvloop/__init__.py", line 48, in wrapper
+[rank0]:     return await main
+[rank0]:            ^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/openai/api_server.py", line 249, in omni_run_server
+[rank0]:     await omni_run_server_worker(listen_address, sock, args, **uvicorn_kwargs)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/openai/api_server.py", line 351, in omni_run_server_worker
+[rank0]:     async with build_async_omni(
+[rank0]:                ^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+[rank0]:     return await anext(self.gen)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/openai/api_server.py", line 541, in build_async_omni
+[rank0]:     async with build_async_omni_from_stage_config(
+[rank0]:                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+[rank0]:     return await anext(self.gen)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/openai/api_server.py", line 648, in build_async_omni_from_stage_config
+[rank0]:     async_omni = AsyncOmni(model=model, **kwargs)
+[rank0]:                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/async_omni.py", line 89, in __init__
+[rank0]:     AsyncOmniBase.__init__(self, *args, model=model, **kwargs)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/async_omni_base.py", line 110, in __init__
+[rank0]:     OmniBase.__init__(self, model=model, **kwargs)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/omni_base.py", line 215, in __init__
+[rank0]:     self.engine = self._create_engine(
+[rank0]:                   ^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/entrypoints/async_omni.py", line 85, in _create_engine
+[rank0]:     return AsyncOmniEngine(**engine_kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 327, in __init__
+[rank0]:     self._wait_for_orchestrator_init(startup_future, startup_timeout)
+[rank0]:   File "/workspace/boogu-matrix/vllm_omni/engine/omni_engine_base.py", line 530, in _wait_for_orchestrator_init
+[rank0]:     startup_future.result(
+[rank0]:   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+[rank0]:     return self.__get_result()
+[rank0]:            ^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+[rank0]:     raise self._exception
+[rank0]: RuntimeError: Orchestrator initialization failed: CUDA out of memory. Tried to allocate 22.00 MiB. GPU 0 has a total capacity of 23.49 GiB of which 37.25 MiB is free. Process 4153696 has 22.93 GiB memory in use. Of the allocated memory 22.38 GiB is allocated by PyTorch, and 115.47 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

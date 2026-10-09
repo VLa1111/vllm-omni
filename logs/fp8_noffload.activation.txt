@@ -1,0 +1,3 @@
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/audio/speech/stream, Endpoint: streaming_speech
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/video/chat/stream, Endpoint: streaming_video_chat
+[0;36m(DiffusionWorker pid=2867)[0;0m [32mINFO[0m [90m10-09 14:53:12[0m [90m[launcher.py:80][0m Route: /v1/realtime/video, Endpoint: streaming_video_output

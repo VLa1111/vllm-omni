@@ -1,0 +1,8 @@
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:53:41[0m [90m[diffusers_loader.py:711][0m Online quantization with CPU offload, using cuda for weight loading (will offload back to CPU)
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:53:47[0m [90m[diffusers_loader.py:510][0m Stream-offloaded 0 online-quantized layers to CPU during weight loading
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:53:52[0m [90m[diffusers_loader.py:887][0m Quantization complete, offloaded model back to CPU
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:53:53[0m [90m[__init__.py:179][0m Enabling offloader backend: ModelLevelOffloadBackend
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:53:53[0m [90m[sequential_backend.py:382][0m Model-level offloading enabled: transformer <-> mllm (mutual exclusion)
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:54:02[0m [90m[launcher.py:80][0m Route: /v1/audio/speech/stream, Endpoint: streaming_speech
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:54:02[0m [90m[launcher.py:80][0m Route: /v1/video/chat/stream, Endpoint: streaming_video_chat
+[0;36m(DiffusionWorker pid=4291)[0;0m [32mINFO[0m [90m10-09 14:54:02[0m [90m[launcher.py:80][0m Route: /v1/realtime/video, Endpoint: streaming_video_output
