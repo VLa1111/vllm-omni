@@ -73,6 +73,14 @@ Startup / model-loading benchmark for the two-stage MammothModa2 (AR → DiT) de
 - **Layout**: `mammoth_moda2/bench_startup.py` (single-process startup and first/steady request timing), `mammoth_moda2/parse_startup_log.py` (per-stage breakdown from engine logs), `mammoth_moda2/bench_storage_scenarios.sh` (cold/warm page cache on local disk vs. network storage), `mammoth_moda2/raw_load_bench.py` (safetensors → GPU without vLLM)
 - **Key metrics**: time to engine ready, per-stage spawn/init/weight-load/profile time, first vs. steady-state request latency
 
+### [Qwen-Image-2.1](qwen_image_21/README.md) — Single-GPU T2I and Edit Profiling
+
+Single-GPU profiling for Qwen-Image-2.1 text-to-image and image edit (0/1/4 reference images), plus a detector for edits that were re-rendered instead of edited.
+
+- **Layout**: `qwen_image_21/profile_edit_matrix.py` (0/1/4-reference cells × waves × resolutions × batch sizes, one fresh process per run), `qwen_image_21/quality_gate.py` (corner-Laplacian collapse detector)
+- **Workload**: offline examples at 1024x1024 and 2048x2048, 50 steps, true CFG off; edit cells consume self-generated T2I sources
+- **Key metrics**: wall time (includes engine start), generation time, peak device memory, per-wave determinism (md5), gate value per output
+
 ### Common serving metrics framework
 
 `vllm_omni/benchmarks/` extends `vllm bench serve --omni` with Omni-specific datasets, backends, and multimodal metrics. Key metrics include:
