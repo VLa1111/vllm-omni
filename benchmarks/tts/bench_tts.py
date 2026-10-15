@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: Copyright contributors to the vLLM-Omni project
+
 """Universal TTS benchmark CLI for vllm-omni.
 
 Runs ``vllm bench serve --omni`` with model-aware defaults loaded from
@@ -93,6 +94,7 @@ def build_bench_args(
     num_warmups: int = 2,
     request_seed: int | None = None,
     metric_percentiles: str = _DEFAULT_METRIC_PERCENTILES,
+    duration_seconds: float | None = None,
 ) -> list[str]:
     """Build the ``vllm bench serve --omni`` command for one (task, concurrency) run."""
     dataset_name = _TASK_TO_DATASET[task]
@@ -101,7 +103,10 @@ def build_bench_args(
     task_extra_body: dict[str, Any] = dict((model_cfg.get("task_extra_body") or {}).get(task) or {})
     if request_seed is not None:
         task_extra_body["seed"] = request_seed
-
+    if duration_seconds is not None:
+        if not math.isfinite(duration_seconds) or duration_seconds <= 0:
+            raise ValueError("duration_seconds must be finite and positive")
+        task_extra_body["duration_seconds"] = duration_seconds
     # Resolve dataset path
     if dataset_path:
         resolved_dataset_path = dataset_path
@@ -234,7 +239,7 @@ def print_summary_table(results: list[dict[str, Any]]) -> None:
     if not results:
         return
     header = (
-        f"{'Task':<16} {'Concurrency':>11} {'RTF mean':>10} "
+        f"{'Task':<16} {'Task Type':<12} {'Concurrency':>11} {'RTF mean':>10} "
         f"{'TTFP (ms)':>11} {'TTFP p50':>10} {'TTFP p99':>10} "
         f"{'Throughput':>12} {'WER':>7} {'SIM':>7} {'UTMOS':>7}"
     )
@@ -245,6 +250,7 @@ def print_summary_table(results: list[dict[str, Any]]) -> None:
     print("-" * len(header))
     for r in results:
         task = r.get("_task", "?")
+        task_type = r.get("_task_type", "-")
         conc = r.get("_concurrency", "?")
         rtf = r.get("mean_audio_rtf", float("nan"))
         ttfp = r.get("mean_audio_ttfp_ms", float("nan"))
@@ -258,7 +264,7 @@ def print_summary_table(results: list[dict[str, Any]]) -> None:
             return f"{v:.{digits}f}" if not math.isnan(v) else "  n/a"
 
         print(
-            f"{task:<16} {str(conc):>11} {fmt(rtf):>10} {fmt(ttfp, 0):>11} "
+            f"{task:<16} {task_type:<12} {str(conc):>11} {fmt(rtf):>10} {fmt(ttfp, 0):>11} "
             f"{fmt(ttfp_p50, 0):>10} {fmt(ttfp_p99, 0):>10} "
             f"{fmt(throughput):>12} {fmt(wer):>7} {fmt(sim):>7} {fmt(utmos):>7}"
         )
@@ -302,6 +308,12 @@ def main() -> None:
         type=int,
         default=2,
         help="Warmup requests before each measured run",
+    )
+    parser.add_argument(
+        "--duration-seconds",
+        type=float,
+        default=None,
+        help="Target audio duration per request (AuK defaults to 5 seconds). Independent of --output-len.",
     )
     parser.add_argument(
         "--request-seed",
@@ -350,6 +362,8 @@ def main() -> None:
 
     if args.num_warmups < 0:
         parser.error("--num-warmups cannot be negative")
+    if args.duration_seconds is not None and (not math.isfinite(args.duration_seconds) or args.duration_seconds <= 0):
+        parser.error("--duration-seconds must be finite and positive")
 
     model_configs = load_model_configs(Path(args.model_configs))
     if args.model not in model_configs:
@@ -407,11 +421,16 @@ def main() -> None:
                 num_warmups=args.num_warmups,
                 request_seed=args.request_seed,
                 metric_percentiles=args.metric_percentiles,
+                duration_seconds=args.duration_seconds,
             )
             result = run_one_benchmark(cmd)
             if result is not None:
                 result["_task"] = task
                 result["_concurrency"] = concurrency
+                task_body = model_cfg.get("task_extra_body", {}).get(task, {})
+                task_type = task_body.get("task_type")
+                if task_type is not None:
+                    result["_task_type"] = task_type
                 all_results.append(result)
                 # Persist the metadata so plot_results.py can pick it up.
                 if args.output_dir and result_filename:

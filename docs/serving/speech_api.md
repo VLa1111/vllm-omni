@@ -4,8 +4,10 @@ vLLM-Omni provides an OpenAI-compatible API for text-to-speech (TTS) generation.
 
 - **Qwen3-TTS** (`Qwen/Qwen3-TTS-12Hz-*`) -- Qwen3-based TTS with CustomVoice, VoiceDesign, and Base (voice cloning) task types. Native output: 24 kHz; API output can be resampled to 8 kHz.
 - **Fish Speech S2 Pro** (`fishaudio/s2-pro`) -- Dual-AR TTS with DAC codec. Supports text-to-speech and voice cloning via reference audio. Output: 44.1 kHz.
+- **Fish Audio Drama 3** (`fishaudio/drama-3`) -- Qwen3.5 MoE backbone with a codebook tower and the Fish Speech DAC codec. Supports text-to-speech, voice cloning via reference audio, speaker tags and inline event tags. Output: 44.1 kHz.
 - **Voxtral TTS** (`mistralai/Voxtral-4B-TTS-2603`) -- AR + FlowMatching TTS with preset voices. Output: 24 kHz.
 - **CosyVoice3** (`FunAudioLLM/Fun-CosyVoice3-0.5B-2512`) -- 2-stage talker + flow-matching code2wav. Voice cloning via `ref_audio` + `ref_text` (no presets). Output: 24 kHz.
+- **Gepard-1.0** (`nineninesix/gepard-1.0`) -- single-stage native-AR TTS with a 22.05 kHz NanoCodec. Zero-shot default voice only.
 
 See the [Supported Models](#supported-models) section below for the full list, including OmniVoice, VoxCPM2, MOSS-TTS-Nano, and Breeze-TTS-2.
 
@@ -34,17 +36,25 @@ vllm serve Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice \
 # Fish Speech S2 Pro
 vllm serve fishaudio/s2-pro --omni --port 8091
 
+# Fish Audio Drama 3
+vllm serve fishaudio/drama-3 --omni --port 8091
+
 # Voxtral TTS
 vllm serve mistralai/Voxtral-4B-TTS-2603 --omni --port 8091
 
 # CosyVoice3 (voice cloning only — supply ref_audio + ref_text per request)
 vllm serve FunAudioLLM/Fun-CosyVoice3-0.5B-2512 \
     --omni --port 8091 --trust-remote-code
+
+# Gepard-1.0 (zero-shot default voice; packaged gepard.yaml)
+vllm-omni serve nineninesix/gepard-1.0 --omni --port 8091 --trust-remote-code \
+    --stage-init-timeout 900 \
+    --deploy-config vllm_omni/deploy/gepard.yaml
 ```
 
 ### Generate Speech
 
-**Using curl:**
+**Qwen3-TTS CustomVoice, using curl:**
 
 ```bash
 curl -X POST http://localhost:8091/v1/audio/speech \
@@ -56,7 +66,24 @@ curl -X POST http://localhost:8091/v1/audio/speech \
     }' --output output.wav
 ```
 
-**Using Python:**
+**Gepard-1.0, using curl:**
+
+Gepard accepts `input` (required), `voice` (`"default"`), `response_format`,
+`stream` / `stream_format`, `max_new_tokens`, and `seed`. Unsupported fields
+include `speed`, `language`, `instructions`, `task_type`, `ref_audio`,
+`ref_text`, `extra_params`, and `word_timestamps`.
+
+```bash
+curl -X POST http://localhost:8091/v1/audio/speech \
+    -H "Content-Type: application/json" \
+    -d '{
+        "input": "Hello, this is Gepard speaking.",
+        "voice": "default",
+        "seed": 7
+    }' --output output.wav
+```
+
+**Qwen3-TTS CustomVoice, using Python:**
 
 ```python
 import httpx
@@ -160,6 +187,16 @@ emit these headers.
 **Raw audio stream** (`stream_format="audio"`). Streams raw audio bytes (PCM or
 WAV) as they are decoded.
 
+`pcm` is 16-bit signed little-endian, interleaved, at the model's native sample
+rate and channel count (24 kHz mono for most models; MOSS-TTS-Local v1.5 emits
+48 kHz stereo). Raw streams and non-streaming responses state the format in
+response headers:
+
+| Header | Description |
+| --- | --- |
+| `x-audio-sample-rate` | Sample rate of the returned audio in Hz (after any `sample_rate` resampling). |
+| `x-audio-channels` | Channel count of the returned audio. |
+
 Both streaming modes (`stream_format="audio"` and `"sse"`) require
 `response_format="pcm"` or `"wav"`, and `speed` must be `1.0` (or omitted).
 
@@ -170,8 +207,12 @@ Each event has an `event:` line and a JSON `data:` line:
 - `speech.audio.delta` — a base64 audio chunk:
 
     ```json
-    { "type": "speech.audio.delta", "audio": "<base64>", "response_format": "pcm" }
+    { "type": "speech.audio.delta", "audio": "<base64>", "response_format": "pcm",
+      "sample_rate": 24000, "channels": 1 }
     ```
+
+    `sample_rate` and `channels` extend the OpenAI event and describe the
+    decoded chunk.
 
 - `speech.audio.done` — terminal event, carrying token `usage`:
 
@@ -266,6 +307,19 @@ Upload a new voice sample for voice cloning in Base task TTS requests.
 
 Fields `ref_text` and `speaker_description` are omitted when not provided at upload time.
 
+**Naming rules:**
+
+- Names that collide with one of the model's built-in or precomputed voices are rejected (400). Voice
+  files already on disk under such a name are ignored at startup with a warning, so an upload can never
+  shadow a built-in voice.
+- Re-uploading an existing uploaded name overwrites it in place (the previous audio file is
+  deleted). Set `VLLM_OMNI_SPEAKER_REGISTRATION_POLICY=immutable` on the server to reject duplicates instead,
+  requiring an explicit `DELETE /v1/audio/voices/{name}` before re-registering — useful when the
+  endpoint is reachable by multiple writers and silent overwrites are a risk.
+- The voice registry has no per-user ownership: any client that can reach the endpoint can
+  overwrite (default policy) or delete any uploaded voice. For multi-tenant deployments, add
+  authentication at a proxy and namespace voice names per user (e.g. `{user}.{name}`).
+
 **Usage Example:**
 
 ```bash
@@ -304,7 +358,7 @@ Server -> Client:
 
 | Message | Description |
 | --------- | ------------- |
-| `{"type": "audio.start", "utterance_index": 0, "sentence_index": 0, "sentence_text": "...", "format": "pcm", "sample_rate": 24000}` | Audio generation starting for the buffered input |
+| `{"type": "audio.start", "utterance_index": 0, "sentence_index": 0, "sentence_text": "...", "format": "pcm", "sample_rate": 24000, "channels": 1}` | Audio generation starting for the buffered input. With `stream_audio=true` it is sent with the first audio chunk, and for `pcm` it carries that audio's `sample_rate` and `channels` (omitted when no audio was produced). |
 | Binary frame | Raw audio bytes (one or more PCM chunks when `stream_audio=true`) |
 | `{"type": "audio.done", "utterance_index": 0, "sentence_index": 0, "total_bytes": 96000, "error": false}` | Audio complete for the buffered input |
 | `{"type": "session.done", "utterance_index": 0, "total_sentences": N}` | Flushed utterance complete |
@@ -498,6 +552,15 @@ are cached in-process with a shared LRU so repeated requests with the same
 all TTS model types; deleting a voice invalidates every model-type slot at
 once.
 
+Decoded reference waveforms use a separate LRU cache of owned, contiguous
+float32 arrays at the source sampling rate. Its byte budget counts numeric
+buffers (four bytes per mono sample), excluding cache metadata. Numeric storage
+avoids retaining a Python float object for every sample during garbage
+collection. MOSS reference encoding consumes these arrays directly; other
+list-based interfaces, including MOSS Nano, receive temporary lists that are
+not retained in the resolve cache. The MOSS reference encoder also releases
+completed batch inputs before waiting for more work.
+
 ### Precomputed Custom Voices
 
 Qwen3-TTS Base and VoxCPM2 can load offline-precomputed voices at startup.
@@ -545,6 +608,7 @@ by `GET /v1/audio/voices`. Valid precomputed voices can be used in
 | ---------- | --------- | ------------- |
 | `SPEAKER_SAMPLES_DIR` | `~/.cache/vllm-omni/speakers` | Directory for persisted uploaded speakers (`.safetensors` files). |
 | `SPEAKER_MAX_UPLOADED` | `1000` | Maximum number of uploaded speakers kept on disk. Upload requests past the cap return 400. |
+| `VLLM_OMNI_SPEAKER_REGISTRATION_POLICY` | `overwrite` | `immutable` rejects re-uploading an existing uploaded name (400) until it is deleted; any other value fails startup. |
 
 The in-memory LRU has a fixed 512 MiB byte budget.
 
@@ -749,6 +813,14 @@ The bundled config also sets `initial_codec_chunk_frames: 1`. This emits only th
 
 Fish Speech uses `ref_audio` and `ref_text` for voice cloning (no `task_type` needed). The `voice` field should be set to `"default"`. See the [Fish Speech section of the online TTS hub](../user_guide/examples/online_serving/text_to_speech.md#fish-speech-s2-pro) for details.
 
+### Fish Audio Drama 3
+
+| Model | Description |
+| ------- | ------------- |
+| `fishaudio/drama-3` | 35B-total / 3B-active MoE TTS with a codebook tower and the DAC codec (44.1 kHz). Supports text-to-speech and voice cloning. |
+
+Drama 3 uses `ref_audio` and `ref_text` for voice cloning, like Fish Speech S2 Pro. Speaker tags (`<|speaker:N|>`) and event tags (for example `[sighs]`) go in `input`; event tags are free-form bracketed text, not a fixed list (see the [Drama 3 recipe](https://github.com/vllm-project/vllm-omni/blob/main/recipes/fishaudio/Drama-3.md#event-and-emotion-tags)). See the [Drama 3 section of the online TTS hub](../user_guide/examples/online_serving/text_to_speech.md#fish-audio-drama-3) for details.
+
 ### Voxtral TTS
 
 | Model | Description |
@@ -760,6 +832,28 @@ Fish Speech uses `ref_audio` and `ref_text` for voice cloning (no `task_type` ne
 | Model | Description |
 | ------- | ------------- |
 | `FunAudioLLM/Fun-CosyVoice3-0.5B-2512` | Voice cloning from `ref_audio` + `ref_text`. No built-in voice presets — upload a voice or pass `ref_audio`/`ref_text` per request. |
+
+### Gepard-1.0
+
+| Model | Description |
+| ----- | ----------- |
+| `nineninesix/gepard-1.0` | Zero-shot native-AR TTS. 22.05 kHz mono. `voice` must be omitted or `"default"`. |
+
+Gepard request fields:
+
+| Field | Behavior |
+| ----- | -------- |
+| `input` | Required. Empty/whitespace-only returns 400. |
+| `voice` | Omitted or `"default"` only. Other values 400. |
+| `response_format` | `wav` default. Non-streaming: `wav`/`pcm`/`flac`/`mp3`. `opus` returns 400 (22.05 kHz is not an Opus sample rate). Streaming: `pcm`/`wav` only. |
+| `stream` / `stream_format` | SSE (`speech.audio.*`) and raw `audio` byte streaming. |
+| `speed` | Must be `1.0`. Gepard has no native speed control. |
+| `max_new_tokens` | Frame budget (1 token = 1 frame = 1024 samples ≈ 46.4 ms). Default 1000 from deploy YAML; adapter bounds 1..4096. |
+| `seed` | Optional. Reaches the in-model 32-head sampler. The packaged YAML currently pins `seed: 42`, so serving is deterministic by default until that pin is removed. |
+| `extra_params` | Any key returns 400, including `temperature`/`top_p`/`top_k`. |
+| Cloning / style fields | `ref_audio`, `ref_text`, `speaker_embedding`, `instructions`, `language`, `task_type`, `word_timestamps`, and similar declared-but-unsupported fields return 400. |
+
+See the [Gepard section of the online TTS hub](../user_guide/examples/online_serving/text_to_speech.md#gepard-10) for launch commands. Native-AR recompute preemption is a known limitation under concurrency.
 
 ### OmniVoice
 
@@ -903,22 +997,25 @@ Use `/v1/audio/voices` to list available voices for the loaded model.
 ## Orchestration Loop (experimental)
 
 Multi-stage omni deployments route stage outputs through a single orchestrator
-loop. By default that loop polls every stage replica on a 1 ms cadence. An
-opt-in event-driven mode replaces the poll with one reader task per live stage
-replica awaiting its client directly, and switches the serving-side
-final-output drain to a condition-variable wakeup at the same time.
+loop. The legacy loop polls every stage replica on a 1 ms cadence. The
+event-driven mode replaces the poll with one reader task per live stage
+replica awaiting its client directly. Every pipeline uses the event-driven
+mode by default; the legacy poll remains available as an opt-out. The
+serving-side final-output loop is independent of this setting: it is always
+woken when the orchestrator queues output.
 
 **Configuration (environment variables):**
 
 | Variable | Default | Description |
 | --- | --- | --- |
-| `VLLM_OMNI_EVENT_DRIVEN_ORCH` | `0` (off) | Switches the orchestration loop and the final-output drain from the legacy 1 ms poll to event-driven wakeups. Enabled by `1`, `true`, `yes`, or `on`, matched case-insensitively after surrounding whitespace is stripped; any other value leaves it off. |
+| `VLLM_OMNI_EVENT_DRIVEN_ORCH` | On | Selects between event-driven wakeups and the legacy 1 ms poll for the orchestration loop. The value is resolved at orchestrator construction. `1`, `true`, `yes`, or `on` keeps event-driven mode, ignoring case and surrounding whitespace; any other value, such as `0`, selects the legacy poll loop. |
 
-Set it on the process that runs the orchestrator (stage 0 of an omni
-deployment) before starting the server:
+Set it on the process that runs the orchestrator (stage 0 of an omni deployment)
+before starting the server when overriding the default. For example,
+select the legacy poll loop for Qwen3-TTS:
 
 ```bash
-export VLLM_OMNI_EVENT_DRIVEN_ORCH=1
+VLLM_OMNI_EVENT_DRIVEN_ORCH=0 \
 vllm serve Qwen/Qwen3-TTS-12Hz-1.7B-Base \
     --omni \
     --port 8091
@@ -928,8 +1025,8 @@ The server logs the selected loop mode and its reader/poller counts once at
 startup, so you can confirm which loop is live.
 
 Routing, output ordering, and terminal-state behavior are identical on both
-loops; only the poll cadence changes. Leaving the variable unset keeps the
-legacy poll loop, which is the supported default.
+loops; only the poll cadence changes. Leaving the variable unset selects
+event-driven orchestration for every pipeline.
 
 **Known limitations:**
 
@@ -939,9 +1036,6 @@ legacy poll loop, which is the supported default.
   changed dead-replica handling and reader/poller lifecycle rather than the
   steady-state output path, and the parity suite covers it, but the serving
   A/B has not been re-run on the current head.
-- The diffusion-poller branch is covered by unit tests only. Deployments whose
-  stages all run as standard engine cores never exercise it, including GLM-TTS,
-  which deploys its DiT without `stage_type: diffusion`.
 - Concurrency 1 and 32 measured at parity with the legacy loop. At 32 the
   latency is admission-bound, which this mode does not address.
 
@@ -958,3 +1052,64 @@ vllm serve Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice \
     --enforce-eager \
     --uvicorn-log-level debug
 ```
+
+### Reusing reference audio
+
+The voice upload API and cache settings below are shared serving features.
+For repeated voices, upload the reference once and reuse its name. The example
+uses MOSS-TTS Local: uploading stores the audio, and the first speech request
+encodes it. MOSS-TTS Local can then reuse cached reference codes without resolving
+the waveform while the speaker cache entry remains resident. After a server
+restart or speaker-cache eviction, another speech request warms the codes again.
+Reference processing and cache-hit behavior for other models depend on their
+serving adapters.
+
+```bash
+curl --fail http://localhost:8123/v1/audio/voices \
+  -F 'name=my-speaker' \
+  -F 'consent=user_consent_id' \
+  -F 'audio_sample=@/path/to/reference.wav'
+
+# Run once to warm the reference codes, then reuse the same voice.
+curl --fail http://localhost:8123/v1/audio/speech \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5","voice":"my-speaker","input":"Hello, world.","response_format":"wav"}' \
+  --output speech.wav
+```
+
+If you have the reference transcript, upload it with `-F 'ref_text=...'`.
+MOSS-TTS Local uses a reference transcript for continuation conditioning; omitting
+it uses reference-audio conditioning instead. Keep this choice consistent when
+comparing benchmarks. Supplying inline `ref_audio` overrides the uploaded voice
+and does not use the named-voice cache shortcut.
+
+The separate decoded-waveform resolve cache defaults to **4 GiB and 2048 entries
+per speech server instance**. These are LRU limits, not preallocated memory or a
+limit on total server RSS. Waveforms retain their source sampling rate and are
+stored as owned, contiguous float32 arrays in **CPU memory**. The byte limit
+counts numeric buffers (four bytes per mono sample), not the encoded file size
+or GPU memory.
+Either limit can cause eviction. Configure the API-process caches in the deploy
+YAML passed to `--deploy-config` (alongside `stages`, not inside a stage):
+
+```yaml
+speech_cache:
+  resolve_max_bytes: 4294967296
+  resolve_max_entries: 2048
+  speaker_max_bytes: 536870912
+```
+
+All values must be non-negative integers. Either resolve limit set to `0`
+disables waveform storage; `speaker_max_bytes: 0` disables speaker artifact
+storage. Invalid values fail configuration loading. `base_config` inheritance
+merges this section by field, preserving unspecified values from the base.
+Restart the service to apply changes. The effective settings are logged at startup.
+
+The speaker budget defaults to **512 MiB** and counts cached tensor bytes,
+not Python metadata or total process RSS. It configures the API process's
+speaker cache. MOSS reference codes are cached as **CPU int32 tensors**; this
+budget does not reserve GPU memory or include the reference encoder's GPU
+weights and working memory. The shared cache itself does not move tensors
+between devices; other adapters determine the device of their cached artifacts.
+Separate model-worker caches are not controlled by this section. The process-wide singleton rejects a
+conflicting explicit budget instead of silently ignoring it.
