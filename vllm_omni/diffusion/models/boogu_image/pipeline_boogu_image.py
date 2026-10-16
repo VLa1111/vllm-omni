@@ -1148,22 +1148,22 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
             # down, so it has to enter the same window itself: DLO resident
             # blocks hold zero-sized placeholders until ``load`` runs, and they
             # are released again before VAE decode.
-            with self._resident_dit_layers_on_device(enabled=True):
-                with self.progress_bar(total=len(dmd_sigmas)) as progress_bar:
-                    for index, sigma in enumerate(dmd_sigmas):
-                        latents = self._predict_dmd_student_step(
-                            latents,
-                            sigma,
-                            instruction_embeds,
-                            freqs_real,
-                            instruction_attention_mask,
-                            ref_latents,
-                        ).to(dtype=dtype)
-                        if index + 1 < len(dmd_sigmas):
-                            latents = self._renoise_dmd_latents(latents, dmd_sigmas[index + 1], generator).to(
-                                dtype=dtype
-                            )
-                        progress_bar.update()
+            with (
+                self._resident_dit_layers_on_device(enabled=True),
+                self.progress_bar(total=len(dmd_sigmas)) as progress_bar,
+            ):
+                for index, sigma in enumerate(dmd_sigmas):
+                    latents = self._predict_dmd_student_step(
+                        latents,
+                        sigma,
+                        instruction_embeds,
+                        freqs_real,
+                        instruction_attention_mask,
+                        ref_latents,
+                    ).to(dtype=dtype)
+                    if index + 1 < len(dmd_sigmas):
+                        latents = self._renoise_dmd_latents(latents, dmd_sigmas[index + 1], generator).to(dtype=dtype)
+                    progress_bar.update()
             output = self._decode_output(latents, output_type, dtype, height, width, ori_height, ori_width)
             return split_diffusion_output_by_request(
                 output,
@@ -1182,109 +1182,108 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
         # --dlo-resident-layers N) keeps the model-declared leading DiT blocks
         # resident for the whole denoise loop; loaded before the first step and
         # released before VAE decode to bound peak HBM.
-        with self._resident_dit_layers_on_device(enabled=True):
-            # Reproduces the branch priority of upstream ``processing`` (double >
-            # text-only > image-only > t2i text). Reference latents stay attached
-            # to the same branches as in the original sequential implementation.
-            with self.progress_bar(total=num_timesteps) as progress_bar:
-                for i, t in enumerate(timesteps):
-                    in_cfg_range = cfg_range[0] <= i / num_timesteps <= cfg_range[1]
-                    text_gs = text_guidance_scale if in_cfg_range else 1.0
-                    image_gs = image_guidance_scale if in_cfg_range else 1.0
+        # Reproduces the branch priority of upstream ``processing`` (double >
+        # text-only > image-only > t2i text). Reference latents stay attached
+        # to the same branches as in the original sequential implementation.
+        with self._resident_dit_layers_on_device(enabled=True), self.progress_bar(total=num_timesteps) as progress_bar:
+            for i, t in enumerate(timesteps):
+                in_cfg_range = cfg_range[0] <= i / num_timesteps <= cfg_range[1]
+                text_gs = text_guidance_scale if in_cfg_range else 1.0
+                image_gs = image_guidance_scale if in_cfg_range else 1.0
 
-                    positive_kwargs = dict(
+                positive_kwargs = dict(
+                    t=t,
+                    latents=latents,
+                    instruction_embeds=instruction_embeds,
+                    freqs_real=freqs_real,
+                    instruction_attention_mask=instruction_attention_mask,
+                    ref_image_hidden_states=ref_latents,
+                )
+
+                if task_type == "ti2i" and text_gs > 1.0 and image_gs > 1.0:
+                    # Double guidance: 3 predictions (cond+ref, neg+ref, neg+no-ref).
+                    negative_with_reference_kwargs = dict(
                         t=t,
                         latents=latents,
-                        instruction_embeds=instruction_embeds,
+                        instruction_embeds=negative_instruction_embeds,
                         freqs_real=freqs_real,
-                        instruction_attention_mask=instruction_attention_mask,
+                        instruction_attention_mask=negative_instruction_attention_mask,
                         ref_image_hidden_states=ref_latents,
                     )
+                    uncond_kwargs = dict(
+                        t=t,
+                        latents=latents,
+                        instruction_embeds=negative_instruction_embeds,
+                        freqs_real=freqs_real,
+                        instruction_attention_mask=negative_instruction_attention_mask,
+                        ref_image_hidden_states=None,
+                    )
+                    model_pred = self.predict_noise_with_multi_branch_cfg(
+                        do_true_cfg=True,
+                        true_cfg_scale={"text": text_gs, "image": image_gs},
+                        branches_kwargs=[positive_kwargs, negative_with_reference_kwargs, uncond_kwargs],
+                        cfg_normalize=False,
+                    )
+                elif task_type == "ti2i" and text_gs > 1.0:
+                    # Text-only ti2i guidance: reference kept in the uncond pred.
+                    negative_kwargs = dict(
+                        t=t,
+                        latents=latents,
+                        instruction_embeds=negative_instruction_embeds,
+                        freqs_real=freqs_real,
+                        instruction_attention_mask=negative_instruction_attention_mask,
+                        ref_image_hidden_states=ref_latents,
+                    )
+                    model_pred = self.predict_noise_maybe_with_cfg(
+                        do_true_cfg=True,
+                        true_cfg_scale=text_gs,
+                        positive_kwargs=positive_kwargs,
+                        negative_kwargs=negative_kwargs,
+                        cfg_normalize=False,
+                    )
+                elif task_type == "ti2i" and image_gs > 1.0:
+                    # Image-only ti2i guidance: drop the reference in the uncond pred.
+                    negative_kwargs = dict(positive_kwargs, ref_image_hidden_states=None)
+                    model_pred = self.predict_noise_maybe_with_cfg(
+                        do_true_cfg=True,
+                        true_cfg_scale=image_gs,
+                        positive_kwargs=positive_kwargs,
+                        negative_kwargs=negative_kwargs,
+                        cfg_normalize=False,
+                    )
+                elif text_gs > 1.0:
+                    # Text-to-image classifier-free guidance.
+                    negative_kwargs = dict(
+                        t=t,
+                        latents=latents,
+                        instruction_embeds=negative_instruction_embeds,
+                        freqs_real=freqs_real,
+                        instruction_attention_mask=negative_instruction_attention_mask,
+                        ref_image_hidden_states=None,
+                    )
+                    model_pred = self.predict_noise_maybe_with_cfg(
+                        do_true_cfg=True,
+                        true_cfg_scale=text_gs,
+                        positive_kwargs=positive_kwargs,
+                        negative_kwargs=negative_kwargs,
+                        cfg_normalize=False,
+                    )
+                else:
+                    # CFG-off requests remain valid even if the server owns a
+                    # CFG process group: every rank evaluates only the positive
+                    # branch and no negative embeddings are required.
+                    model_pred = self.predict_noise_maybe_with_cfg(
+                        do_true_cfg=False,
+                        true_cfg_scale=1.0,
+                        positive_kwargs=positive_kwargs,
+                        negative_kwargs=None,
+                        cfg_normalize=False,
+                    )
 
-                    if task_type == "ti2i" and text_gs > 1.0 and image_gs > 1.0:
-                        # Double guidance: 3 predictions (cond+ref, neg+ref, neg+no-ref).
-                        negative_with_reference_kwargs = dict(
-                            t=t,
-                            latents=latents,
-                            instruction_embeds=negative_instruction_embeds,
-                            freqs_real=freqs_real,
-                            instruction_attention_mask=negative_instruction_attention_mask,
-                            ref_image_hidden_states=ref_latents,
-                        )
-                        uncond_kwargs = dict(
-                            t=t,
-                            latents=latents,
-                            instruction_embeds=negative_instruction_embeds,
-                            freqs_real=freqs_real,
-                            instruction_attention_mask=negative_instruction_attention_mask,
-                            ref_image_hidden_states=None,
-                        )
-                        model_pred = self.predict_noise_with_multi_branch_cfg(
-                            do_true_cfg=True,
-                            true_cfg_scale={"text": text_gs, "image": image_gs},
-                            branches_kwargs=[positive_kwargs, negative_with_reference_kwargs, uncond_kwargs],
-                            cfg_normalize=False,
-                        )
-                    elif task_type == "ti2i" and text_gs > 1.0:
-                        # Text-only ti2i guidance: reference kept in the uncond pred.
-                        negative_kwargs = dict(
-                            t=t,
-                            latents=latents,
-                            instruction_embeds=negative_instruction_embeds,
-                            freqs_real=freqs_real,
-                            instruction_attention_mask=negative_instruction_attention_mask,
-                            ref_image_hidden_states=ref_latents,
-                        )
-                        model_pred = self.predict_noise_maybe_with_cfg(
-                            do_true_cfg=True,
-                            true_cfg_scale=text_gs,
-                            positive_kwargs=positive_kwargs,
-                            negative_kwargs=negative_kwargs,
-                            cfg_normalize=False,
-                        )
-                    elif task_type == "ti2i" and image_gs > 1.0:
-                        # Image-only ti2i guidance: drop the reference in the uncond pred.
-                        negative_kwargs = dict(positive_kwargs, ref_image_hidden_states=None)
-                        model_pred = self.predict_noise_maybe_with_cfg(
-                            do_true_cfg=True,
-                            true_cfg_scale=image_gs,
-                            positive_kwargs=positive_kwargs,
-                            negative_kwargs=negative_kwargs,
-                            cfg_normalize=False,
-                        )
-                    elif text_gs > 1.0:
-                        # Text-to-image classifier-free guidance.
-                        negative_kwargs = dict(
-                            t=t,
-                            latents=latents,
-                            instruction_embeds=negative_instruction_embeds,
-                            freqs_real=freqs_real,
-                            instruction_attention_mask=negative_instruction_attention_mask,
-                            ref_image_hidden_states=None,
-                        )
-                        model_pred = self.predict_noise_maybe_with_cfg(
-                            do_true_cfg=True,
-                            true_cfg_scale=text_gs,
-                            positive_kwargs=positive_kwargs,
-                            negative_kwargs=negative_kwargs,
-                            cfg_normalize=False,
-                        )
-                    else:
-                        # CFG-off requests remain valid even if the server owns a
-                        # CFG process group: every rank evaluates only the positive
-                        # branch and no negative embeddings are required.
-                        model_pred = self.predict_noise_maybe_with_cfg(
-                            do_true_cfg=False,
-                            true_cfg_scale=1.0,
-                            positive_kwargs=positive_kwargs,
-                            negative_kwargs=None,
-                            cfg_normalize=False,
-                        )
-
-                    do_true_cfg = text_gs > 1.0 or (task_type == "ti2i" and image_gs > 1.0)
-                    latents = self.scheduler_step_maybe_with_cfg(model_pred, t, latents, do_true_cfg=do_true_cfg)
-                    latents = latents.to(dtype=instruction_embeds.dtype)
-                    progress_bar.update()
+                do_true_cfg = text_gs > 1.0 or (task_type == "ti2i" and image_gs > 1.0)
+                latents = self.scheduler_step_maybe_with_cfg(model_pred, t, latents, do_true_cfg=do_true_cfg)
+                latents = latents.to(dtype=instruction_embeds.dtype)
+                progress_bar.update()
 
         # 6. Decode.
         output = self._decode_output(latents, output_type, dtype, height, width, ori_height, ori_width)
