@@ -379,7 +379,12 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
             config,
             online_quant_config,
             dtype=self.od_config.dtype,
-            device=self._execution_device,
+            # When an offload strategy owns component placement the encoder is
+            # built on CPU, matching the from_pretrained path above: the builder
+            # materializes real parameters (a meta input with ``device=None``
+            # would stay meta), so the execution device would resurrect the
+            # eager GPU allocation this placement contract exists to avoid.
+            device=torch.device("cpu") if self._managed_component_placement else self._execution_device,
             prefix="mllm",
             skip_modules=("mllm.visual",),
         )
@@ -1139,19 +1144,26 @@ class BooguImagePipeline(CFGParallelMixin, nn.Module, ProgressBarMixin, Supports
                 conditioning_sigma=conditioning_sigma,
                 timesteps=dmd_timesteps,
             )
-            with self.progress_bar(total=len(dmd_sigmas)) as progress_bar:
-                for index, sigma in enumerate(dmd_sigmas):
-                    latents = self._predict_dmd_student_step(
-                        latents,
-                        sigma,
-                        instruction_embeds,
-                        freqs_real,
-                        instruction_attention_mask,
-                        ref_latents,
-                    ).to(dtype=dtype)
-                    if index + 1 < len(dmd_sigmas):
-                        latents = self._renoise_dmd_latents(latents, dmd_sigmas[index + 1], generator).to(dtype=dtype)
-                    progress_bar.update()
+            # The DMD loop returns before the shared residency wrapper further
+            # down, so it has to enter the same window itself: DLO resident
+            # blocks hold zero-sized placeholders until ``load`` runs, and they
+            # are released again before VAE decode.
+            with self._resident_dit_layers_on_device(enabled=True):
+                with self.progress_bar(total=len(dmd_sigmas)) as progress_bar:
+                    for index, sigma in enumerate(dmd_sigmas):
+                        latents = self._predict_dmd_student_step(
+                            latents,
+                            sigma,
+                            instruction_embeds,
+                            freqs_real,
+                            instruction_attention_mask,
+                            ref_latents,
+                        ).to(dtype=dtype)
+                        if index + 1 < len(dmd_sigmas):
+                            latents = self._renoise_dmd_latents(latents, dmd_sigmas[index + 1], generator).to(
+                                dtype=dtype
+                            )
+                        progress_bar.update()
             output = self._decode_output(latents, output_type, dtype, height, width, ori_height, ori_width)
             return split_diffusion_output_by_request(
                 output,
