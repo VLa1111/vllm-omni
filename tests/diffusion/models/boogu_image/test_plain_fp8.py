@@ -19,6 +19,8 @@ from vllm_omni.diffusion.models.boogu_image.plain_fp8 import (
     unpack_float8_linear,
 )
 
+pytestmark = [pytest.mark.core_model, pytest.mark.cpu, pytest.mark.diffusion]
+
 _KO = pytest.importorskip("torchao")  # FP8 checkpoint support requires torchao
 
 

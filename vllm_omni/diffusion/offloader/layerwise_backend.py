@@ -183,8 +183,9 @@ class LayerwiseOffloadHook(ModelHook):
         gpu_weights: dict[torch.dtype, torch.Tensor] = {}
 
         if self._timing_sink is not None:
-            self._copy_start = torch.cuda.Event(enable_timing=True)
-            self._copy_end = torch.cuda.Event(enable_timing=True)
+            # Platform events keep this shared hook usable on non-CUDA backends.
+            self._copy_start = current_omni_platform.Event(enable_timing=True)
+            self._copy_end = current_omni_platform.Event(enable_timing=True)
             self._h2d_bytes = int(
                 sum(
                     cpu_weight.numel() * cpu_weight.element_size()
@@ -235,11 +236,11 @@ class LayerwiseOffloadHook(ModelHook):
         self._stall_end = None
 
         if evt is not None and self._timing_sink is not None:
-            self._stall_start = torch.cuda.Event(enable_timing=True)
+            self._stall_start = current_omni_platform.Event(enable_timing=True)
             self._stall_start.record(current_omni_platform.current_stream())
         clear_block_storage(self.block_parameters, self.block_buffers, evt)
         if evt is not None and self._timing_sink is not None:
-            self._stall_end = torch.cuda.Event(enable_timing=True)
+            self._stall_end = current_omni_platform.Event(enable_timing=True)
             self._stall_end.record(current_omni_platform.current_stream())
         self._prefetch_done = None
 
@@ -270,7 +271,7 @@ class LayerwiseOffloadHook(ModelHook):
             self._prev_hook.prefetch_layer(non_blocking=False)
 
         if self._timing_sink is not None:
-            self._compute_start = torch.cuda.Event(enable_timing=True)
+            self._compute_start = current_omni_platform.Event(enable_timing=True)
             self._compute_start.record(current_omni_platform.current_stream())
 
         self.prefetch_layer(non_blocking=True)
@@ -279,7 +280,7 @@ class LayerwiseOffloadHook(ModelHook):
 
     def post_forward(self, module: nn.Module, output: Any) -> Any:
         if self._timing_sink is not None:
-            self._compute_end = torch.cuda.Event(enable_timing=True)
+            self._compute_end = current_omni_platform.Event(enable_timing=True)
             self._compute_end.record(current_omni_platform.current_stream())
 
         self.offload_layer()
@@ -320,8 +321,8 @@ class LayerwiseOffloadHook(ModelHook):
             compute_ms = 0.0
             stall_ms = 0.0
             h2d_bytes = 0
-            first_copy_start: torch.cuda.Event | None = None
-            last_compute_end: torch.cuda.Event | None = None
+            first_copy_start: current_omni_platform.Event | None = None
+            last_compute_end: current_omni_platform.Event | None = None
             for (
                 copy_start,
                 copy_end,

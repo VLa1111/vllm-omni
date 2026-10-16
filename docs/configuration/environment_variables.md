@@ -138,6 +138,12 @@ settings.
 Omni-owned variable, even though vLLM-Omni supplies a persistent default when
 it is unset.
 
+### Offload diagnostics
+
+| Name | Type and default | Applies to and read time | Precedence and invalid values | Lifecycle |
+| --- | --- | --- | --- | --- |
+| `VLLM_OMNI_OFFLOAD_TIMING` | `1` enables; default unset (off) | Layerwise CPU offload (`--enable-layerwise-offload`), every model that uses the layerwise backend; read when the backend is built during model setup | Environment-only. Only the exact value `1` enables instrumentation; any other value is ignored. Each full pass over the offloaded blocks logs one line with H2D bytes and time, compute time, exposed transfer stall, and hidden-transfer percentage. | Diagnostic |
+
 ### Torch compilation
 
 | Name | Type and default | Applies to and read time | Precedence and invalid values | Lifecycle |
