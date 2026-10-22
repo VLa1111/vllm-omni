@@ -13,14 +13,13 @@ import uuid
 import numpy as np
 import torch
 
+from vllm_omni.platforms import current_omni_platform
+
 CAMERAS = ("base_0_rgb", "left_wrist_0_rgb", "right_wrist_0_rgb")
 
 
 def _robot_obs(views: int) -> dict:
-    obs = {
-        f"observation.images.{camera}": np.zeros((224, 224, 3), dtype=np.uint8)
-        for camera in CAMERAS[:views]
-    }
+    obs = {f"observation.images.{camera}": np.zeros((224, 224, 3), dtype=np.uint8) for camera in CAMERAS[:views]}
     obs["state"] = np.zeros(32, dtype=np.float32)
     return obs
 
@@ -39,12 +38,12 @@ def _summary(samples: list[float]) -> dict:
 def _time_cuda(fn, iters: int, warmup: int) -> list[float]:
     for _ in range(warmup):
         fn()
-    torch.cuda.synchronize()
+    current_omni_platform.synchronize()
     samples = []
     for _ in range(iters):
         started = time.perf_counter()
         fn()
-        torch.cuda.synchronize()
+        current_omni_platform.synchronize()
         samples.append((time.perf_counter() - started) * 1e3)
     return samples
 
@@ -81,7 +80,7 @@ def _benchmark_engine(args: argparse.Namespace) -> None:
                     generator=noise_generator,
                     dtype=torch.float32,
                 ).to(pipeline._device, pipeline._torch_dtype)
-                sampling_generator = torch.Generator(device="cuda").manual_seed(42)
+                sampling_generator = torch.Generator(device=current_omni_platform.device_type).manual_seed(42)
                 params = OmniDiffusionSamplingParams(
                     num_inference_steps=args.steps,
                     generator=sampling_generator,
@@ -138,14 +137,14 @@ def _benchmark_engine(args: argparse.Namespace) -> None:
             outputs = []
             for _ in range(args.warmup):
                 outputs = engine_call()
-            torch.cuda.synchronize()
+            current_omni_platform.synchronize()
             engine_latencies = []
             segments = []
             for index in range(args.iters):
                 before = len(request_segments)
                 started = time.perf_counter()
                 outputs = engine_call()
-                torch.cuda.synchronize()
+                current_omni_platform.synchronize()
                 latency = (time.perf_counter() - started) * 1e3
                 engine_latencies.append(latency)
                 if len(request_segments) > before:
@@ -164,9 +163,7 @@ def _benchmark_engine(args: argparse.Namespace) -> None:
             layers = {f"engine_{args.backend}_ms": _summary(engine_latencies)}
             if args.backend == "uni":
                 layers["model_only_ms"] = _summary(_time_cuda(model_only, args.iters, args.warmup))
-                layers["pipeline_ms"] = _summary(
-                    _time_cuda(in_process_pipeline, args.iters, args.warmup)
-                )
+                layers["pipeline_ms"] = _summary(_time_cuda(in_process_pipeline, args.iters, args.warmup))
             final_output = outputs[-1] if outputs else None
             results[str(views)] = {
                 "backend": args.backend,
@@ -195,20 +192,19 @@ def _benchmark_engine(args: argparse.Namespace) -> None:
 
 
 def _benchmark_e2e(args: argparse.Namespace) -> None:
+    import websockets.sync.client as websockets_client
+    from openpi_client import msgpack_numpy
+
     from tests.helpers.runtime import (
         PI0_CAMERA_KEYS,
         PI0_OPENPI_PATH,
         _pi0_decode_action_response,
         pi0_make_dummy_obs,
     )
-    import websockets.sync.client as websockets_client
-    from openpi_client import msgpack_numpy
 
     uri = f"ws://{args.host}:{args.port}{PI0_OPENPI_PATH}"
     packer = msgpack_numpy.Packer()
-    conn = websockets_client.connect(
-        uri, compression=None, max_size=None, ping_interval=300, ping_timeout=3600
-    )
+    conn = websockets_client.connect(uri, compression=None, max_size=None, ping_interval=300, ping_timeout=3600)
     try:
         metadata = msgpack_numpy.unpackb(conn.recv())
         summary = {"metadata": metadata, "views": {}}
