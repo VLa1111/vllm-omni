@@ -43,6 +43,7 @@ from vllm_omni.diffusion.models.qwen_image.pipeline_qwen_image_edit import (
     retrieve_latents,
 )
 from vllm_omni.diffusion.models.qwen_image_21.cfg_parallel import QwenImage21CFGParallelMixin
+from vllm_omni.diffusion.models.qwen_image_21.decode_graph import decode_graph_config_eligible
 from vllm_omni.diffusion.models.qwen_image_21.qwen_image_21_transformer import (
     QwenImage21KVCache,
     QwenImage21Transformer2DModel,
@@ -238,9 +239,7 @@ def get_qwen_image_21_pre_process_func(
     # steps their captured CUDA graph (see decode_graph.register_prefill), so
     # on a graph-enabled serve the batch key carries the VLM text length and
     # wave-mates stay padding-free. Eager serves keep the padding-friendly key.
-    padding_is_cheap = not bool(getattr(od_config, "enable_cuda_graph_decode", True)) or bool(
-        getattr(od_config, "enforce_eager", False)
-    )
+    padding_is_cheap = not decode_graph_config_eligible(od_config)
 
     def _prompt_token_count(prompt_text: str, num_images: int) -> int | None:
         """VLM text-token count of the templated prompt, or None when unsized."""

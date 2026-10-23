@@ -40,8 +40,11 @@ def sized_preprocess(tmp_path, monkeypatch):
     so compatibility keys can be compared without a checkpoint on disk.
     """
     from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
+    from vllm_omni.diffusion.models.qwen_image_21 import decode_graph as decode_graph_mod
 
     monkeypatch.setitem(pipeline_mod._PROMPT_TOKENIZER_CACHE, str(tmp_path), _stub_tokenizer)
+    # Treat this fixture as a CUDA graph-capable serve even in CPU-only CI.
+    monkeypatch.setattr(decode_graph_mod.current_omni_platform, "is_cuda", lambda: True)
     vae_dir = tmp_path / "vae"
     vae_dir.mkdir(exist_ok=True)
     (vae_dir / "config.json").write_text(json.dumps({"temperal_downsample": [False] * 4}))
@@ -274,6 +277,48 @@ def test_eager_serve_keeps_the_padding_friendly_key(tmp_path, monkeypatch, od_co
     # Padding is free when no decode graph can be captured, so the key must not
     # split requests by prompt length.
     assert preprocess(make_request("eager", [(64, 64)])).batch_compatibility_key[2] is None
+
+
+@pytest.mark.parametrize(
+    "config_overrides",
+    [
+        pytest.param({"parallel_config": SimpleNamespace(tensor_parallel_size=2)}, id="tensor-parallel"),
+        pytest.param({"parallel_config": SimpleNamespace(sequence_parallel_size=2)}, id="sequence-parallel"),
+        pytest.param({"parallel_config": SimpleNamespace(use_hsdp=True)}, id="hsdp"),
+        pytest.param({"extras": {"prefix_kv_cache_dtype": "fp8"}}, id="quantized-prefix-kv"),
+        pytest.param({"enable_layerwise_offload": True}, id="layer-wise-offload"),
+    ],
+)
+def test_ineligible_graph_config_keeps_the_padding_friendly_key(tmp_path, monkeypatch, config_overrides):
+    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
+    from vllm_omni.diffusion.models.qwen_image_21 import decode_graph as decode_graph_mod
+
+    monkeypatch.setitem(pipeline_mod._PROMPT_TOKENIZER_CACHE, str(tmp_path), _stub_tokenizer)
+    monkeypatch.setattr(decode_graph_mod.current_omni_platform, "is_cuda", lambda: True)
+    vae_dir = tmp_path / "vae"
+    vae_dir.mkdir(exist_ok=True)
+    (vae_dir / "config.json").write_text(json.dumps({"temperal_downsample": [False] * 4}))
+    preprocess = get_qwen_image_21_pre_process_func(
+        SimpleNamespace(model=str(tmp_path), enable_cuda_graph_decode=True, **config_overrides)
+    )
+
+    assert preprocess(make_request("ineligible", [(64, 64)])).batch_compatibility_key[2] is None
+
+
+def test_non_cuda_graph_request_keeps_the_padding_friendly_key(tmp_path, monkeypatch):
+    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
+    from vllm_omni.diffusion.models.qwen_image_21 import decode_graph as decode_graph_mod
+
+    monkeypatch.setitem(pipeline_mod._PROMPT_TOKENIZER_CACHE, str(tmp_path), _stub_tokenizer)
+    monkeypatch.setattr(decode_graph_mod.current_omni_platform, "is_cuda", lambda: False)
+    vae_dir = tmp_path / "vae"
+    vae_dir.mkdir(exist_ok=True)
+    (vae_dir / "config.json").write_text(json.dumps({"temperal_downsample": [False] * 4}))
+    preprocess = get_qwen_image_21_pre_process_func(
+        SimpleNamespace(model=str(tmp_path), enable_cuda_graph_decode=True, enforce_eager=False)
+    )
+
+    assert preprocess(make_request("npu", [(64, 64)])).batch_compatibility_key[2] is None
 
 
 @pytest.mark.parametrize("scheduler_class", [RequestScheduler, StepScheduler])
