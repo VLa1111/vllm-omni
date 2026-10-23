@@ -259,8 +259,9 @@ def test_text_only_requests_are_keyed_by_prompt_length(sized_preprocess):
 def test_unsizable_prompt_keeps_the_length_agnostic_key(preprocess):
     key = preprocess(make_request("unsized", [(64, 64)])).batch_compatibility_key
     assert key[0] == "qwen_image_21"
-    assert len(key) == 3
+    assert len(key) == 4
     assert key[2] is None
+    assert key[3] is None
 
 
 @pytest.mark.parametrize("od_config", [{"enforce_eager": True}, {"enable_cuda_graph_decode": False}])
@@ -389,6 +390,43 @@ def test_omitted_and_empty_negative_prompts_do_not_share_a_wave(sized_preprocess
     scheduler.add_request(omitted)
     scheduler.add_request(empty)
     assert scheduler.schedule().scheduled_request_ids == ["omitted-negative"]
+
+
+@pytest.mark.parametrize("preprocess_kind", ["unsized", "eager"])
+@pytest.mark.parametrize("scheduler_class", [RequestScheduler, StepScheduler])
+def test_fallback_keys_keep_negative_prompt_presence(
+    tmp_path, monkeypatch, preprocess, preprocess_kind, scheduler_class
+):
+    if preprocess_kind == "unsized":
+        preprocess_func = preprocess
+    else:
+        from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
+
+        monkeypatch.setitem(pipeline_mod._PROMPT_TOKENIZER_CACHE, str(tmp_path), _stub_tokenizer)
+        vae_dir = tmp_path / "vae"
+        vae_dir.mkdir(exist_ok=True)
+        (vae_dir / "config.json").write_text(json.dumps({"temperal_downsample": [False] * 4}))
+        preprocess_func = get_qwen_image_21_pre_process_func(
+            SimpleNamespace(model=str(tmp_path), enforce_eager=True)
+        )
+
+    omitted = make_request("fallback-omitted", [(64, 64)])
+    omitted.sampling_params.true_cfg_scale = 4.0
+    empty = make_request("fallback-empty", [(64, 64)], color="blue")
+    empty.sampling_params.true_cfg_scale = 4.0
+    empty.prompt["negative_prompt"] = ""
+    omitted = preprocess_func(omitted)
+    empty = preprocess_func(empty)
+
+    assert omitted.batch_compatibility_key[2] is None
+    assert empty.batch_compatibility_key[2] is None
+    assert omitted.batch_compatibility_key[3] != empty.batch_compatibility_key[3]
+
+    scheduler = scheduler_class()
+    scheduler.initialize(SimpleNamespace(max_num_seqs=2))
+    scheduler.add_request(omitted)
+    scheduler.add_request(empty)
+    assert scheduler.schedule().scheduled_request_ids == ["fallback-omitted"]
 
 
 def test_negative_prompt_ignored_when_cfg_is_off(sized_preprocess):

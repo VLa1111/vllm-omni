@@ -257,6 +257,8 @@ def get_qwen_image_21_pre_process_func(
             return None
         negative_text = prompt_obj.get("negative_prompt") if hasattr(prompt_obj, "get") else None
         if negative_text is None:
+            # An omitted negative prompt disables true CFG, while an explicitly
+            # empty one still enables the negative-prompt path at execution.
             return (False, 0)
         # encode_prompt normalizes an empty prompt to a single space before
         # tokenization; size that same text so admission matches execution.
@@ -264,9 +266,12 @@ def get_qwen_image_21_pre_process_func(
 
     def _length_key_tail(num_images: int, prompt_obj, true_cfg_scale) -> tuple:
         positive = _prompt_token_count(prompt_obj["prompt"], num_images)
+        negative = _negative_token_count(num_images, prompt_obj, true_cfg_scale)
         if positive is None:
-            return (None,)
-        return (positive, _negative_token_count(num_images, prompt_obj, true_cfg_scale))
+            # Keep positive-length grouping disabled when padding is cheap or
+            # the tokenizer is unavailable, but preserve CFG compatibility.
+            return (None, negative)
+        return (positive, negative)
 
     def _to_pil(image: Any) -> PIL.Image.Image:
         if isinstance(image, PIL.Image.Image):
