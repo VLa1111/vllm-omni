@@ -39,8 +39,8 @@ def sized_preprocess(tmp_path, monkeypatch):
     The stub makes the prompt token count depend only on the templated string,
     so compatibility keys can be compared without a checkpoint on disk.
     """
-    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
     from vllm_omni.diffusion.models.qwen_image_21 import decode_graph as decode_graph_mod
+    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
 
     monkeypatch.setitem(pipeline_mod._PROMPT_TOKENIZER_CACHE, str(tmp_path), _stub_tokenizer)
     # Treat this fixture as a CUDA graph-capable serve even in CPU-only CI.
@@ -290,8 +290,8 @@ def test_eager_serve_keeps_the_padding_friendly_key(tmp_path, monkeypatch, od_co
     ],
 )
 def test_ineligible_graph_config_keeps_the_padding_friendly_key(tmp_path, monkeypatch, config_overrides):
-    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
     from vllm_omni.diffusion.models.qwen_image_21 import decode_graph as decode_graph_mod
+    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
 
     monkeypatch.setitem(pipeline_mod._PROMPT_TOKENIZER_CACHE, str(tmp_path), _stub_tokenizer)
     monkeypatch.setattr(decode_graph_mod.current_omni_platform, "is_cuda", lambda: True)
@@ -306,8 +306,8 @@ def test_ineligible_graph_config_keeps_the_padding_friendly_key(tmp_path, monkey
 
 
 def test_non_cuda_graph_request_keeps_the_padding_friendly_key(tmp_path, monkeypatch):
-    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
     from vllm_omni.diffusion.models.qwen_image_21 import decode_graph as decode_graph_mod
+    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
 
     monkeypatch.setitem(pipeline_mod._PROMPT_TOKENIZER_CACHE, str(tmp_path), _stub_tokenizer)
     monkeypatch.setattr(decode_graph_mod.current_omni_platform, "is_cuda", lambda: False)
