@@ -366,6 +366,31 @@ def test_negative_prompt_length_is_part_of_the_compatibility_key(sized_preproces
     assert short_neg.batch_compatibility_key == same_neg.batch_compatibility_key
 
 
+@pytest.mark.parametrize("scheduler_class", [RequestScheduler, StepScheduler])
+def test_omitted_and_empty_negative_prompts_do_not_share_a_wave(sized_preprocess, scheduler_class):
+    omitted = make_request("omitted-negative", [(64, 64)])
+    omitted.sampling_params.true_cfg_scale = 4.0
+    empty = make_request("empty-negative", [(64, 64)], color="blue")
+    empty.sampling_params.true_cfg_scale = 4.0
+    empty.prompt["negative_prompt"] = ""
+
+    omitted = sized_preprocess(omitted)
+    empty = sized_preprocess(empty)
+
+    assert omitted.batch_compatibility_key[:3] == empty.batch_compatibility_key[:3]
+    assert omitted.batch_compatibility_key[3] != empty.batch_compatibility_key[3]
+    assert empty.batch_compatibility_key[3] == (
+        True,
+        len(qwen_image_21_prompt_text(" ", num_images=0)),
+    )
+
+    scheduler = scheduler_class()
+    scheduler.initialize(SimpleNamespace(max_num_seqs=2))
+    scheduler.add_request(omitted)
+    scheduler.add_request(empty)
+    assert scheduler.schedule().scheduled_request_ids == ["omitted-negative"]
+
+
 def test_negative_prompt_ignored_when_cfg_is_off(sized_preprocess):
     request = make_request("neg-off", [(64, 64)])
     request.prompt["negative_prompt"] = "blurry"

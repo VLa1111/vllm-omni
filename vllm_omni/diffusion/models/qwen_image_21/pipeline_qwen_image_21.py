@@ -247,19 +247,20 @@ def get_qwen_image_21_pre_process_func(
             return None
         return len(tokenizer(qwen_image_21_prompt_text(prompt_text or " ", num_images))["input_ids"])
 
-    def _negative_token_count(num_images: int, prompt_obj, true_cfg_scale) -> int | None:
-        """Negative-prompt token count when true CFG is actually used.
+    def _negative_token_count(num_images: int, prompt_obj, true_cfg_scale) -> tuple[bool, int | None] | None:
+        """Negative-prompt presence and token count when true CFG is actually used.
 
-        ``None`` = not applicable (CFG off); ``0`` = no negative prompt. The negative
-        prompt is encoded with the same template, so a length mismatch between two
-        requests would create the same ragged batch as a positive-prompt mismatch.
+        ``None`` means CFG is off. The presence bit distinguishes an omitted
+        prompt (which disables CFG at execution) from an explicitly empty one.
         """
         if true_cfg_scale is None or float(true_cfg_scale) <= 1.0:
             return None
         negative_text = prompt_obj.get("negative_prompt") if hasattr(prompt_obj, "get") else None
-        if not negative_text:
-            return 0
-        return _prompt_token_count(negative_text, num_images)
+        if negative_text is None:
+            return (False, 0)
+        # encode_prompt normalizes an empty prompt to a single space before
+        # tokenization; size that same text so admission matches execution.
+        return (True, _prompt_token_count(negative_text or " ", num_images))
 
     def _length_key_tail(num_images: int, prompt_obj, true_cfg_scale) -> tuple:
         positive = _prompt_token_count(prompt_obj["prompt"], num_images)
