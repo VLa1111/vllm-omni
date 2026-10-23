@@ -406,9 +406,7 @@ def test_fallback_keys_keep_negative_prompt_presence(
         vae_dir = tmp_path / "vae"
         vae_dir.mkdir(exist_ok=True)
         (vae_dir / "config.json").write_text(json.dumps({"temperal_downsample": [False] * 4}))
-        preprocess_func = get_qwen_image_21_pre_process_func(
-            SimpleNamespace(model=str(tmp_path), enforce_eager=True)
-        )
+        preprocess_func = get_qwen_image_21_pre_process_func(SimpleNamespace(model=str(tmp_path), enforce_eager=True))
 
     omitted = make_request("fallback-omitted", [(64, 64)])
     omitted.sampling_params.true_cfg_scale = 4.0
