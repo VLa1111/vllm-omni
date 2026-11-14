@@ -25,6 +25,21 @@ def preprocess(tmp_path):
     return get_qwen_image_21_pre_process_func(SimpleNamespace(model=str(tmp_path)))
 
 
+@pytest.fixture
+def sized_preprocess(tmp_path, monkeypatch):
+    from vllm_omni.diffusion.models.qwen_image_21 import pipeline_qwen_image_21 as pipeline_mod
+
+    monkeypatch.setitem(
+        pipeline_mod._PROMPT_TOKENIZER_CACHE,
+        str(tmp_path),
+        lambda text: {"input_ids": list(range(len(text)))},
+    )
+    vae_dir = tmp_path / "vae"
+    vae_dir.mkdir(exist_ok=True)
+    (vae_dir / "config.json").write_text(json.dumps({"temperal_downsample": [False] * 4}))
+    return get_qwen_image_21_pre_process_func(SimpleNamespace(model=str(tmp_path), enforce_eager=True))
+
+
 def make_request(request_id, sizes, color="red"):
     return OmniDiffusionRequest(
         request_id=request_id,
@@ -70,6 +85,48 @@ def test_scheduler_groups_by_condition_layout(preprocess, scheduler_class, first
         assert scheduler.schedule().scheduled_request_ids == ["second"]
         scheduler.finish_requests("second", DiffusionRequestStatus.FINISHED_COMPLETED)
     assert not scheduler.has_requests()
+
+
+@pytest.mark.parametrize("scheduler_class", [RequestScheduler, StepScheduler])
+def test_eager_scheduler_separates_mixed_lengths(sized_preprocess, scheduler_class):
+    short = make_request("short", [])
+    long = make_request("long", [])
+    long.prompt["prompt"] = "A ceramic teapot on a windowsill " * 8
+    short = sized_preprocess(short)
+    long = sized_preprocess(long)
+
+    scheduler = scheduler_class()
+    scheduler.initialize(SimpleNamespace(max_num_seqs=2))
+    scheduler.add_request(short)
+    scheduler.add_request(long)
+
+    assert scheduler.schedule().scheduled_request_ids == ["short"]
+    scheduler.finish_requests("short", DiffusionRequestStatus.FINISHED_COMPLETED)
+    assert scheduler.schedule().scheduled_request_ids == ["long"]
+
+
+@pytest.mark.parametrize("scheduler_class", [RequestScheduler, StepScheduler])
+def test_eager_scheduler_preserves_equal_length_batching(sized_preprocess, scheduler_class):
+    scheduler = scheduler_class()
+    scheduler.initialize(SimpleNamespace(max_num_seqs=2))
+    scheduler.add_request(sized_preprocess(make_request("first", [])))
+    scheduler.add_request(sized_preprocess(make_request("second", [])))
+
+    assert scheduler.schedule().scheduled_request_ids == ["first", "second"]
+
+
+def test_eager_key_separates_negative_prompt_lengths_under_true_cfg(sized_preprocess):
+    first = make_request("first", [(64, 64)])
+    second = make_request("second", [(64, 64)])
+    for request in (first, second):
+        request.sampling_params.true_cfg_scale = 4.0
+    first.prompt["negative_prompt"] = "blurry"
+    second.prompt["negative_prompt"] = "blurry, low quality, watermark, text"
+
+    first_key = sized_preprocess(first).batch_compatibility_key
+    second_key = sized_preprocess(second).batch_compatibility_key
+    assert first_key[:3] == second_key[:3]
+    assert first_key[3] != second_key[3]
 
 
 @pytest.mark.parametrize(
@@ -189,4 +246,4 @@ def test_preprocess_stages_rgba_vae_images_and_resized_prompt_images(preprocess)
     assert isinstance(prompt_image, Image.Image)
     (width, height) = info["input_image_sizes"][0]
     assert prompt_image.size == (width, height)
-    assert processed.batch_compatibility_key == ("qwen_image_21", ((width, height),))
+    assert processed.batch_compatibility_key == ("qwen_image_21", ((width, height),), None, None)
